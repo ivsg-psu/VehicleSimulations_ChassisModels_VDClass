@@ -20,14 +20,11 @@ function dydt = fcn_VD_st5dofModel( t, y,...
 %
 %     t: A number indicating time corresponding to y.
 %
-%     y: A 10x1 vector of velocities and pose consisting of:
+%     y: A 8x1 vector of velocities and pose consisting of:
 %           [U; 
 %            V; 
 %            r; 
-%            omega1; 
-%            omega2; 
-%            omega3; 
-%            omega4; 
+%            omega; 
 %            X; 
 %            Y; 
 %            Phi]
@@ -89,6 +86,7 @@ function dydt = fcn_VD_st5dofModel( t, y,...
 %
 % 2025_11_21 by Sean Brennan, sbrennan@psu.edu
 % - Need to update the output argument list correctly (with clarity)
+% - Need to remove use of global variables
 
 %% Debugging and Input checks
 
@@ -141,16 +139,34 @@ if 0==flag_max_speed
         narginchk(9,MAX_NARGIN);
 
         % Check the t input to be sure it has 1 column and 1 row, positive
-        fcn_DebugTools_checkInputsToFunctions(y, 'positive_1column_of_numbers',[1 1]);
+        fcn_DebugTools_checkInputsToFunctions(t, 'positive_1column_of_numbers',[1 1]);
 
         % Check the y input to be sure it has 1 column, 8 rows
         fcn_DebugTools_checkInputsToFunctions(y, '1column_of_numbers',[8 8]);
 
+        % Check the steering_amplitude input to be sure it has 1 col, 1 row
+        fcn_DebugTools_checkInputsToFunctions(steering_amplitude, '1column_of_numbers',[1 1]);
+
+        % Check the Period input to be sure it has 1 col, 1 row, positive
+        fcn_DebugTools_checkInputsToFunctions(Period, 'positive_1column_of_numbers',[1 1]);
+
+        % Check the wheel_torque input to be sure it has 1 column, 2 rows
+        fcn_DebugTools_checkInputsToFunctions(wheel_torque, '1column_of_numbers',[2 2]);
+
+        % Check the vehicle input to be sure it is right structure
+        template_structure = struct('m',{},'Izz',{},'Iw',{},'Re',{},'a',{},'L',{},'b',{},'d',{},'h_cg',{},'Ca',{},'Cx',{});
+        fcn_DebugTools_checkInputsToFunctions(vehicle, 'likestructure',template_structure);
+
+        % Check the vehicle input to be sure it is right structure
+        template_structure2 = struct('grade',{},'bank_angle',{});
+        fcn_DebugTools_checkInputsToFunctions(road_properties, 'likestructure',template_structure2);
+        
         % Check the friction_coefficient input to be sure it has 1 column, 2 rows
         fcn_DebugTools_checkInputsToFunctions(friction_coefficient, '1column_of_numbers',[2 2]);
 
-        % Check the type_of_transfer input to be sure it has 1 column, 2 rows
-        fcn_DebugTools_checkInputsToFunctions(type_of_transfer, 'URHERE',[2 2]);
+        % Check the type_of_transfer input to be sure its either char or
+        % string
+        fcn_DebugTools_checkInputsToFunctions(type_of_transfer, '_of_char_strings');
 
         % % Check the inputs
         % fcn_VD_checkInputsToFunctions(t,'non negative');
@@ -219,11 +235,9 @@ end
 % time-step 't'
 % global_acceleration: A global variable that stores accelerations at a
 % time-step 't'
-global flag_update global_acceleration % change the variable name based on the matlab script
+global flag_update global_acceleration %#ok<GVMIS> % change the variable name based on the matlab script
 persistent delayed_acceleration % variable to store acceleration in the previous time-step
 
-   
-URHERE
 
 %% Implement 5-DoF Vehicle Model
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -281,19 +295,149 @@ DposeDt = fcn_VD_Body2GlobalCoordinates(t,pose,U,V,r);
 %% Write to output
 dydt = [DvelDt; DposeDt];
 
-%% Any debugging?
+
+%% Plot the results (for debugging)?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   _____       _                 
-%  |  __ \     | |                
-%  | |  | | ___| |__  _   _  __ _ 
+%   _____       _
+%  |  __ \     | |
+%  | |  | | ___| |__  _   _  __ _
 %  | |  | |/ _ \ '_ \| | | |/ _` |
 %  | |__| |  __/ |_) | |_| | (_| |
 %  |_____/ \___|_.__/ \__,_|\__, |
 %                            __/ |
-%                           |___/ 
+%                           |___/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if flag_do_plots
+    
+    % % plot the final XY result
+    % figure(figNum);
+    % clf;
+    % 
+    % % Everything put together
+    % subplot(1,2,1);
+    % hold on;
+    % grid on
+    % title('Results of breaking data into laps');
+    % 
+    % 
+    % 
+    % % Plot the indices per lap
+    % all_ones = ones(length(input_path(:,1)),1);
+    % 
+    % % fill in data
+    % start_of_lap_x = [];
+    % start_of_lap_y = [];
+    % lap_x = [];
+    % lap_y = [];
+    % end_of_lap_x = [];
+    % end_of_lap_y = [];
+    % for ith_lap = 1:Nlaps
+    %     start_of_lap_x = [start_of_lap_x; cell_array_of_entry_indices{ith_lap}; NaN]; %#ok<AGROW>
+    %     start_of_lap_y = [start_of_lap_y; all_ones(cell_array_of_entry_indices{ith_lap})*ith_lap; NaN]; %#ok<AGROW>;
+    %     lap_x = [lap_x; cell_array_of_lap_indices{ith_lap}; NaN]; %#ok<AGROW>
+    %     lap_y = [lap_y; all_ones(cell_array_of_lap_indices{ith_lap})*ith_lap; NaN]; %#ok<AGROW>;
+    %     end_of_lap_x = [end_of_lap_x; cell_array_of_exit_indices{ith_lap}; NaN]; %#ok<AGROW>
+    %     end_of_lap_y = [end_of_lap_y; all_ones(cell_array_of_exit_indices{ith_lap})*ith_lap; NaN]; %#ok<AGROW>;
+    % end
+    % 
+    % % Plot results
+    % plot(start_of_lap_x,start_of_lap_y,'g-','Linewidth',3,'DisplayName','Prelap');
+    % plot(lap_x,lap_y,'b-','Linewidth',3,'DisplayName','Lap');
+    % plot(end_of_lap_x,end_of_lap_y,'r-','Linewidth',3,'DisplayName','Postlap');
+    % 
+    % h_legend = legend;
+    % set(h_legend,'AutoUpdate','off');
+    % 
+    % xlabel('Indices');
+    % ylabel('Lap number');
+    % axis([0 length(input_path(:,1)) 0 Nlaps+0.5]);
+    % 
+    % 
+    % subplot(1,2,2);
+    % % Plot the XY coordinates of the traversals
+    % hold on;
+    % grid on
+    % title('Results of breaking data into laps');
+    % axis equal
+    % 
+    % cellArrayOfPathsToPlot = cell(Nlaps+1,1);
+    % cellArrayOfPathsToPlot{1,1}     = input_path;
+    % for ith_lap = 1:Nlaps
+    %     temp_indices = cell_array_of_lap_indices{ith_lap};
+    %     if length(temp_indices)>1
+    %         dummy_path = input_path(temp_indices,:);
+    %     else
+    %         dummy_path = [];
+    %     end
+    %     cellArrayOfPathsToPlot{ith_lap+1,1} = dummy_path;
+    % end
+    % h = fcn_Laps_plotLapsXY(cellArrayOfPathsToPlot,figNum);
+    % 
+    % % Make input be thin line
+    % set(h(1),'Color',[0 0 0],'Marker','none','Linewidth', 0.75);
+    % 
+    % % Make all the laps have thick lines
+    % for ith_plot = 2:(length(h))
+    %     set(h(ith_plot),'Marker','none','Linewidth', 5);
+    % end
+    % 
+    % % Add legend
+    % legend_text = {};
+    % legend_text = [legend_text, 'Input path'];
+    % for ith_lap = 1:Nlaps
+    %     legend_text = [legend_text, sprintf('Lap %d',ith_lap)]; %#ok<AGROW>
+    % end
+    % 
+    % h_legend = legend(legend_text);
+    % set(h_legend,'AutoUpdate','off');
+    % 
+    % 
+    % 
+    % %     % Plot the start, excursion, and end conditions
+    % %     % Start point in green
+    % %     if flag_start_is_a_point_type==1
+    % %         Xcenter = start_zone_definition(1,1);
+    % %         Ycenter = start_zone_definition(1,2);
+    % %         radius  = start_zone_definition(1,3);
+    % %         INTERNAL_plot_circle(Xcenter, Ycenter, radius, [0 .7 0], 4);
+    % %     end
+    % %
+    % %     % End point in red
+    % %     if flag_end_is_a_point_type==1
+    % %         Xcenter = end_definition(1,1);
+    % %         Ycenter = end_definition(1,2);
+    % %         radius  = end_definition(1,3);
+    % %         INTERNAL_plot_circle(Xcenter, Ycenter, radius, [0.7 0 0], 2);
+    % %     end
+    % %     legend_text = [legend_text, 'Start condition'];
+    % %     legend_text = [legend_text, 'End condition'];
+    % %     h_legend = legend(legend_text);
+    % %     set(h_legend,'AutoUpdate','off');
+    % 
+    % % Plot start zone
+    % h_start_zone = fcn_Laps_plotZoneDefinition(start_zone_definition,'g-',figNum);
+    % 
+    % % Plot end zone
+    % h_end_zone = fcn_Laps_plotZoneDefinition(end_zone_definition,'r-',figNum);
+
+    
+end
+
 if flag_do_debug
     fprintf(1, 'ENDING function: %s, in file: %s\n\n', st(1).name, st(1).file);
 end
 
-end
+end % Ends main function
+
+%% Functions follow
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   ______                _   _
+%  |  ____|              | | (_)
+%  | |__ _   _ _ __   ___| |_ _  ___  _ __  ___
+%  |  __| | | | '_ \ / __| __| |/ _ \| '_ \/ __|
+%  | |  | |_| | | | | (__| |_| | (_) | | | \__ \
+%  |_|   \__,_|_| |_|\___|\__|_|\___/|_| |_|___/
+%
+% See: https://patorjk.com/software/taag/#p=display&f=Big&t=Functions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%§
+

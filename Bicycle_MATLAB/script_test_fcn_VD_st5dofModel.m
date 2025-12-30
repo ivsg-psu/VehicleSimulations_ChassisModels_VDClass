@@ -17,6 +17,8 @@
 
 %% Prepare the workspace
 close all; % close all the plots
+setenv('MATLABFLAG_VD_WARN_CHECKINPUTSTOFUNCTIONS','1');
+
 
 %% Inputs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -152,15 +154,14 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 fcn_VD_plotTimeSlipAngle(matlab_time,matlab_alpha);
 fcn_VD_plotTimeWheelSlip(matlab_time,matlab_kappa);
-
 fcn_VD_plotTimeNormalForce(matlab_time,matlab_Fz);
 fcn_VD_plotTimeLongitudinalTireForce(matlab_time,matlab_Fx);
 fcn_VD_plotTimeLateralTireForce(matlab_time,matlab_Fy);
+fcn_VD_plotTimeWheelSpeed(matlab_time,matlab_States(:,(4:5)));
 
 fcn_VD_plotTimeLongitudinalVelocity(matlab_time,matlab_States(:,1));
 fcn_VD_plotTimeLateralVelocity(matlab_time,matlab_States(:,2));
 fcn_VD_plotTimeYawRate(matlab_time,matlab_States(:,3));
-fcn_VD_plotTimeWheelSpeed(matlab_time,matlab_States(:,(4:5)));
 fcn_VD_plotTimeLongitudinalAcceleration(matlab_time,matlab_States(:,6));
 fcn_VD_plotTimeLateralAcceleration(matlab_time,matlab_States(:,7));
 
