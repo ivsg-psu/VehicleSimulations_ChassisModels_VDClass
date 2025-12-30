@@ -17,7 +17,11 @@
 % - Created master demo script by copy/pasting from ParseXODR
 %
 % 2024_09_26 by Sean Brennan, sbrennan@psu.edu
-% -- Updated function fcn_INTERNAL_clearUtilitiesFromPathAndFolders
+% - Updated function fcn_INTERNAL_clearUtilitiesFromPathAndFolders
+%
+% 2025_12_30 by Sean Brennan, sbrennan@psu.edu
+% - Updated formatting of Bicycle_MATLAB subdirectory functions
+%   % * Edited these to standard form 
 
 
 % TO-DO:
@@ -101,6 +105,8 @@ if ~exist('flag_Laps_Folders_Initialized','var')
 
     % Add this function's folders to the path
     this_project_folders = {...
+        'Functions', ...
+        'Data',...
         'VD_Utilities', ...
         'Bicycle_MATLAB', ...
         'VD_Utilities_Bicycle',...

@@ -1,0 +1,275 @@
+<strong>Checking root folder:
+	C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB:
+</strong><strong></strong><strong>	Checking that there is 1 m-file in root folder: </strong><strong>FAILED... 0 were found!
+</strong><strong>	Checking that there is a demo file, script_demo_VD.m: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a README.md file: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Functions subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Data subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Documents subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Installer subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Images subfolder: </strong><strong>PASSED.
+</strong><strong>Checking main demo file:
+	script_demo_VD.m:
+</strong><strong>	Checking that main demo contains required strings: </strong><strong>	Checking that it contains "REVISION HISTORY": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "TO-DO": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "MATLABFLAG_VD_FLAG_CHECK_INPUTS": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "MATLABFLAG_VD_FLAG_DO_DEBUG": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "fcn_DebugTools_autoInstallRepos": </strong><strong>PASSED.
+</strong><strong>Checking functions folder:
+	C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Functions:
+</strong><strong>	Checking that functions folder contains no forbidden strings: </strong><strong>PASSED.
+</strong><strong>	Checking that functions folder contains no warning strings: </strong><strong>PASSED.
+</strong><strong>	Checking that all files in functions folder contains required strings: </strong><strong>PASSED.
+</strong><strong>	Checking that functions within functions folder contains function-required strings: </strong><strong>PASSED.
+</strong>
+SUMMARY OF FOUND FILES: 
+
+STARTING TESTS:
+<strong>Checking root folder:
+	C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB:
+</strong><strong></strong><strong>	Checking that there is 1 m-file in root folder: </strong><strong>FAILED... 11 were found in folder: 
+		C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\!
+</strong><a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_all_functions.m',92,1)">92  </a>repoDemoNameString = cat(2,'script_demo',repoShortName(1:end-1),'.m');
+if system_dependent('IsDebugMode')==1, dbcont; end
+<strong>	Checking that there is a demo file, script_demo_VD.m: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a README.md file: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Functions subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Data subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Documents subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Installer subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Images subfolder: </strong><strong>PASSED.
+</strong><strong>Checking main demo file:
+	script_demo_VD.m:
+</strong><strong>	Checking that main demo contains required strings: </strong><strong>	Checking that it contains "REVISION HISTORY": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "TO-DO": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "MATLABFLAG_VD_FLAG_CHECK_INPUTS": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "MATLABFLAG_VD_FLAG_DO_DEBUG": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "fcn_DebugTools_autoInstallRepos": </strong><strong>PASSED.
+</strong><strong>Checking functions folder:
+	C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Functions:
+</strong><strong>	Checking that functions folder contains no forbidden strings: </strong><strong>PASSED.
+</strong><strong>	Checking that functions folder contains no warning strings: </strong><strong>PASSED.
+</strong><strong>	Checking that all files in functions folder contains required strings: </strong><strong>PASSED.
+</strong><strong>	Checking that functions within functions folder contains function-required strings: </strong><strong>PASSED.
+</strong>
+SUMMARY OF FOUND FILES: 
+
+STARTING TESTS:
+<strong>Checking root folder:
+	C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB:
+</strong><strong></strong><strong>	Checking that there is 1 m-file in root folder: </strong><strong>FAILED... 11 were found in folder: 
+		C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\!
+</strong><strong>	Checking that there is a demo file, script_demo_VD.m: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a README.md file: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Functions subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Data subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Documents subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Installer subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Images subfolder: </strong><strong>PASSED.
+</strong><strong>Checking main demo file:
+	script_demo_VD.m:
+</strong><strong>	Checking that main demo contains required strings: </strong><strong>	Checking that it contains "REVISION HISTORY": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "TO-DO": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "MATLABFLAG_VD_FLAG_CHECK_INPUTS": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "MATLABFLAG_VD_FLAG_DO_DEBUG": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "fcn_DebugTools_autoInstallRepos": </strong><strong>PASSED.
+</strong><strong>Checking functions folder:
+	C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB:
+</strong><strong>	Checking that functions folder contains no forbidden strings: </strong><strong>PASSED.
+</strong><strong>	Checking that functions folder contains no warning strings: </strong><strong>PASSED.
+</strong><strong>	Checking that all files in functions folder contains required strings: </strong><strong>FAILED.
+</strong>
+
+		m-filename                                                         	string found?	
+Folder: C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB:
+	1	fcn_VD_5dofStateEquation.m                                         	0            	
+	2	fcn_VD_bicycle2dofModel.m                                          	0            	
+	3	fcn_VD_st5dofForceEquation.m                                       	0            	
+	4	fcn_VD_st5dofModel.m                                               	0            	
+	5	fcn_VD_stAligningMomentBrush.m                                     	0            	
+	6	fcn_VD_stCombinedSlip.m                                            	0            	
+	7	fcn_VD_stEstimateFrictionCoefficient.m                             	0            	
+	8	fcn_VD_stLateralDynamics.m                                         	0            	
+	9	fcn_VD_stNormalForce.m                                             	0            	
+	10	fcn_VD_stSlipAngle.m                                               	0            	
+	11	fcn_VD_stTireForceBrush.m                                          	0            	
+	12	fcn_VD_stTireForceLinear.m                                         	0            	
+	13	fcn_VD_stWheel2BodyCoordinates.m                                   	0            	
+	14	fcn_VD_stWheelSlip.m                                               	0            	
+	15	fcn_VD_stWheelVelocity.m                                           	0            	
+	16	script_test_all_functions.m                                        	1            	
+	17	script_test_fcn_VD_bicycle2dofModel.m                              	1            	
+	18	script_test_fcn_VD_st5dofModel.m                                   	1            	
+	19	script_test_fcn_VD_stAligningMomentBrush.m                         	1            	
+	20	script_test_fcn_VD_stNormalForce.m                                 	1            	
+	21	script_test_fcn_VD_stSlipAngle.m                                   	1            	
+	22	script_test_fcn_VD_stTireForceBrush.m                              	1            	
+	23	script_test_fcn_VD_stWheelSlip.m                                   	1            	
+{Error using <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_all_functions', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_all_functions.m', 249)" style="font-weight:bold">script_test_all_functions</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_all_functions.m',249,0)">line 249</a>)
+A "REVISION HISTORY" required string was NOT found in one of the functions or scripts - see listing above. This
+should be fixed to maintain compatibilty.
+} 
+MATLAB has lost its connection to the license server.
+MATLAB will make 9 more reconnection attempt(s) and then exit. Any unsaved changes will be lost.
+
+
+which fcn_VD_checkInputsToFunctions
+C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities\fcn_VD_checkInputsToFunctions.m
+uiopen('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Functions\DEPRECATED\fcn_VD_checkInputsToFunctions.m',1)
+uiopen('C:\Users\snb10\Desktop\GitHubRepos\IVSG\PathPlanning\GridFreePlanners\BoundedAStar\Functions\DEPRECATED\fcn_algorithm_Astar.m',1)
+Figure 10001: DEMO case: basic function call
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+Undefined function 'fcn_VD_checkInputsToFunctions' for input arguments of type 'double'.
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_5dofStateEquation', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\fcn_VD_5dofStateEquation.m', 122)" style="font-weight:bold">fcn_VD_5dofStateEquation</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\fcn_VD_5dofStateEquation.m',122,0)">line 122</a>)
+        fcn_VD_checkInputsToFunctions(y,'vector5');
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_5dofStateEquation', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_5dofStateEquation.m', 48)" style="font-weight:bold">script_test_fcn_VD_5dofStateEquation</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_5dofStateEquation.m',48,0)">line 48</a>)
+dydt = fcn_VD_5dofStateEquation(dummyVariable, y, acceleration, (figNum));
+
+script_demo_VD
+ % Add this function's folders to the path
+    this_project_folders = {...
+        'Functions', ...
+        'Data',...
+        'VD_Utilities', ...
+        'Bicycle_MATLAB', ...
+        'VD_Utilities_Bicycle',...
+        'Bicycle_Simulink',...
+        'DualTrack_MATLAB',...
+        'DualTrack_Simulink',...
+        'VD_Utilities_DualTrack',...
+        'Datafiles'};
+    fcn_DebugTools_addSubdirectoriesToPath(pwd,this_project_folders)
+if system_dependent('IsDebugMode')==1, dbquit; end
+clc
+Figure 10001: DEMO case: basic function call
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+[Warning: fcn_VD_checkInputsToFunctions is being deprecated. Use fcn_DebugTools_checkInputsToFunctions instead.] 
+[> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_checkInputsToFunctions', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Functions\DEPRECATED\fcn_VD_checkInputsToFunctions.m', 6)" style="font-weight:bold">fcn_VD_checkInputsToFunctions</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Functions\DEPRECATED\fcn_VD_checkInputsToFunctions.m',6,0)">line 6</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_5dofStateEquation', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\fcn_VD_5dofStateEquation.m', 122)" style="font-weight:bold">fcn_VD_5dofStateEquation</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\fcn_VD_5dofStateEquation.m',122,0)">line 122</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('LiveEditorEvaluationHelperE1832742145', 'C:\Users\snb10\AppData\Local\Temp\Editor_eaxmq\LiveEditorEvaluationHelperE1832742145.m', 48)" style="font-weight:bold">LiveEditorEvaluationHelperE1832742145</a> (<a href="matlab: opentoline('C:\Users\snb10\AppData\Local\Temp\Editor_eaxmq\LiveEditorEvaluationHelperE1832742145.m',48,0)">line 48</a>)] 
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbquit all; end
+Figure 10001: DEMO case: basic function call
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+Error using <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('assert')" style="font-weight:bold">assert</a>
+Assertion failed.
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_5dofStateEquation', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_5dofStateEquation.m', 59)" style="font-weight:bold">script_test_fcn_VD_5dofStateEquation</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_5dofStateEquation.m',59,0)">line 59</a>)
+assert(size(dydt,1)==1); 
+
+dydt
+
+dydt =
+
+    17
+    10
+    17
+    19
+    23
+
+dydt'
+
+ans =
+
+    17    10    17    19    23
+
+Figure 10001: DEMO case: basic function call
+if system_dependent('IsDebugMode')==1, dbcont; end
+clc
+Figure 10001: DEMO case: basic function call
+script_test_fcn_VD_5dofStateEquation
+Figure: 1XXXXXX: DEMO cases
+Figure 10001: DEMO case: basic function call
+Figure: 2XXXXXX: TEST mode cases
+Figure 20001: TEST case: This one returns nothing since there is no portion of the path in criteria
+Figure: 8XXXXXX: FAST mode cases
+script_test_fcn_VD_5dofStateEquation
+Figure: 1XXXXXX: DEMO cases
+Figure 10001: DEMO case: basic function call
+Figure: 2XXXXXX: TEST mode cases
+Figure 20001: TEST case: This one returns nothing since there is no portion of the path in criteria
+Figure: 8XXXXXX: FAST mode cases
+script_test_fcn_VD_5dofStateEquation
+Figure: 1XXXXXX: DEMO cases
+Figure 10001: DEMO case: basic function call
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+MATLABFLAG_VD_WARN_CHECKINPUTSTOFUNCTIONS
+
+MATLABFLAG_VD_WARN_CHECKINPUTSTOFUNCTIONS =
+
+    '1'
+
+if system_dependent('IsDebugMode')==1, dbquit all; end
+script_test_fcn_VD_5dofStateEquation
+Figure: 1XXXXXX: DEMO cases
+Figure 10001: DEMO case: basic function call
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+[Warning: fcn_VD_checkInputsToFunctions is being deprecated. Use fcn_DebugTools_checkInputsToFunctions instead.] 
+[> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_checkInputsToFunctions', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Functions\DEPRECATED\fcn_VD_checkInputsToFunctions.m', 15)" style="font-weight:bold">fcn_VD_checkInputsToFunctions</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Functions\DEPRECATED\fcn_VD_checkInputsToFunctions.m',15,0)">line 15</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_5dofStateEquation', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\fcn_VD_5dofStateEquation.m', 122)" style="font-weight:bold">fcn_VD_5dofStateEquation</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\fcn_VD_5dofStateEquation.m',122,0)">line 122</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_5dofStateEquation', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_5dofStateEquation.m', 50)" style="font-weight:bold">script_test_fcn_VD_5dofStateEquation</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_5dofStateEquation.m',50,0)">line 50</a>)] 
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbcont; end
+Figure: 2XXXXXX: TEST mode cases
+Figure 20001: TEST case: This one returns nothing since there is no portion of the path in criteria
+Figure: 8XXXXXX: FAST mode cases
+script_test_fcn_VD_5dofStateEquation
+Figure: 1XXXXXX: DEMO cases
+Figure 10001: DEMO case: basic function call
+Figure: 2XXXXXX: TEST mode cases
+Figure 20001: TEST case: This one returns nothing since there is no portion of the path in criteria
+Figure: 8XXXXXX: FAST mode cases
+uiopen('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_5dofStateEquation.m',1)
+uiopen('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\fcn_VD_5dofStateEquation.m',1)
+uiopen('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m',1)
+uiopen('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\fcn_VD_st5dofModel.m',1)
+script_test_fcn_VD_5dofStateEquation
+Figure: 1XXXXXX: DEMO cases
+Figure 10001: DEMO case: basic function call
+Figure: 2XXXXXX: TEST mode cases
+Figure 20001: TEST case: This one returns nothing since there is no portion of the path in criteria
+Figure: 8XXXXXX: FAST mode cases
+Figure: 80001: FAST mode, empty figNum
+Figure: 80002: FAST mode, figNum=-1
+Figure: 80003: FAST mode comparisons

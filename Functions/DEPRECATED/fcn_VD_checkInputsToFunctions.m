@@ -1,4 +1,22 @@
 function fcn_VD_checkInputsToFunctions(variable,variable_type_string)
+
+MATLABFLAG_VD_WARN_CHECKINPUTSTOFUNCTIONS = getenv("MATLABFLAG_VD_WARN_CHECKINPUTSTOFUNCTIONS");
+flagShowWarning = 0;
+if isempty(MATLABFLAG_VD_WARN_CHECKINPUTSTOFUNCTIONS) 
+   flagShowWarning = 1;
+else
+    if strcmp('1',MATLABFLAG_VD_WARN_CHECKINPUTSTOFUNCTIONS)
+        flagShowWarning = 1;
+    end
+end
+
+if 1==flagShowWarning
+    warning('on','backtrace');
+    warning(['fcn_VD_checkInputsToFunctions is being deprecated. ' ...
+        'Use fcn_DebugTools_checkInputsToFunctions instead.']);
+    setenv('MATLABFLAG_VD_WARN_CHECKINPUTSTOFUNCTIONS','0');
+end
+
 %% fcn_VD_checkInputsToFunctions
 %   Checks the variable types commonly used in the Vehicle Dynamics (VD) 
 %   library to ensure that they are correctly formed. This function is 
