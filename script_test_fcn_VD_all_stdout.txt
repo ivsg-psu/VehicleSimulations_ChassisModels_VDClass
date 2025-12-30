@@ -273,3 +273,371 @@ Figure: 8XXXXXX: FAST mode cases
 Figure: 80001: FAST mode, empty figNum
 Figure: 80002: FAST mode, figNum=-1
 Figure: 80003: FAST mode comparisons
+script_test_fcn_VD_st5dofModel
+[Warning: fcn_VD_checkInputsToFunctions is being deprecated. Use fcn_DebugTools_checkInputsToFunctions instead.] 
+[> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_checkInputsToFunctions', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Functions\DEPRECATED\fcn_VD_checkInputsToFunctions.m', 15)" style="font-weight:bold">fcn_VD_checkInputsToFunctions</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Functions\DEPRECATED\fcn_VD_checkInputsToFunctions.m',15,0)">line 15</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_stSlipAngle', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\fcn_VD_stSlipAngle.m', 54)" style="font-weight:bold">fcn_VD_stSlipAngle</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\fcn_VD_stSlipAngle.m',54,0)">line 54</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_st5dofModel', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m', 107)" style="font-weight:bold">script_test_fcn_VD_st5dofModel</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m',107,0)">line 107</a>)] 
+{Error using <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_st5dofModel', 'fcn_VD_st5dofModel.m', 144)" style="font-weight:bold">fcn_VD_st5dofModel</a> (<a href="matlab: opentoline('fcn_VD_st5dofModel.m',144,0)">line 144</a>)
+The y input must have 1 rows or more
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_st5dofModel>@(t,y)fcn_VD_st5dofModel(t,y,steering_amplitude,Period,wheel_torque,vehicle,road_properties,friction_coefficient,type_of_transfer)', 'script_test_fcn_VD_st5dofModel.m', 115)" style="font-weight:bold">script_test_fcn_VD_st5dofModel>@(t,y)fcn_VD_st5dofModel(t,y,steering_amplitude,Period,wheel_torque,vehicle,road_properties,friction_coefficient,type_of_transfer)</a> (<a href="matlab: opentoline('script_test_fcn_VD_st5dofModel.m',115,0)">line 115</a>)
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_RungeKutta', 'fcn_VD_RungeKutta.m', 75)" style="font-weight:bold">fcn_VD_RungeKutta</a> (<a href="matlab: opentoline('fcn_VD_RungeKutta.m',75,0)">line 75</a>)
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_st5dofModel', 'script_test_fcn_VD_st5dofModel.m', 115)" style="font-weight:bold">script_test_fcn_VD_st5dofModel</a> (<a href="matlab: opentoline('script_test_fcn_VD_st5dofModel.m',115,0)">line 115</a>)
+} 
+opentoline('fcn_VD_st5dofModel.m',144,0)
+script_test_fcn_VD_st5dofModel
+y
+
+y =
+
+   25.0000
+         0
+         0
+   78.1250
+   78.1250
+         0
+         0
+         0
+
+whos y
+  Name      Size            Bytes  Class     Attributes
+
+  y         8x1                64  double              
+
+if system_dependent('IsDebugMode')==1, dbquit all; end
+script_test_fcn_VD_st5dofModel
+if system_dependent('IsDebugMode')==1, dbstep; end
+t
+
+t =
+
+     0
+
+        fcn_DebugTools_checkInputsToFunctions(t, 'positive_1column_of_numbers',[1 1]);
+        fcn_DebugTools_checkInputsToFunctions(y, '1column_of_numbers',[8 8]);
+steering_amplitude
+
+steering_amplitude =
+
+    0.0349
+
+        % Check the steering_amplitude input to be sure it has 1 column and 1 row, positive
+        fcn_DebugTools_checkInputsToFunctions(steering_amplitude, '1column_of_numbers',[1 1]);
+
+        % Check the Period input to be sure it has 1 column and 1 row, positive
+        fcn_DebugTools_checkInputsToFunctions(Period, 'positive_1column_of_numbers',[1 1]);
+if system_dependent('IsDebugMode')==1, dbquit all; end
+script_test_fcn_VD_st5dofModel
+{Error using <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_st5dofModel', 'fcn_VD_st5dofModel.m', 153)" style="font-weight:bold">fcn_VD_st5dofModel</a> (<a href="matlab: opentoline('fcn_VD_st5dofModel.m',153,0)">line 153</a>)
+The wheel_torque input must have 1 rows or more
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_st5dofModel>@(t,y)fcn_VD_st5dofModel(t,y,steering_amplitude,Period,wheel_torque,vehicle,road_properties,friction_coefficient,type_of_transfer)', 'script_test_fcn_VD_st5dofModel.m', 115)" style="font-weight:bold">script_test_fcn_VD_st5dofModel>@(t,y)fcn_VD_st5dofModel(t,y,steering_amplitude,Period,wheel_torque,vehicle,road_properties,friction_coefficient,type_of_transfer)</a> (<a href="matlab: opentoline('script_test_fcn_VD_st5dofModel.m',115,0)">line 115</a>)
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_RungeKutta', 'fcn_VD_RungeKutta.m', 75)" style="font-weight:bold">fcn_VD_RungeKutta</a> (<a href="matlab: opentoline('fcn_VD_RungeKutta.m',75,0)">line 75</a>)
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_st5dofModel', 'script_test_fcn_VD_st5dofModel.m', 115)" style="font-weight:bold">script_test_fcn_VD_st5dofModel</a> (<a href="matlab: opentoline('script_test_fcn_VD_st5dofModel.m',115,0)">line 115</a>)
+} 
+opentoline('fcn_VD_st5dofModel.m',153,0)
+script_test_fcn_VD_st5dofModel
+wheel_torque
+
+wheel_torque =
+
+     0
+     5
+
+        % Check the wheel_torque input to be sure it has 1 column, 2 rows
+        fcn_DebugTools_checkInputsToFunctions(wheel_torque, '1column_of_numbers',[2 2]);
+
+clc
+vehicle
+
+vehicle = 
+
+  <a href="matlab:helpPopup('struct')" style="font-weight:bold">struct</a> with fields:
+
+       m: 1600
+     Izz: 2500
+      Iw: 1.2000
+      Re: 0.3200
+       a: 1.3000
+       L: 2.6000
+       b: 1.3000
+       d: 1.5000
+    h_cg: 0.4200
+      Ca: [2×1 double]
+      Cx: [2×1 double]
+
+        template_structure = struct('m',{},'Izz',{},'Iw',{},'Re',{},'a',{},'L',{},'b',{},'d',{},'h_cg',{},'Ca',{},'Cx',{});
+        fcn_DebugTools_checkInputsToFunctions(vehicle, 'likestructure',template_structure);
+road_properties
+
+road_properties = 
+
+  <a href="matlab:helpPopup('struct')" style="font-weight:bold">struct</a> with fields:
+
+         grade: 0
+    bank_angle: 0
+
+        template_structure2 = struct('grade',{},'bank_angle',{});
+        fcn_DebugTools_checkInputsToFunctions(vehicle, 'likestructure',template_structure2);
+The user-defined template has fields of:
+	 bank_angle
+	 grade
+The vehicle input has fields of:
+	 Ca
+	 Cx
+	 Iw
+	 Izz
+	 L
+	 Re
+	 a
+	 b
+	 d
+	 h_cg
+	 m
+{Error using <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_st5dofModel', 'fcn_VD_st5dofModel.m', 153)" style="font-weight:bold">fcn_VD_st5dofModel</a> (<a href="matlab: opentoline('fcn_VD_st5dofModel.m',153,0)">line 153</a>)
+The vehicle input must be a structure type. All the fields must be match the reference structure.
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_st5dofModel>@(t,y)fcn_VD_st5dofModel(t,y,steering_amplitude,Period,wheel_torque,vehicle,road_properties,friction_coefficient,type_of_transfer)', 'script_test_fcn_VD_st5dofModel.m', 115)" style="font-weight:bold">script_test_fcn_VD_st5dofModel>@(t,y)fcn_VD_st5dofModel(t,y,steering_amplitude,Period,wheel_torque,vehicle,road_properties,friction_coefficient,type_of_transfer)</a> (<a href="matlab: opentoline('script_test_fcn_VD_st5dofModel.m',115,0)">line 115</a>)
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_RungeKutta', 'fcn_VD_RungeKutta.m', 75)" style="font-weight:bold">fcn_VD_RungeKutta</a> (<a href="matlab: opentoline('fcn_VD_RungeKutta.m',75,0)">line 75</a>)
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_st5dofModel', 'script_test_fcn_VD_st5dofModel.m', 115)" style="font-weight:bold">script_test_fcn_VD_st5dofModel</a> (<a href="matlab: opentoline('script_test_fcn_VD_st5dofModel.m',115,0)">line 115</a>)
+} 
+        % Check the vehicle input to be sure it is right structure
+        template_structure2 = struct('grade',{},'bank_angle',{});
+        fcn_DebugTools_checkInputsToFunctions(road_properties, 'likestructure',template_structure2);
+type_of_transfer
+
+type_of_transfer =
+
+    'longitudinal'
+
+friction_coefficient
+
+friction_coefficient =
+
+    0.9000
+    0.9000
+
+     % Check the t input to be sure it has 1 column and 1 row, positive
+        fcn_DebugTools_checkInputsToFunctions(t, 'positive_1column_of_numbers',[1 1]);
+
+        % Check the y input to be sure it has 1 column, 8 rows
+        fcn_DebugTools_checkInputsToFunctions(y, '1column_of_numbers',[8 8]);
+
+        % Check the steering_amplitude input to be sure it has 1 col, 1 row
+        fcn_DebugTools_checkInputsToFunctions(steering_amplitude, '1column_of_numbers',[1 1]);
+
+        % Check the Period input to be sure it has 1 col, 1 row, positive
+        fcn_DebugTools_checkInputsToFunctions(Period, 'positive_1column_of_numbers',[1 1]);
+
+        % Check the wheel_torque input to be sure it has 1 column, 2 rows
+        fcn_DebugTools_checkInputsToFunctions(wheel_torque, '1column_of_numbers',[2 2]);
+
+        % Check the vehicle input to be sure it is right structure
+        template_structure = struct('m',{},'Izz',{},'Iw',{},'Re',{},'a',{},'L',{},'b',{},'d',{},'h_cg',{},'Ca',{},'Cx',{});
+        fcn_DebugTools_checkInputsToFunctions(vehicle, 'likestructure',template_structure);
+
+        % Check the vehicle input to be sure it is right structure
+        template_structure2 = struct('grade',{},'bank_angle',{});
+        fcn_DebugTools_checkInputsToFunctions(road_properties, 'likestructure',template_structure2);
+        
+        % Check the friction_coefficient input to be sure it has 1 column, 2 rows
+        fcn_DebugTools_checkInputsToFunctions(friction_coefficient, '1column_of_numbers',[2 2]);
+
+        % Check the type_of_transfer input to be sure its either char or
+        % string
+        fcn_DebugTools_checkInputsToFunctions(type_of_transfer, '_of_char_strings',[2 2]);
+{Error using <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_st5dofModel', 'fcn_VD_st5dofModel.m', 153)" style="font-weight:bold">fcn_VD_st5dofModel</a> (<a href="matlab: opentoline('fcn_VD_st5dofModel.m',153,0)">line 153</a>)
+The type_of_transfer input must have 2 rows or more
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_st5dofModel>@(t,y)fcn_VD_st5dofModel(t,y,steering_amplitude,Period,wheel_torque,vehicle,road_properties,friction_coefficient,type_of_transfer)', 'script_test_fcn_VD_st5dofModel.m', 115)" style="font-weight:bold">script_test_fcn_VD_st5dofModel>@(t,y)fcn_VD_st5dofModel(t,y,steering_amplitude,Period,wheel_torque,vehicle,road_properties,friction_coefficient,type_of_transfer)</a> (<a href="matlab: opentoline('script_test_fcn_VD_st5dofModel.m',115,0)">line 115</a>)
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_RungeKutta', 'fcn_VD_RungeKutta.m', 75)" style="font-weight:bold">fcn_VD_RungeKutta</a> (<a href="matlab: opentoline('fcn_VD_RungeKutta.m',75,0)">line 75</a>)
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_st5dofModel', 'script_test_fcn_VD_st5dofModel.m', 115)" style="font-weight:bold">script_test_fcn_VD_st5dofModel</a> (<a href="matlab: opentoline('script_test_fcn_VD_st5dofModel.m',115,0)">line 115</a>)
+} 
+type_of_transfer
+
+type_of_transfer =
+
+    'longitudinal'
+
+        % Check the type_of_transfer input to be sure its either char or
+        % string
+        fcn_DebugTools_checkInputsToFunctions(type_of_transfer, '_of_char_strings');
+if system_dependent('IsDebugMode')==1, dbquit all; end
+script_test_fcn_VD_st5dofModel
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbquit all; end
+script_test_fcn_VD_st5dofModel
+{Index in position 2 exceeds array bounds. Index must not exceed 2.
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_plotTimeSlipAngle', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeSlipAngle.m', 64)" style="font-weight:bold">fcn_VD_plotTimeSlipAngle</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeSlipAngle.m',64,0)">line 64</a>)
+plot(time,slip_angle(:,3),'m--','Linewidth',2.4)
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_st5dofModel', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m', 153)" style="font-weight:bold">script_test_fcn_VD_st5dofModel</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m',153,0)">line 153</a>)
+fcn_VD_plotTimeSlipAngle(matlab_time,matlab_alpha);
+} 
+opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m',153,0)
+opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m',153,0)
+script_test_fcn_VD_st5dofModel
+[Warning: fcn_VD_checkInputsToFunctions is being deprecated. Use fcn_DebugTools_checkInputsToFunctions instead.] 
+[> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_checkInputsToFunctions', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Functions\DEPRECATED\fcn_VD_checkInputsToFunctions.m', 15)" style="font-weight:bold">fcn_VD_checkInputsToFunctions</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Functions\DEPRECATED\fcn_VD_checkInputsToFunctions.m',15,0)">line 15</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_stSlipAngle', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\fcn_VD_stSlipAngle.m', 54)" style="font-weight:bold">fcn_VD_stSlipAngle</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\fcn_VD_stSlipAngle.m',54,0)">line 54</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_st5dofModel', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m', 109)" style="font-weight:bold">script_test_fcn_VD_st5dofModel</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m',109,0)">line 109</a>)] 
+{Index in position 2 exceeds array bounds. Index must not exceed 2.
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_plotTimeSlipAngle', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeSlipAngle.m', 64)" style="font-weight:bold">fcn_VD_plotTimeSlipAngle</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeSlipAngle.m',64,0)">line 64</a>)
+plot(time,slip_angle(:,3),'m--','Linewidth',2.4)
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_st5dofModel', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m', 155)" style="font-weight:bold">script_test_fcn_VD_st5dofModel</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m',155,0)">line 155</a>)
+fcn_VD_plotTimeSlipAngle(matlab_time,matlab_alpha);
+} 
+opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m',155,0)
+whos matlab_alpha
+  Name                Size            Bytes  Class     Attributes
+
+  matlab_alpha      451x2              7216  double              
+
+whos matlab_time
+  Name               Size            Bytes  Class     Attributes
+
+  matlab_time      451x1              3608  double              
+
+opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeSlipAngle.m',64,0)
+temp = plot(1:10)
+
+temp = 
+
+  <a href="matlab:helpPopup('matlab.graphics.chart.primitive.Line')" style="font-weight:bold">Line</a> with properties:
+
+              Color: [0.9290 0.6940 0.1250]
+          LineStyle: '-'
+          LineWidth: 0.5000
+             Marker: 'none'
+         MarkerSize: 6
+    MarkerFaceColor: 'none'
+              XData: [1 2 3 4 5 6 7 8 9 10]
+              YData: [1 2 3 4 5 6 7 8 9 10]
+
+  Show <a href="matlab:if exist('temp', 'var'), matlab.graphics.internal.getForDisplay('temp', temp, 'matlab.graphics.chart.primitive.Line'), else, matlab.graphics.internal.getForDisplay('temp'), end">all properties</a>
+
+if exist('temp', 'var'), matlab.graphics.internal.getForDisplay('temp', temp, 'matlab.graphics.chart.primitive.Line'), else, matlab.graphics.internal.getForDisplay('temp'), end
+      AffectAutoLimits: on
+    AlignVertexCenters: off
+            Annotation: [1×1 matlab.graphics.eventdata.Annotation]
+          BeingDeleted: off
+            BusyAction: 'queue'
+         ButtonDownFcn: ''
+              Children: [0×0 GraphicsPlaceholder]
+              Clipping: on
+                 Color: [0.9290 0.6940 0.1250]
+             ColorMode: 'auto'
+           ContextMenu: [0×0 GraphicsPlaceholder]
+             CreateFcn: ''
+       DataTipTemplate: [1×1 matlab.graphics.datatip.DataTipTemplate]
+             DeleteFcn: ''
+           DisplayName: ''
+      HandleVisibility: 'on'
+               HitTest: on
+         Interruptible: on
+              LineJoin: 'round'
+             LineStyle: '-'
+         LineStyleMode: 'auto'
+             LineWidth: 0.5000
+                Marker: 'none'
+       MarkerEdgeColor: 'auto'
+       MarkerFaceColor: 'none'
+         MarkerIndices: [1 2 3 4 5 6 7 8 9 10]
+            MarkerMode: 'auto'
+            MarkerSize: 6
+                Parent: [1×1 Axes]
+         PickableParts: 'visible'
+              Selected: off
+    SelectionHighlight: on
+           SeriesIndex: 3
+           SourceTable: [0×0 table]
+                   Tag: ''
+                  Type: 'line'
+              UserData: []
+               Visible: on
+                 XData: [1 2 3 4 5 6 7 8 9 10]
+             XDataMode: 'auto'
+           XDataSource: ''
+             XVariable: ''
+                 YData: [1 2 3 4 5 6 7 8 9 10]
+             YDataMode: 'manual'
+           YDataSource: ''
+             YVariable: ''
+                 ZData: [1×0 double]
+             ZDataMode: 'auto'
+           ZDataSource: ''
+             ZVariable: ''
+
+fcn_VD_plotTimeSlipAngle(matlab_time,matlab_alpha);
+<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeSlipAngle.m',67,1)">67  </a>for ith_tire = 1:length(slip_angle(1,:))
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+{Error using <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('plot')" style="font-weight:bold">plot</a>
+Invalid data argument.
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_plotTimeSlipAngle', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeSlipAngle.m', 68)" style="font-weight:bold">fcn_VD_plotTimeSlipAngle</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeSlipAngle.m',68,0)">line 68</a>)
+    plot(time,slip_angle(:,1),colorStrings(ith_tire),'Linewidth',lineWidths(ith_tire), 'DisplayName', labelStrings{ith_tire});
+} 
+fcn_VD_plotTimeSlipAngle(matlab_time,matlab_alpha);
+<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeSlipAngle.m',67,1)">67  </a>for ith_tire = 1:length(slip_angle(1,:))
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbquit all; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbquit; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+Index in position 2 exceeds array bounds. Index must not exceed 2.
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_plotTimeWheelSlip', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeWheelSlip.m', 64)" style="font-weight:bold">fcn_VD_plotTimeWheelSlip</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeWheelSlip.m',64,0)">line 64</a>)
+plot(time,wheel_slip(:,3),'m--','Linewidth',2.4)
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_st5dofModel', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m', 156)" style="font-weight:bold">script_test_fcn_VD_st5dofModel</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m',156,0)">line 156</a>)
+fcn_VD_plotTimeWheelSlip(matlab_time,matlab_kappa);
+
+fcn_VD_plotTimeLongitudinalVelocity(matlab_time,matlab_States(:,1));
+fcn_VD_plotTimeLateralVelocity(matlab_time,matlab_States(:,2));
+fcn_VD_plotTimeYawRate(matlab_time,matlab_States(:,3));
+fcn_VD_plotTimeWheelSpeed(matlab_time,matlab_States(:,(4:5)));
+{Index in position 2 exceeds array bounds. Index must not exceed 2.
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_plotTimeWheelSpeed', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeWheelSpeed.m', 64)" style="font-weight:bold">fcn_VD_plotTimeWheelSpeed</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeWheelSpeed.m',64,0)">line 64</a>)
+plot(time,wheel_speed(:,3),'m--','Linewidth',2.4)
+} 
