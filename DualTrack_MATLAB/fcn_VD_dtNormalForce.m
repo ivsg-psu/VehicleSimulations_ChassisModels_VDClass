@@ -1,5 +1,5 @@
 function normal_force = fcn_VD_dtNormalForce(acceleration,vehicle,...
-                        road_properties,type_of_transfer)
+    road_properties,type_of_transfer)
 %% fcn_VD_dtNormalForce
 %   This function calculates normal force on all the four wheels.
 %   It uses double-track vehicle model.
@@ -40,14 +40,14 @@ end
 
 %% Check input arguments
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   _____                   _       
-%  |_   _|                 | |      
-%    | |  _ __  _ __  _   _| |_ ___ 
+%   _____                   _
+%  |_   _|                 | |
+%    | |  _ __  _ __  _   _| |_ ___
 %    | | | '_ \| '_ \| | | | __/ __|
 %   _| |_| | | | |_) | |_| | |_\__ \
 %  |_____|_| |_| .__/ \__,_|\__|___/
-%              | |                  
-%              |_| 
+%              | |
+%              |_|
 % See: http://patorjk.com/software/taag/#p=display&f=Big&t=Inputs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if flag_check_inputs
@@ -55,7 +55,7 @@ if flag_check_inputs
     if 4~=nargin
         error('Incorrect number of input arguments.')
     end
-    
+
     % Check the inputs
     fcn_VD_checkInputsToFunctions(acceleration,'vector2');
     fcn_VD_checkInputsToFunctions(type_of_transfer,'string');
@@ -63,13 +63,13 @@ end
 
 %% Calculate Normal Forces
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   __  __       _       
-%  |  \/  |     (_)      
-%  | \  / | __ _ _ _ __  
-%  | |\/| |/ _` | | '_ \ 
+%   __  __       _
+%  |  \/  |     (_)
+%  | \  / | __ _ _ _ __
+%  | |\/| |/ _` | | '_ \
 %  | |  | | (_| | | | | |
 %  |_|  |_|\__,_|_|_| |_|
-% 
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 g = 9.81; % [m/s^2]
 Fz_front = 0.5*vehicle.m*g*cos(road_properties.bank_angle)*cos(road_properties.grade)*...
@@ -91,14 +91,14 @@ end
 
 %% Any debugging?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   _____       _                 
-%  |  __ \     | |                
-%  | |  | | ___| |__  _   _  __ _ 
+%   _____       _
+%  |  __ \     | |
+%  | |  | | ___| |__  _   _  __ _
 %  | |  | |/ _ \ '_ \| | | |/ _` |
 %  | |__| |  __/ |_) | |_| | (_| |
 %  |_____/ \___|_.__/ \__,_|\__, |
 %                            __/ |
-%                           |___/ 
+%                           |___/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if flag_do_debug
     fprintf(1, 'ENDING function: %s, in file: %s\n\n', st(1).name, st(1).file);

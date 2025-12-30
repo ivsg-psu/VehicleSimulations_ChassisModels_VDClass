@@ -1,29 +1,34 @@
 %% script_test_mdl_VD_st5dofModel.m
 % This scripts tests the simulink model 'mdl_VD_st5dofModel'
 % It uses bicycle/single-track vehicle model with brush tire model.
+
+% REVISION HISTORY:
 %
-% Author: Satya Prasad on 2021/07/26
-% Questions or comments? szm888@psu.edu
+% 2021_07_26 by Satya Prasad, szm888@psu.edu
+% - First write of function
+%
+% 2025_12_29 by Sean Brennan, sbrennan@psu.edu
+% - Updated header formatting and comments
+% - Updated tab stops
+
+
+% TO-DO:
+% - 2025_12_29 by Sean Brennan, sbrennan@psu.edu
+%   % (add items here)
 
 %% Prep the workspace
 close all % close all the plots
-clear all %#ok<CLALL>
-clc
-
-%% Add path
-addpath('../VD_Utilities')
-addpath('../VD_Utilities/Bicycle')
 
 %% Inputs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   _____                   _       
-%  |_   _|                 | |      
-%    | |  _ __  _ __  _   _| |_ ___ 
+%   _____                   _
+%  |_   _|                 | |
+%    | |  _ __  _ __  _   _| |_ ___
 %    | | | '_ \| '_ \| | | | __/ __|
 %   _| |_| | | | |_) | |_| | |_\__ \
 %  |_____|_| |_| .__/ \__,_|\__|___/
-%              | |                  
-%              |_| 
+%              | |
+%              |_|
 % See: http://patorjk.com/software/taag/#p=display&f=Big&t=Inputs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Define vehicle properties
@@ -67,27 +72,27 @@ deltaT = 0.01; % simulation step size
 
 %% Main code
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   __  __       _       
-%  |  \/  |     (_)      
-%  | \  / | __ _ _ _ __  
-%  | |\/| |/ _` | | '_ \ 
+%   __  __       _
+%  |  \/  |     (_)
+%  | \  / | __ _ _ _ __
+%  | |\/| |/ _` | | '_ \
 %  | |  | | (_| | | | | |
 %  |_|  |_|\__,_|_|_| |_|
-% 
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Run the simulation in SIMULINK
 sim('mdl_VD_st5dofModel.slx', TotalTime);
 
 %% Plot the results
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   _____  _       _   _   _             
-%  |  __ \| |     | | | | (_)            
-%  | |__) | | ___ | |_| |_ _ _ __   __ _ 
+%   _____  _       _   _   _
+%  |  __ \| |     | | | | (_)
+%  | |__) | | ___ | |_| |_ _ _ __   __ _
 %  |  ___/| |/ _ \| __| __| | '_ \ / _` |
 %  | |    | | (_) | |_| |_| | | | | (_| |
 %  |_|    |_|\___/ \__|\__|_|_| |_|\__, |
 %                                   __/ |
-%                                  |___/ 
+%                                  |___/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 fcn_VD_plotTimeSteeringAngle(time, delta);
 fcn_VD_plotTimeWheelTorque(time, out_wheel_torque);

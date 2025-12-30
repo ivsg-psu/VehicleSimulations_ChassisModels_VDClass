@@ -1,7 +1,7 @@
 function wheel_slip = fcn_VD_dtWheelSlip(U,V,r,wheel_angular_velocity,...
-                        steering_angle,vehicle)
+    steering_angle,vehicle)
 %% fcn_VD_longitudinalSlipDualTrack
-%   This function computes Wheel Slip/Longitudinal Slip for front left, 
+%   This function computes Wheel Slip/Longitudinal Slip for front left,
 %   front right, rear left and rear right wheels.
 %   It uses double-track vehicle model.
 %
@@ -42,14 +42,14 @@ end
 
 %% Check input arguments
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   _____                   _       
-%  |_   _|                 | |      
-%    | |  _ __  _ __  _   _| |_ ___ 
+%   _____                   _
+%  |_   _|                 | |
+%    | |  _ __  _ __  _   _| |_ ___
 %    | | | '_ \| '_ \| | | | __/ __|
 %   _| |_| | | | |_) | |_| | |_\__ \
 %  |_____|_| |_| .__/ \__,_|\__|___/
-%              | |                  
-%              |_| 
+%              | |
+%              |_|
 % See: http://patorjk.com/software/taag/#p=display&f=Big&t=Inputs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if flag_check_inputs
@@ -57,7 +57,7 @@ if flag_check_inputs
     if 6~=nargin
         error('Incorrect number of input arguments.')
     end
-    
+
     % Check the inputs
     fcn_VD_checkInputsToFunctions(U,'non negative');
     fcn_VD_checkInputsToFunctions(V,'number');
@@ -68,13 +68,13 @@ end
 
 %% Calculate Longitudinal Slip
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   __  __       _       
-%  |  \/  |     (_)      
-%  | \  / | __ _ _ _ __  
-%  | |\/| |/ _` | | '_ \ 
+%   __  __       _
+%  |  \/  |     (_)
+%  | \  / | __ _ _ _ __
+%  | |\/| |/ _` | | '_ \
 %  | |  | | (_| | | | | |
 %  |_|  |_|\__,_|_|_| |_|
-% 
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 wheel_slip = nan(4,1); % Initialize a variable
 
@@ -89,8 +89,8 @@ wheel_slip(0>=wheel_longitudinal_velocity) = 0;
 % is pointed
 target_indices = 0<wheel_longitudinal_velocity;
 wheel_slip(target_indices) = (vehicle.Re.*wheel_angular_velocity(target_indices)-...
-                              wheel_longitudinal_velocity(target_indices))./...
-                              wheel_longitudinal_velocity(target_indices);
+    wheel_longitudinal_velocity(target_indices))./...
+    wheel_longitudinal_velocity(target_indices);
 
 % Saturation
 wheel_slip(1<wheel_slip)  = 1; % maximum wheel slip
@@ -98,14 +98,14 @@ wheel_slip(-1>wheel_slip) = -1; % minimum wheel slip
 
 %% Any debugging?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   _____       _                 
-%  |  __ \     | |                
-%  | |  | | ___| |__  _   _  __ _ 
+%   _____       _
+%  |  __ \     | |
+%  | |  | | ___| |__  _   _  __ _
 %  | |  | |/ _ \ '_ \| | | |/ _` |
 %  | |__| |  __/ |_) | |_| | (_| |
 %  |_____/ \___|_.__/ \__,_|\__, |
 %                            __/ |
-%                           |___/ 
+%                           |___/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if flag_do_debug
     fprintf(1, 'ENDING function: %s, in file: %s\n\n', st(1).name, st(1).file);

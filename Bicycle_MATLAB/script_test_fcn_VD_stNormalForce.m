@@ -1,17 +1,23 @@
 %% script_test_fcn_VD_stNormalForce.m
 % This script tests MATLAB function 'fcn_VD_stNormalForce'
-%
-% Author: Satya Prasad on 2021/08/13
-% Questions or comments? szm888@psu.edu
+
+% REVISION HISTORY:
+% 
+% 2021_08_13 by Satya Prasad, szm888@psu.edu
+% - First write of function
+% 
+% 2025_12_29 by Sean Brennan, sbrennan@psu.edu
+% - Updated header formatting and comments
+% - Updated tab stops
+
+
+% TO-DO:
+% - 2025_12_29 by Sean Brennan, sbrennan@psu.edu
+%   % (add items here)
 
 %% Prepare the workspace
 close all; % close all the plots
-clear all %#ok<CLALL>
-clc
 
-%% Add path
-addpath('../VD_Utilities')
-addpath('../VD_Utilities/Bicycle')
 
 %% Inputs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,30 +1,34 @@
-%% script_compare_dtWheelSlip_MATvsSIM.m
-% This script compares MATLAB function 'fcn_VD_dtWheelSlip' with Simulink 
-% model 'mdl_VD_dtWheelSlip.slx'
+%% script_compare_dtSlipAngle_MATvsSIM.m
+% This script compares MATLAB function 'fcn_VD_dtSlipAngle' with Simulink
+% model 'mdl_VD_dtSlipAngle.slx'
+
+% REVISION HISTORY:
 %
-% Author: Satya Prasad on 2021/07/06
-% Questions or comments? szm888@psu.edu
+% 2021_07_06 by Satya Prasad, szm888@psu.edu
+% - First write of function
+%
+% 2025_12_29 by Sean Brennan, sbrennan@psu.edu
+% - Updated header formatting and comments
+% - Updated tab stops
+
+
+% TO-DO:
+% - 2025_12_29 by Sean Brennan, sbrennan@psu.edu
+%   % (add items here)
 
 %% Prepare the workspace
 close all; % close all the plots
-clear all %#ok<CLALL>
-clc
-
-%% Add path
-addpath('../VD_Utilities')
-addpath('../VD_Utilities/DualTrack')
-addpath('../DualTrack_Simulink')
 
 %% Inputs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   _____                   _       
-%  |_   _|                 | |      
-%    | |  _ __  _ __  _   _| |_ ___ 
+%   _____                   _
+%  |_   _|                 | |
+%    | |  _ __  _ __  _   _| |_ ___
 %    | | | '_ \| '_ \| | | | __/ __|
 %   _| |_| | | | |_) | |_| | |_\__ \
 %  |_____|_| |_| .__/ \__,_|\__|___/
-%              | |                  
-%              |_| 
+%              | |
+%              |_|
 % See: http://patorjk.com/software/taag/#p=display&f=Big&t=Inputs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Define vehicle properties
@@ -46,7 +50,6 @@ vehicle.Cx  = [65000; 65000; 65000; 65000]; % longitudinal stiffnesses
 U = 24.59; % longitudinal velocity [m/s]
 V = 0.0; % lateral velocity [m/s]
 r = 0.5; % yaw rate [rad/s]
-omega = 0.98*U/vehicle.Re*ones(1,4); % angular velocity of wheel [rad/s]
 steering_amplitude = 2*pi/180; % front steering angle [rad]
 Period = 3; % Units are seconds. A typical lane change is about 3 to 4 seconds based on experimental highway measurements
 
@@ -57,52 +60,52 @@ N_timeSteps = floor(TotalTime/deltaT)+1; % This is the number of time steps we s
 
 %% Main code
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   __  __       _       
-%  |  \/  |     (_)      
-%  | \  / | __ _ _ _ __  
-%  | |\/| |/ _` | | '_ \ 
+%   __  __       _
+%  |  \/  |     (_)
+%  | \  / | __ _ _ _ __
+%  | |\/| |/ _` | | '_ \
 %  | |  | | (_| | | | | |
 %  |_|  |_|\__,_|_|_| |_|
-% 
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Run the simulation in SIMULINK
-sim('mdl_VD_dtWheelSlip.slx', TotalTime);
+sim('mdl_VD_dtSlipAngle.slx', TotalTime);
 
 %% Run the simulation in MATLAB
 % variables to store outputs of Matlab simulation
-matlab_kappa = nan(N_timeSteps,4);
-matlab_time = nan(N_timeSteps,1);
+matlab_alpha = nan(N_timeSteps,4);
+matlab_time  = nan(N_timeSteps,1);
 
 counter = 1;
 for t = 0:deltaT:TotalTime
-matlab_time(counter) = t;
+    matlab_time(counter) = t;
 
-%% Inputs
-delta_f = (1-1*(0<t-Period))*steering_amplitude*sin((2*pi/Period)*t); % front steering angle
-steering_angle = [delta_f; delta_f; 0; 0];
+    %% Inputs
+    delta_f = (1-1*(0<t-Period))*steering_amplitude*sin((2*pi/Period)*t); % front steering angle
+    steering_angle = [delta_f; delta_f; 0; 0];
 
-Vx = abs(U*sin((0.5*pi/Period)*t + pi/2));
-Vy = V*sin((pi/Period)*t);
-yaw_rate = r*sin((2*pi/Period)*t);
+    Vx = abs(U*sin((0.5*pi/Period)*t + pi/2));
+    Vy = V*sin((pi/Period)*t);
+    yaw_rate = r*sin((2*pi/Period)*t);
 
-%% Slips
-% Wheel Slip/Longitudinal Slip
-wheel_slip = fcn_VD_dtWheelSlip(Vx,Vy,yaw_rate,omega',steering_angle,vehicle);
-matlab_kappa(counter,:) = wheel_slip';
+    %% Slips
+    % Slip Angle/Lateral Slip
+    slip_angle = fcn_VD_dtSlipAngle(Vx,Vy,yaw_rate,steering_angle,vehicle);
+    matlab_alpha(counter,:) = slip_angle';
 
-counter = counter+1;
+    counter = counter+1;
 end
 
 %% Plots to compare MATLAB simulation with Simulink simulation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   _____  _       _   _   _             
-%  |  __ \| |     | | | | (_)            
-%  | |__) | | ___ | |_| |_ _ _ __   __ _ 
+%   _____  _       _   _   _
+%  |  __ \| |     | | | | (_)
+%  | |__) | | ___ | |_| |_ _ _ __   __ _
 %  |  ___/| |/ _ \| __| __| | '_ \ / _` |
 %  | |    | | (_) | |_| |_| | | | | (_| |
 %  |_|    |_|\___/ \__|\__|_|_| |_|\__, |
 %                                   __/ |
-%                                  |___/ 
+%                                  |___/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-fcn_VD_plotCompareWheelSlip(time,kappa,'Simulink',...
-    matlab_time,matlab_kappa,'Matlab');
+fcn_VD_plotCompareSlipAngle(time,alpha,'Simulink',...
+    matlab_time,matlab_alpha,'Matlab');

@@ -33,7 +33,7 @@ function dydt = fcn_VD_dt7dofModelForController(t,y,steering_angle,wheel_torque,
 % Questions or comments? szm888@psu.edu
 %
 
-% flag_update: A global variable to decide the value of acceleration at a 
+% flag_update: A global variable to decide the value of acceleration at a
 % time-step 't'
 % global_acceleration: A global variable that stores accelerations at a
 % time-step 't'
@@ -50,14 +50,14 @@ end
 
 %% Check input arguments
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   _____                   _       
-%  |_   _|                 | |      
-%    | |  _ __  _ __  _   _| |_ ___ 
+%   _____                   _
+%  |_   _|                 | |
+%    | |  _ __  _ __  _   _| |_ ___
 %    | | | '_ \| '_ \| | | | __/ __|
 %   _| |_| | | | |_) | |_| | |_\__ \
 %  |_____|_| |_| .__/ \__,_|\__|___/
-%              | |                  
-%              |_| 
+%              | |
+%              |_|
 % See: http://patorjk.com/software/taag/#p=display&f=Big&t=Inputs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if flag_check_inputs
@@ -65,7 +65,7 @@ if flag_check_inputs
     if 8~=nargin
         error('Incorrect number of input arguments.')
     end
-    
+
     % Check the inputs
     fcn_VD_checkInputsToFunctions(t,'non negative');
     fcn_VD_checkInputsToFunctions(y,'vector10');
@@ -77,13 +77,13 @@ end
 
 %% Implement 7-DoF Vehicle Model
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   __  __       _       
-%  |  \/  |     (_)      
-%  | \  / | __ _ _ _ __  
-%  | |\/| |/ _` | | '_ \ 
+%   __  __       _
+%  |  \/  |     (_)
+%  | \  / | __ _ _ _ __
+%  | |\/| |/ _` | | '_ \
 %  | |  | | (_| | | | | |
 %  |_|  |_|\__,_|_|_| |_|
-% 
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 U = y(1); % longitudinal velocity [m/s]
 V = y(2); % lateral velocity [m/s]
@@ -129,14 +129,14 @@ dydt = [DvelDt; DposeDt];
 
 %% Any debugging?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   _____       _                 
-%  |  __ \     | |                
-%  | |  | | ___| |__  _   _  __ _ 
+%   _____       _
+%  |  __ \     | |
+%  | |  | | ___| |__  _   _  __ _
 %  | |  | |/ _ \ '_ \| | | |/ _` |
 %  | |__| |  __/ |_) | |_| | (_| |
 %  |_____/ \___|_.__/ \__,_|\__, |
 %                            __/ |
-%                           |___/ 
+%                           |___/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if flag_do_debug
     fprintf(1, 'ENDING function: %s, in file: %s\n\n', st(1).name, st(1).file);

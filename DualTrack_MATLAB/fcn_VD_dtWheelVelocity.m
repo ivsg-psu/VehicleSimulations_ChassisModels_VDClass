@@ -1,6 +1,6 @@
 function wheel_velocity = fcn_VD_dtWheelVelocity(U,V,r,vehicle)
 %% fcn_VD_dtWheelVelocity
-%   This function computes velocities for front left, front right, 
+%   This function computes velocities for front left, front right,
 %   rear left and rear right wheels.
 %   It uses double-track vehicle model.
 %
@@ -20,7 +20,7 @@ function wheel_velocity = fcn_VD_dtWheelVelocity(U,V,r,vehicle)
 % OUTPUTS:
 %
 %   wheel_velocity: A 4x2 vector of wheel velocities [m/s]
-%   First column is along vehicle (X-Direction) and second column is 
+%   First column is along vehicle (X-Direction) and second column is
 %   perpendicular to vehicle (Y-Direction)
 %   [Front Left; Front Right; Rear Left; Rear Right]
 %
@@ -38,14 +38,14 @@ end
 
 %% Check input arguments
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   _____                   _       
-%  |_   _|                 | |      
-%    | |  _ __  _ __  _   _| |_ ___ 
+%   _____                   _
+%  |_   _|                 | |
+%    | |  _ __  _ __  _   _| |_ ___
 %    | | | '_ \| '_ \| | | | __/ __|
 %   _| |_| | | | |_) | |_| | |_\__ \
 %  |_____|_| |_| .__/ \__,_|\__|___/
-%              | |                  
-%              |_| 
+%              | |
+%              |_|
 % See: http://patorjk.com/software/taag/#p=display&f=Big&t=Inputs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if flag_check_inputs
@@ -53,7 +53,7 @@ if flag_check_inputs
     if 4~=nargin
         error('Incorrect number of input arguments.')
     end
-    
+
     % Check the inputs
     fcn_VD_checkInputsToFunctions(U,'non negative');
     fcn_VD_checkInputsToFunctions(V,'number');
@@ -62,13 +62,13 @@ end
 
 %% Calculate Wheel Velocities in body coordinates
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   __  __       _       
-%  |  \/  |     (_)      
-%  | \  / | __ _ _ _ __  
-%  | |\/| |/ _` | | '_ \ 
+%   __  __       _
+%  |  \/  |     (_)
+%  | \  / | __ _ _ _ __
+%  | |\/| |/ _` | | '_ \
 %  | |  | | (_| | | | | |
 %  |_|  |_|\__,_|_|_| |_|
-% 
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 wheel_velocity = nan(4,2); % Initialize a variable
 % Velocity of wheel along vehicle body (X-Direction)
@@ -80,14 +80,14 @@ wheel_velocity([3,4],2) = V-vehicle.b*r; % Rear tires
 
 %% Any debugging?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   _____       _                 
-%  |  __ \     | |                
-%  | |  | | ___| |__  _   _  __ _ 
+%   _____       _
+%  |  __ \     | |
+%  | |  | | ___| |__  _   _  __ _
 %  | |  | |/ _ \ '_ \| | | |/ _` |
 %  | |__| |  __/ |_) | |_| | (_| |
 %  |_____/ \___|_.__/ \__,_|\__, |
 %                            __/ |
-%                           |___/ 
+%                           |___/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if flag_do_debug
     fprintf(1, 'ENDING function: %s, in file: %s\n\n', st(1).name, st(1).file);

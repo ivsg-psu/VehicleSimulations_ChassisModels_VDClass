@@ -3,10 +3,10 @@
 % Created: 2021/10/23
 
 % To do list:
-% 6) Concurrently, and building off of the work done by PI Beal [26], 
-%   this effort will extend the characterization from direct friction 
-%   sensing from state-of-the-art wheel force transducers to instead use 
-%   indirect friction estimates obtained from load cells in the steering 
+% 6) Concurrently, and building off of the work done by PI Beal [26],
+%   this effort will extend the characterization from direct friction
+%   sensing from state-of-the-art wheel force transducers to instead use
+%   indirect friction estimates obtained from load cells in the steering
 %   tie rods and/or torque measurements from the steering servomotors.
 
 % Processing Flow:
@@ -61,7 +61,7 @@ names.tableRoad        = 'road';
 % name of the table that contains the relation between road id and
 % section/segment ids (Aimsun section is equivalent to Database segment)
 names.tableRoadSegment = 'road_road_segment';
-% name of the table containing processed traffic data traversing between 
+% name of the table containing processed traffic data traversing between
 % State College and Port Matilda
 names.tableTraffic     = 'road_traffic_procsessed_sctopm';
 % names.tableTraffic     = 'road_traffic_procsessed';
@@ -177,7 +177,7 @@ enu_reference_id = refLLA(4);
 if flag.dbQuery
     unixTimeAndAimsunTimeRange = ...
         fcn_findValidTimeRangeUnixAndAimsun(names,names.road);
-    
+
     indexTripOfInterest = 1;
     % UNIX Time at which simulation is started, [seconds]
     time.Unix = unixTimeAndAimsunTimeRange(indexTripOfInterest,'UnixTime');
@@ -189,7 +189,7 @@ else
     indexTripOfInterest = 0;
     time.Unix = 0;
     time.AimsunLB = 0;
-    time.AimsunUB = 0; 
+    time.AimsunUB = 0;
 end % NOTE: Ends flag.dbQuery (Step 4)
 
 %% Step 5: Get all the valid Vehicle ID, Global Time combinations lying
@@ -223,32 +223,32 @@ for indexSectionOfInterest = 1:length(listOfSections)
     end
     %% Step 6: Get centerline data
     % find road section from SectionId_VehID_GlobalTime given a vehicle_id
-%     if flag.dbQuery
-%         % query lane center data
-%         [~,lanesCenter_table] = ...
-%             fcn_laneCenterQuerybySection(listOfSections(indexSectionOfInterest));
-%         % query road segment reference data
-%         [~,sectionRef_table] = ...
-%             fcn_sectionRefQuerybySection(listOfSections(indexSectionOfInterest));
-%     else
-%         % load lane center data
-%         load('lanesCenter_table_section201.mat','lanesCenter_table');
-%         % load road segment reference data
-%         load('sectionRef_table_section201.mat','sectionRef_table');
-%     end % NOTE: Ends flag.dbQuery (Step 6)
-%     
-%     % prepare data for ST Road Geometry DB Query block
-%     road_geometry_radius = 1./sectionRef_table.curvature;
-%     road_geometry = [sectionRef_table.east, sectionRef_table.north, ...
-%         sectionRef_table.up, sectionRef_table.grade, sectionRef_table.bank, ...
-%         road_geometry_radius, sectionRef_table.yaw];
+    %     if flag.dbQuery
+    %         % query lane center data
+    %         [~,lanesCenter_table] = ...
+    %             fcn_laneCenterQuerybySection(listOfSections(indexSectionOfInterest));
+    %         % query road segment reference data
+    %         [~,sectionRef_table] = ...
+    %             fcn_sectionRefQuerybySection(listOfSections(indexSectionOfInterest));
+    %     else
+    %         % load lane center data
+    %         load('lanesCenter_table_section201.mat','lanesCenter_table');
+    %         % load road segment reference data
+    %         load('sectionRef_table_section201.mat','sectionRef_table');
+    %     end % NOTE: Ends flag.dbQuery (Step 6)
+    %
+    %     % prepare data for ST Road Geometry DB Query block
+    %     road_geometry_radius = 1./sectionRef_table.curvature;
+    %     road_geometry = [sectionRef_table.east, sectionRef_table.north, ...
+    %         sectionRef_table.up, sectionRef_table.grade, sectionRef_table.bank, ...
+    %         road_geometry_radius, sectionRef_table.yaw];
     if 1 == indexSectionOfInterest
         sectionRef_table = sc_to_pm_table;
     else
         sectionRef_table = pm_to_sc_table;
     end
     road_properties.grade = 0; road_properties.bank_angle = 0; % road properties
-    
+
     % find vehiclePopulation_ID_GlobalTime by section
     vehiclePopulation_ID_GlobalTime = ...
         SectionId_VehID_GlobalTime((SectionId_VehID_GlobalTime(:,1)==...
@@ -272,7 +272,7 @@ for indexSectionOfInterest = 1:length(listOfSections)
             % load queryVehicleTrajectory data, Just in case to dubug it offline
             load('vehicle_trajectory_593_1589418271.mat', 'queryVehicleTrajectory');
         end % NOTE: Ends flag.dbQuery (Step 7)
-        
+
         if flag.verbose
             % print the duration of vehicle trajectory
             fprintf(1,'\nDuration of vehicle - %d trajectory is %.2f seconds \n', ...
@@ -289,10 +289,10 @@ for indexSectionOfInterest = 1:length(listOfSections)
                 queryVehicleTrajectory(end,fieldsTrajectory.north), ...
                 queryVehicleTrajectory(end,fieldsTrajectory.up));
         end % NOTE: Ends flag.verbose (Step 7)
-        
+
         %% Step 8: Add offset and swerving to the queryVehicleTrajectory
-        % fcn_swervedVehicleTrajectory takes in queryVehicleTrajectory and 
-        % adds two sine waves to it based on swerve.amplitude, 
+        % fcn_swervedVehicleTrajectory takes in queryVehicleTrajectory and
+        % adds two sine waves to it based on swerve.amplitude,
         % swerve.time_period, and fixed lateral offset to the vehicle trajectory
         if flag.lateralOffset
             % add random lateral offset
@@ -304,30 +304,30 @@ for indexSectionOfInterest = 1:length(listOfSections)
             fcn_VD_swervedVehicleTrajectoryST(queryVehicleTrajectory,sectionRef_table,...
             friction_ref_table,swerve.amplitude,swerve.timePeriod,swerve.lateralOffset,refLLA,...
             fieldsTrajectory,flag.swerve); % lateral offset works even flag.swerve is false
-        
+
         % check loaded trajectory
         if flag.doDebug
             fcn_VD_plotTrajectory(swervedVehicleTrajectory(:,[12,13]),12345); % Plot output trajectory
             fcn_VD_plotTimeYaw(swervedVehicleTrajectory(:,19),...
                 swervedVehicleTrajectory(:,15),12346); % Plot yaw
         end
-        
+
         %% Step 9: Run the simulation
         inputTrajectory = swervedVehicleTrajectory;
         mdlParam.max_station = max(inputTrajectory(:,fieldsTrajectory.station));
-        
+
         % set parameters in Trajectory query block
         mdlParam.trajectorySize = size(inputTrajectory);    % size of input trajectory
         mdlParam.flagFullWndow  = false; % parameter that defines the search window for trajectory query
         % parameter to decide the size of the search window by using the maximum
         % distance that can be traversed by a vehicle moving with velocity 40m/s in 0.1s
         mdlParam.searchDistance = 40*0.1; % [meters]
-        
+
         % duration of the simulation
         sim_duration_from_aimsun_time = ...
             max(inputTrajectory(:,fieldsTrajectory.aimsunTime)) - ...
             min(inputTrajectory(:,fieldsTrajectory.aimsunTime));
-        
+
         % initial conditions
         initial.east  = inputTrajectory(1,fieldsTrajectory.east); % [meters]
         initial.north = inputTrajectory(1,fieldsTrajectory.north); % [meters]
@@ -343,19 +343,19 @@ for indexSectionOfInterest = 1:length(listOfSections)
         sim('mdl_VD_simulateFrictionUtilization.slx', round(5*sim_duration_from_aimsun_time,2));
         time_elapsed = toc(simlulation_start);
         profile viewer
-        
+
         if flag.verbose
             fprintf(1,'Simulation is done.\n\tWall time to run the simulation: %.5f seconds. \n',time_elapsed);
             fprintf(1,'\tDuration of vehicle trajectory in Aimsun: %.5f seconds. \n',sim_duration_from_aimsun_time);
         end % NOTE: Ends flag.verbose (Step 9)
-        
+
         % Estimate friction utilization
         longitudinal_tireForce = TireForces(:,[5,6,7,8]);
         lateral_tireForce      = TireForces(:,[1,2,3,4]);
         total_tireForce        = sqrt((longitudinal_tireForce.^2)+(lateral_tireForce.^2));
         frictionalForce        = (mean_true_friction.*Fz);
         friction_utilization   = total_tireForce./frictionalForce;
-        
+
         h_fig = figure(09);
         set(h_fig, 'Name', 'fcn_VD_plotTimeSteeringAngle');
         width = 600; height = 400; right = 100; bottom = 400;
@@ -385,39 +385,39 @@ for indexSectionOfInterest = 1:length(listOfSections)
         fcn_VD_plotTimeLateralVelocity(time,States(:,2),22); % Plot lateral velocity
         fcn_VD_plotTimeYawRate(time,States(:,3),23); % Plot yaw rate
         fcn_VD_plotTimeWheelSpeed(time,States(:,(4:7)),24); % Plot wheel speed
-        
+
         fcn_VD_plotTrajectory(pose(:,[1,2]),25); % Plot output trajectory
         fcn_VD_plotTimeYaw(time,pose(:,3),26); % Plot yaw
         %% Step 10: Plot the results
         if flag.plot
             fcn_VD_plotTimeSteeringAngle(time,delta,11); % Plot steering angle
             fcn_VD_plotTimeWheelTorque(time,wheel_torque,12); % Plot wheel torque
-            
+
             fcn_VD_plotTimeSlipAngle(time,alpha,13); % Plot slip angles
             fcn_VD_plotTimeWheelSlip(time,kappa,14); % Plot wheel slip
             fcn_VD_plotTimeNormalForce(time,Fz,15); % Plot normla force
-            
+
             fcn_VD_plotTimeLongitudinalTireForce(time,Fx,16); % Plot longitudinal tire force
             fcn_VD_plotTimeLateralTireForce(time,Fy,17); % Plot lateral tire force
             fcn_VD_plotTimeAligningMoment(time,Mz,18); % Plot aligning moment
-            
+
             fcn_VD_plotTimeLongitudinalAcceleration(time,States(:,8),19); % Plot longitudinal acceleration
             fcn_VD_plotTimeLateralAcceleration(time,States(:,9),20); % Plot lateral acceleration
-            
+
             fcn_VD_plotTimeLongitudinalVelocity(time,States(:,1),21); % Plot longitudinal velocity
             fcn_VD_plotTimeLateralVelocity(time,States(:,2),22); % Plot lateral velocity
             fcn_VD_plotTimeYawRate(time,States(:,3),23); % Plot yaw rate
             fcn_VD_plotTimeWheelSpeed(time,States(:,(4:7)),24); % Plot wheel speed
             fcn_VD_plotTrajectory(pose(:,[1,2]),25); % Plot output trajectory
             fcn_VD_plotTimeYaw(time,pose(:,3),26); % Plot yaw
-            
+
             fcn_VD_plotTimeLateralOffsetError(time,lateral_offset_error,28);
-            
+
             fcn_VD_plotTimeFriction(time,true_friction,29); % Plot true friction
             fcn_VD_plotTimeFriction(time,preview_true_friction,30); % Plot preview friction
         end % NOTE: Ends flag.plot
     end % NOTE: Ends for 'indexTrajectoryOfInterest'
-    
+
 end % NOTE: Ends for loop 'indexSectionOfInterest'
 
 %% Play music at the end of code

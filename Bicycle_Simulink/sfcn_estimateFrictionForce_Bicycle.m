@@ -3,7 +3,7 @@
 %   Estimates frictional force at tire locations based on the paper
 %   Rapid Road Friction Estimation using Independent Left/Right Steering Torque Measurements
 %   Link: https://www.tandfonline.com/doi/full/10.1080/00423114.2019.1580377
-% 
+%
 %   Note: Straight line condition gives friction force equals to NaN.
 %   Note: Change the sample time depending on the simulation.
 %
@@ -13,17 +13,17 @@
 %   INPUT 3: Xi2 in eq. 13a on page 9
 %   INPUT 4: Xi3 in eq. 13b on page 9
 %   INPUT 5: Xi3 in eq. 13b on page 9
-% 
+%
 % OUTPUTS:
 %   OUTPUT 1: estimate of frictional force
-% 
+%
 % NOTE: coefficient of friction in the exception is same as true value as
 % the computations involved are quivalent to mu*N/N
-% 
+%
 % Author: Satya Prasad
 % Create Date: 2020-07-26
 % ======== to do list ============
-% 1. 
+% 1.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function sfcn_estimateFrictionForce_Bicycle(block)
 % The setup method is used to set up the basic attributes of the
@@ -106,7 +106,7 @@ if ~isempty(pNegative)
         - Xi2Negative./(3*diff_Mz_XilNegative);
     % write frictional force to the output temporary variable
     output_temp(indicesNegativeP) = frictionForceNegative;
-    
+
 end
 
 if ~isempty(pPositive)
@@ -116,7 +116,7 @@ if ~isempty(pPositive)
         - Xi2Positive./(3*diff_Mz_XilPositive);
     % write frictional force to the output temporary variable
     output_temp(indices_positive_p) = frictionForcePositive;
-    
+
 end
 
 block.OutputPort(1).Data = output_temp;

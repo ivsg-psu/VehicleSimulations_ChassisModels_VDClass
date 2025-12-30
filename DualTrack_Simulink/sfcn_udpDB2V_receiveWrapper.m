@@ -1,18 +1,18 @@
 %%%%%%%%%%%%%%%%%% S-Function sfcn_udpDB2V_receiveWrapper %%%%%%%%%%%%%%%%%
 % Purpose:
-%   The purpose of this function is to call 'fcn_udpDB2V_receiveFriction' 
+%   The purpose of this function is to call 'fcn_udpDB2V_receiveFriction'
 %   to execute in the background.
-% 
+%
 %   Note: Change the sample time depending on the simulation.
-% 
+%
 % Inputs:
 %   Nothing, it receives data over UDP.
-% 
+%
 % Outputs:
 %   Output 1: Time at which query corresponding to the UDP packet is
 %   sent.
 %   Output 2: Average friction
-% 
+%
 % Author:  Satya Prasad
 % Created: 2022/05/04
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -51,7 +51,7 @@ function Output(block)
 persistent p F
 if isempty(p)
     % get current parallel pool
-    % If no parallel pool exists, gcp starts a new parallel pool and 
+    % If no parallel pool exists, gcp starts a new parallel pool and
     % returns a pool object for that
     p = gcp;
     F = parfeval(p,@fcn_udpDB2V_receiveFriction,2);

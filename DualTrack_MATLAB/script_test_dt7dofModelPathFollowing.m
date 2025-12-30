@@ -1,13 +1,22 @@
 %% script_compare_dt7dofModelWithSteeringControl_MATvsSIM.m
 % This script tests steering control of simulink model with matlab model
-%
-% Original author: Satya Prasad on 2021/07/20, maintained by S. Brennan,
-% sbrennan@psu.edu
-% Questions or comments? szm888@psu.edu or sbrennan@psu.edu
 
-% Update history:
-% 2034_03_21 - S. Brennan
-% -- removed workspace prep and moved this into the main demo code area
+% REVISION HISTORY:
+%
+% 2021_07_20 by Satya Prasad, szm888@psu.edu
+% - First write of function
+%
+% 2024_03_21 - S. Brennan
+% - removed workspace prep and moved this into the main demo code area
+%
+% 2025_12_29 by Sean Brennan, sbrennan@psu.edu
+% - Updated header formatting and comments
+% - Updated tab stops
+
+
+% TO-DO:
+% - 2025_12_29 by Sean Brennan, sbrennan@psu.edu
+%   % (add items here)
 
 
 %% Inputs
@@ -118,14 +127,14 @@ sim('mdl_VD_dt7dofModelPathFollowing.slx', TotalTime);
 
 %% Plot the results
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   _____  _       _   _   _             
-%  |  __ \| |     | | | | (_)            
-%  | |__) | | ___ | |_| |_ _ _ __   __ _ 
+%   _____  _       _   _   _
+%  |  __ \| |     | | | | (_)
+%  | |__) | | ___ | |_| |_ _ _ __   __ _
 %  |  ___/| |/ _ \| __| __| | '_ \ / _` |
 %  | |    | | (_) | |_| |_| | | | | (_| |
 %  |_|    |_|\___/ \__|\__|_|_| |_|\__, |
 %                                   __/ |
-%                                  |___/ 
+%                                  |___/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % fcn_VD_plotTimeSteeringAngle(time, delta); % Front (and rear) steering angles
 % fcn_VD_plotTimeWheelTorque(time, out_wheel_torque); % Throttle command

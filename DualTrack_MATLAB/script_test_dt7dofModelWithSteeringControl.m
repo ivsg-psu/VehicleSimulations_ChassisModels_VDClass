@@ -1,30 +1,34 @@
 %% script_test_dt7dofModelWithSteeringControl.m
 % This script tests steering control 'fcn_VD_lookAheadLatController' on the
 % vehicle model'fcn_VD_dt7dofModelForController'
+
+% REVISION HISTORY:
 %
-% Author: Satya Prasad on 2021/07/12
-% Questions or comments? szm888@psu.edu
+% 2021_07_12 by Satya Prasad, szm888@psu.edu
+% - First write of function
+%
+% 2025_12_29 by Sean Brennan, sbrennan@psu.edu
+% - Updated header formatting and comments
+% - Updated tab stops
+
+% TO-DO:
+% - 2025_12_29 by Sean Brennan, sbrennan@psu.edu
+%   % (add items here)
 
 %% Prepare the workspace
 close all; % close all the plots
-clear all %#ok<CLALL>
-clc
 
-%% Add path
-addpath('../VD_Utilities')
-addpath('../VD_Utilities/DualTrack')
-addpath('../Datafiles')
 
 %% Inputs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   _____                   _       
-%  |_   _|                 | |      
-%    | |  _ __  _ __  _   _| |_ ___ 
+%   _____                   _
+%  |_   _|                 | |
+%    | |  _ __  _ __  _   _| |_ ___
 %    | | | '_ \| '_ \| | | | __/ __|
 %   _| |_| | | | |_) | |_| | |_\__ \
 %  |_____|_| |_| .__/ \__,_|\__|___/
-%              | |                  
-%              |_| 
+%              | |
+%              |_|
 % See: http://patorjk.com/software/taag/#p=display&f=Big&t=Inputs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Define vehicle and controller properties
@@ -82,13 +86,13 @@ N_timeSteps = floor(TotalTime/deltaT)+1; % This is the number of time steps we s
 
 %% Main code
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   __  __       _       
-%  |  \/  |     (_)      
-%  | \  / | __ _ _ _ __  
-%  | |\/| |/ _` | | '_ \ 
+%   __  __       _
+%  |  \/  |     (_)
+%  | \  / | __ _ _ _ __
+%  | |\/| |/ _` | | '_ \
 %  | |  | | (_| | | | | |
 %  |_|  |_|\__,_|_|_| |_|
-% 
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Run the simulation in MATLAB
 % variables to store outputs of Matlab simulation
@@ -104,88 +108,88 @@ global_acceleration = zeros(7,1);
 input_states = [U;V;r;omega;east;north;heading]; % initial conditions
 counter = 1;
 for t = 0:deltaT:TotalTime
-matlab_time(counter) = t;
-matlab_States(counter,1:7) = input_states(1:7)';
-matlab_pose(counter,:)     = input_states(8:10)';
+    matlab_time(counter) = t;
+    matlab_States(counter,1:7) = input_states(1:7)';
+    matlab_pose(counter,:)     = input_states(8:10)';
 
-%% Controller: Steering
-pose = matlab_pose(counter,:)';
-target_lookAhead_pose = fcn_VD_snapLookAheadPoseOnToTraversal(pose,...
-    reference_traversal,controller);
-steering_angle = fcn_VD_lookAheadLatController(pose,target_lookAhead_pose,...
-    controller);
+    %% Controller: Steering
+    pose = matlab_pose(counter,:)';
+    target_lookAhead_pose = fcn_VD_snapLookAheadPoseOnToTraversal(pose,...
+        reference_traversal,controller);
+    steering_angle = fcn_VD_lookAheadLatController(pose,target_lookAhead_pose,...
+        controller);
 
-%% Estimate Slips for time 't'
-% Slip Angle/Lateral Slip
-slip_angle = fcn_VD_dtSlipAngle(U,V,r,steering_angle,vehicle);
-% Wheel Slip/Longitudinal Slip
-wheel_slip = fcn_VD_dtWheelSlip(U,V,r,omega,steering_angle,vehicle);
-matlab_alpha(counter,:) = slip_angle';
-matlab_kappa(counter,:) = wheel_slip';
+    %% Estimate Slips for time 't'
+    % Slip Angle/Lateral Slip
+    slip_angle = fcn_VD_dtSlipAngle(U,V,r,steering_angle,vehicle);
+    % Wheel Slip/Longitudinal Slip
+    wheel_slip = fcn_VD_dtWheelSlip(U,V,r,omega,steering_angle,vehicle);
+    matlab_alpha(counter,:) = slip_angle';
+    matlab_kappa(counter,:) = wheel_slip';
 
-%% 7-DoF Vehicle Model
-flag_update = true; % set it to to true before every call to RK4 method
-[~,y] = fcn_VD_RungeKutta(@(t,y) fcn_VD_dt7dofModelForController(t,y,...
-    steering_angle,wheel_torque,...
-    vehicle,road_properties,friction_coefficient',type_of_transfer),...
-    input_states,t,deltaT);
-U = y(1); V = y(2); r = y(3); omega = y(4:7);
-input_states = y; clear y;
-matlab_States(counter,8:9) = global_acceleration(1:2)';
+    %% 7-DoF Vehicle Model
+    flag_update = true; % set it to to true before every call to RK4 method
+    [~,y] = fcn_VD_RungeKutta(@(t,y) fcn_VD_dt7dofModelForController(t,y,...
+        steering_angle,wheel_torque,...
+        vehicle,road_properties,friction_coefficient',type_of_transfer),...
+        input_states,t,deltaT);
+    U = y(1); V = y(2); r = y(3); omega = y(4:7);
+    input_states = y; clear y;
+    matlab_States(counter,8:9) = global_acceleration(1:2)';
 
-%% Estimate Normal Forces for time 't'
-if 1==counter
-    normal_force = fcn_VD_dtNormalForce([0;0],vehicle,road_properties,...
+    %% Estimate Normal Forces for time 't'
+    if 1==counter
+        normal_force = fcn_VD_dtNormalForce([0;0],vehicle,road_properties,...
+            type_of_transfer);
+    else
+        normal_force = fcn_VD_dtNormalForce(matlab_States(counter-1,8:9)',vehicle,...
+            road_properties,type_of_transfer);
+    end
+    matlab_Fz(counter,:) = normal_force';
+
+    %% Estimate Tire forces for time 't'
+    tire_force = fcn_VD_dtTireForceBrush(slip_angle,wheel_slip,normal_force,...
+        friction_coefficient',vehicle);
+    matlab_Fx(counter,:) = tire_force(:,1)';
+    matlab_Fy(counter,:) = tire_force(:,2)';
+
+    %% Aligning Moment
+    aligning_moment = fcn_VD_dtAligningMomentBrush(slip_angle,normal_force,...
+        friction_coefficient',vehicle);
+    matlab_Mz(counter,:) = aligning_moment';
+
+    %% Friction Estimation
+    estimated_vel = matlab_States(counter,1:3)'+...
+        [normrnd(0,1.4142*0.25)*0.01; normrnd(0,1.4142*0.25)*0.01; ...
+        normrnd(0,1.4142*0.009)*0.01];
+    if 1==counter
+        estimated_accel = [0; 0]+...
+            [normrnd(0,0.5)*(0.01^2); normrnd(0,0.5)*(0.01^2)];
+    else
+        estimated_accel = matlab_States(counter-1,8:9)'+...
+            [normrnd(0,0.5)*(0.01^2); normrnd(0,0.5)*(0.01^2)];
+    end
+    slip_angle = fcn_VD_dtSlipAngle(estimated_vel(1),estimated_vel(2),...
+        estimated_vel(3),steering_angle,vehicle);
+    normal_force = fcn_VD_dtNormalForce(estimated_accel,vehicle,road_properties,...
         type_of_transfer);
-else
-    normal_force = fcn_VD_dtNormalForce(matlab_States(counter-1,8:9)',vehicle,...
-        road_properties,type_of_transfer);
-end
-matlab_Fz(counter,:) = normal_force';
+    friction_estimate = fcn_VD_estimateFrictionCoefficient(slip_angle,...
+        normal_force,aligning_moment,vehicle);
+    matlab_friction(counter,:) = friction_estimate';
 
-%% Estimate Tire forces for time 't'
-tire_force = fcn_VD_dtTireForceBrush(slip_angle,wheel_slip,normal_force,...
-    friction_coefficient',vehicle);
-matlab_Fx(counter,:) = tire_force(:,1)';
-matlab_Fy(counter,:) = tire_force(:,2)';
-
-%% Aligning Moment
-aligning_moment = fcn_VD_dtAligningMomentBrush(slip_angle,normal_force,...
-                    friction_coefficient',vehicle);
-matlab_Mz(counter,:) = aligning_moment';
-
-%% Friction Estimation
-estimated_vel = matlab_States(counter,1:3)'+...
-    [normrnd(0,1.4142*0.25)*0.01; normrnd(0,1.4142*0.25)*0.01; ...
-    normrnd(0,1.4142*0.009)*0.01];
-if 1==counter
-    estimated_accel = [0; 0]+...
-        [normrnd(0,0.5)*(0.01^2); normrnd(0,0.5)*(0.01^2)];
-else
-    estimated_accel = matlab_States(counter-1,8:9)'+...
-        [normrnd(0,0.5)*(0.01^2); normrnd(0,0.5)*(0.01^2)];
-end
-slip_angle = fcn_VD_dtSlipAngle(estimated_vel(1),estimated_vel(2),...
-    estimated_vel(3),steering_angle,vehicle);
-normal_force = fcn_VD_dtNormalForce(estimated_accel,vehicle,road_properties,...
-    type_of_transfer);
-friction_estimate = fcn_VD_estimateFrictionCoefficient(slip_angle,...
-    normal_force,aligning_moment,vehicle);
-matlab_friction(counter,:) = friction_estimate';
-
-counter = counter+1;
+    counter = counter+1;
 end
 
 %% Plots to check MATLAB simulation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   _____  _       _   _   _             
-%  |  __ \| |     | | | | (_)            
-%  | |__) | | ___ | |_| |_ _ _ __   __ _ 
+%   _____  _       _   _   _
+%  |  __ \| |     | | | | (_)
+%  | |__) | | ___ | |_| |_ _ _ __   __ _
 %  |  ___/| |/ _ \| __| __| | '_ \ / _` |
 %  | |    | | (_) | |_| |_| | | | | (_| |
 %  |_|    |_|\___/ \__|\__|_|_| |_|\__, |
 %                                   __/ |
-%                                  |___/ 
+%                                  |___/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 fcn_VD_plotTimeSlipAngle(matlab_time,matlab_alpha);
 fcn_VD_plotTimeWheelSlip(matlab_time,matlab_kappa);

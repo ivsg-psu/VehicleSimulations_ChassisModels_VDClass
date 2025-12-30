@@ -1,11 +1,11 @@
 function tire_force = fcn_VD_dtTireForceBrush(slip_angle,wheel_slip,...
-                        normal_force,friction_coefficient,vehicle)
+    normal_force,friction_coefficient,vehicle)
 %% fcn_VD_dtTireForceBrush
 %   This function computes tire forces using Combined-Slip Brush Model.
 %   Ref: Tire Modeling and Friction Estimation by Jacob Svendenius
 %   It uses double-track vehicle model and brush tire model.
 %
-% FORMAT: 
+% FORMAT:
 %
 %   tire_force = fcn_VD_dtTireForceBrush(slip_angle,wheel_slip,...
 %                   normal_force,friction_coefficient,vehicle)
@@ -42,14 +42,14 @@ end
 
 %% Check input arguments
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   _____                   _       
-%  |_   _|                 | |      
-%    | |  _ __  _ __  _   _| |_ ___ 
+%   _____                   _
+%  |_   _|                 | |
+%    | |  _ __  _ __  _   _| |_ ___
 %    | | | '_ \| '_ \| | | | __/ __|
 %   _| |_| | | | |_) | |_| | |_\__ \
 %  |_____|_| |_| .__/ \__,_|\__|___/
-%              | |                  
-%              |_| 
+%              | |
+%              |_|
 % See: http://patorjk.com/software/taag/#p=display&f=Big&t=Inputs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if flag_check_inputs
@@ -57,7 +57,7 @@ if flag_check_inputs
     if 5~=nargin
         error('Incorrect number of input arguments.')
     end
-    
+
     % Check the inputs
     fcn_VD_checkInputsToFunctions(slip_angle,'vector4');
     fcn_VD_checkInputsToFunctions(wheel_slip,'vector4');
@@ -67,13 +67,13 @@ end
 
 %% Calculate Tire Forces using Brush Model
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   __  __       _       
-%  |  \/  |     (_)      
-%  | \  / | __ _ _ _ __  
-%  | |\/| |/ _` | | '_ \ 
+%   __  __       _
+%  |  \/  |     (_)
+%  | \  / | __ _ _ _ __
+%  | |\/| |/ _` | | '_ \
 %  | |  | | (_| | | | | |
 %  |_|  |_|\__,_|_|_| |_|
-% 
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 combined_slip = fcn_VD_dtCombinedSlip(slip_angle,wheel_slip); % calculate combined slip
 
@@ -84,7 +84,7 @@ sigma(0==sigma) = eps; % To avoid division by zero
 
 % eq 4.10, 4.13 on pg 44
 Psi = sqrt((vehicle.Cx.*sigma_x).^2 + (vehicle.Ca.*sigma_y).^2)./...
-        abs(3*friction_coefficient.*normal_force); % use peak-friction here
+    abs(3*friction_coefficient.*normal_force); % use peak-friction here
 Psi(1<=Psi) = 1; % account for pure slip
 
 % Adhesion forces:
@@ -103,14 +103,14 @@ tire_force = [Fax+Fsx, Fay+Fsy];
 
 %% Any debugging?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   _____       _                 
-%  |  __ \     | |                
-%  | |  | | ___| |__  _   _  __ _ 
+%   _____       _
+%  |  __ \     | |
+%  | |  | | ___| |__  _   _  __ _
 %  | |  | |/ _ \ '_ \| | | |/ _` |
 %  | |__| |  __/ |_) | |_| | (_| |
 %  |_____/ \___|_.__/ \__,_|\__, |
 %                            __/ |
-%                           |___/ 
+%                           |___/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if flag_do_debug
     fprintf(1, 'ENDING function: %s, in file: %s\n\n', st(1).name, st(1).file);

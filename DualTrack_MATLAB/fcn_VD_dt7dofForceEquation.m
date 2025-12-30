@@ -1,5 +1,5 @@
 function acceleration = fcn_VD_dt7dofForceEquation(wheel_force,wheel_torque,...
-                        steering_angle,vehicle,road_properties)
+    steering_angle,vehicle,road_properties)
 %% fcn_VD_dt7dofForceEquation
 %   This function calculates accelerations.
 %
@@ -40,14 +40,14 @@ end
 
 %% Check input arguments
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   _____                   _       
-%  |_   _|                 | |      
-%    | |  _ __  _ __  _   _| |_ ___ 
+%   _____                   _
+%  |_   _|                 | |
+%    | |  _ __  _ __  _   _| |_ ___
 %    | | | '_ \| '_ \| | | | __/ __|
 %   _| |_| | | | |_) | |_| | |_\__ \
 %  |_____|_| |_| .__/ \__,_|\__|___/
-%              | |                  
-%              |_| 
+%              | |
+%              |_|
 % See: http://patorjk.com/software/taag/#p=display&f=Big&t=Inputs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if flag_check_inputs
@@ -64,13 +64,13 @@ end
 
 %% Calculate accelerations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   __  __       _       
-%  |  \/  |     (_)      
-%  | \  / | __ _ _ _ __  
-%  | |\/| |/ _` | | '_ \ 
+%   __  __       _
+%  |  \/  |     (_)
+%  | \  / | __ _ _ _ __
+%  | |\/| |/ _` | | '_ \
 %  | |  | | (_| | | | | |
 %  |_|  |_|\__,_|_|_| |_|
-% 
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 g = 9.81; % [m/s^2]
 body_force = fcn_VD_dtWheel2BodyCoordinates(wheel_force,steering_angle); % find body forces
@@ -78,7 +78,7 @@ body_force = fcn_VD_dtWheel2BodyCoordinates(wheel_force,steering_angle); % find 
 ax = sum(body_force(:,1))/vehicle.m-g*cos(road_properties.bank_angle)*sin(road_properties.grade); % longitudinal acceleration
 ay = sum(body_force(:,2))/vehicle.m+g*sin(road_properties.bank_angle); % lateral acceleration
 drdt = (((vehicle.d/2)*(-body_force(1,1)+body_force(2,1)-body_force(3,1)+body_force(4,1)))+...
-        (vehicle.a*sum(body_force([1,2],2)))-(vehicle.b*sum(body_force([3,4],2))))/vehicle.Izz; % yaw acceleration
+    (vehicle.a*sum(body_force([1,2],2)))-(vehicle.b*sum(body_force([3,4],2))))/vehicle.Izz; % yaw acceleration
 % Torque balance on vehicle's wheels
 domegadt = (wheel_torque-vehicle.Re.*wheel_force(:,1))./vehicle.Iw; % angular acceleration of wheel
 
@@ -86,14 +86,14 @@ acceleration = [ax; ay; drdt; domegadt];
 
 %% Any debugging?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   _____       _                 
-%  |  __ \     | |                
-%  | |  | | ___| |__  _   _  __ _ 
+%   _____       _
+%  |  __ \     | |
+%  | |  | | ___| |__  _   _  __ _
 %  | |  | |/ _ \ '_ \| | | |/ _` |
 %  | |__| |  __/ |_) | |_| | (_| |
 %  |_____/ \___|_.__/ \__,_|\__, |
 %                            __/ |
-%                           |___/ 
+%                           |___/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if flag_do_debug
     fprintf(1, 'ENDING function: %s, in file: %s\n\n', st(1).name, st(1).file);

@@ -1,28 +1,33 @@
 %% script_test_fcn_VD_stSlipAngle.m
 % This script tests MATLAB function 'fcn_VD_stSlipAngle'
+
+% REVISION HISTORY:
 %
-% Author: Satya Prasad on 2021/08/13
-% Questions or comments? szm888@psu.edu
+% 2021_08_13 by Satya Prasad, szm888@psu.edu
+% - First write of function
+%
+% 2025_12_29 by Sean Brennan, sbrennan@psu.edu
+% - Updated header formatting and comments
+% - Updated tab stops
+
+
+% TO-DO:
+% - 2025_12_29 by Sean Brennan, sbrennan@psu.edu
+%   % (add items here)
 
 %% Prepare the workspace
 close all; % close all the plots
-clear all %#ok<CLALL>
-clc
-
-%% Add path
-addpath('../VD_Utilities')
-addpath('../VD_Utilities/Bicycle')
 
 %% Inputs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   _____                   _       
-%  |_   _|                 | |      
-%    | |  _ __  _ __  _   _| |_ ___ 
+%   _____                   _
+%  |_   _|                 | |
+%    | |  _ __  _ __  _   _| |_ ___
 %    | | | '_ \| '_ \| | | | __/ __|
 %   _| |_| | | | |_) | |_| | |_\__ \
 %  |_____|_| |_| .__/ \__,_|\__|___/
-%              | |                  
-%              |_| 
+%              | |
+%              |_|
 % See: http://patorjk.com/software/taag/#p=display&f=Big&t=Inputs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Define vehicle properties
@@ -54,13 +59,13 @@ N_timeSteps = floor(TotalTime/deltaT)+1; % This is the number of time steps we s
 
 %% Main code
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   __  __       _       
-%  |  \/  |     (_)      
-%  | \  / | __ _ _ _ __  
-%  | |\/| |/ _` | | '_ \ 
+%   __  __       _
+%  |  \/  |     (_)
+%  | \  / | __ _ _ _ __
+%  | |\/| |/ _` | | '_ \
 %  | |  | | (_| | | | | |
 %  |_|  |_|\__,_|_|_| |_|
-% 
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Run the simulation in MATLAB
 % variables to store outputs of Matlab simulation
@@ -69,33 +74,33 @@ matlab_time  = nan(N_timeSteps,1);
 
 counter = 1;
 for t = 0:deltaT:TotalTime
-matlab_time(counter) = t;
+    matlab_time(counter) = t;
 
-%% Inputs
-delta_f = (1-1*(0<t-Period))*steering_amplitude*sin((2*pi/Period)*t); % front steering angle
-steering_angle = [delta_f; 0];
+    %% Inputs
+    delta_f = (1-1*(0<t-Period))*steering_amplitude*sin((2*pi/Period)*t); % front steering angle
+    steering_angle = [delta_f; 0];
 
-Vx = abs(U*sin((0.5*pi/Period)*t + pi/2));
-Vy = V*sin((pi/Period)*t);
-yaw_rate = r*sin((2*pi/Period)*t);
+    Vx = abs(U*sin((0.5*pi/Period)*t + pi/2));
+    Vy = V*sin((pi/Period)*t);
+    yaw_rate = r*sin((2*pi/Period)*t);
 
-%% Slips
-% Slip Angle/Lateral Slip
-slip_angle = fcn_VD_stSlipAngle(Vx,Vy,yaw_rate,steering_angle,vehicle);
-matlab_alpha(counter,:) = slip_angle';
+    %% Slips
+    % Slip Angle/Lateral Slip
+    slip_angle = fcn_VD_stSlipAngle(Vx,Vy,yaw_rate,steering_angle,vehicle);
+    matlab_alpha(counter,:) = slip_angle';
 
-counter = counter+1;
+    counter = counter+1;
 end
 
 %% Plot results
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   _____  _       _   _   _             
-%  |  __ \| |     | | | | (_)            
-%  | |__) | | ___ | |_| |_ _ _ __   __ _ 
+%   _____  _       _   _   _
+%  |  __ \| |     | | | | (_)
+%  | |__) | | ___ | |_| |_ _ _ __   __ _
 %  |  ___/| |/ _ \| __| __| | '_ \ / _` |
 %  | |    | | (_) | |_| |_| | | | | (_| |
 %  |_|    |_|\___/ \__|\__|_|_| |_|\__, |
 %                                   __/ |
-%                                  |___/ 
+%                                  |___/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 fcn_VD_plotTimeSlipAngle(matlab_time,matlab_alpha);

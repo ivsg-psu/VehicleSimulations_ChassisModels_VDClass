@@ -1,30 +1,40 @@
-%% script_compare_dtSlipAngle_MATvsSIM.m
-% This script compares MATLAB function 'fcn_VD_dtSlipAngle' with Simulink 
-% model 'mdl_VD_dtSlipAngle.slx'
+%% script_compare_dtNormalForce_MATvsSIM.m
+% This script compares MATLAB function 'fcn_VD_dtNormalForce' with Simulink
+% model 'mdl_VD_dtNormalForce.slx'
 %
 % Author: Satya Prasad on 2021/07/06
 % Questions or comments? szm888@psu.edu
 
+
+% REVISION HISTORY:
+%
+% 2021_07_06 by Satya Prasad, szm888@psu.edu
+% - First write of function
+%
+% 2025_12_29 by Sean Brennan, sbrennan@psu.edu
+% - Updated header formatting and comments
+% - Updated tab stops
+
+
+% TO-DO:
+% - 2025_12_29 by Sean Brennan, sbrennan@psu.edu
+%   % (add items here)
+
+
 %% Prepare the workspace
 close all; % close all the plots
-clear all %#ok<CLALL>
-clc
 
-%% Add path
-addpath('../VD_Utilities')
-addpath('../VD_Utilities/DualTrack')
-addpath('../DualTrack_Simulink')
 
 %% Inputs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   _____                   _       
-%  |_   _|                 | |      
-%    | |  _ __  _ __  _   _| |_ ___ 
+%   _____                   _
+%  |_   _|                 | |
+%    | |  _ __  _ __  _   _| |_ ___
 %    | | | '_ \| '_ \| | | | __/ __|
 %   _| |_| | | | |_) | |_| | |_\__ \
 %  |_____|_| |_| .__/ \__,_|\__|___/
-%              | |                  
-%              |_| 
+%              | |
+%              |_|
 % See: http://patorjk.com/software/taag/#p=display&f=Big&t=Inputs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Define vehicle properties
@@ -42,11 +52,19 @@ vehicle.h_cg = 0.42; % height of the cg (m)
 vehicle.Ca  = [95000; 95000; 110000; 110000]; % wheel cornering stiffnesses
 vehicle.Cx  = [65000; 65000; 65000; 65000]; % longitudinal stiffnesses
 
+%% Define load transfer conditions
+vdParam.longitudinalTransfer = 1;
+if vdParam.longitudinalTransfer
+    vdParam.lateralTransfer = 1;
+    type_of_transfer = 'both';
+else
+    vdParam.lateralTransfer = 0;
+    type_of_transfer = 'default';
+end
+
 %% Define inputs to the vehicle model
-U = 24.59; % longitudinal velocity [m/s]
-V = 0.0; % lateral velocity [m/s]
-r = 0.5; % yaw rate [rad/s]
-steering_amplitude = 2*pi/180; % front steering angle [rad]
+road_properties.grade = 0; road_properties.bank_angle = 0; % road properties
+acceleration = [2, 0.5]; % acceleration
 Period = 3; % Units are seconds. A typical lane change is about 3 to 4 seconds based on experimental highway measurements
 
 % Define items used to determine how long to run sim
@@ -56,52 +74,48 @@ N_timeSteps = floor(TotalTime/deltaT)+1; % This is the number of time steps we s
 
 %% Main code
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   __  __       _       
-%  |  \/  |     (_)      
-%  | \  / | __ _ _ _ __  
-%  | |\/| |/ _` | | '_ \ 
+%   __  __       _
+%  |  \/  |     (_)
+%  | \  / | __ _ _ _ __
+%  | |\/| |/ _` | | '_ \
 %  | |  | | (_| | | | | |
 %  |_|  |_|\__,_|_|_| |_|
-% 
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Run the simulation in SIMULINK
-sim('mdl_VD_dtSlipAngle.slx', TotalTime);
+sim('mdl_VD_dtNormalForce.slx', TotalTime);
 
 %% Run the simulation in MATLAB
 % variables to store outputs of Matlab simulation
-matlab_alpha = nan(N_timeSteps,4);
-matlab_time  = nan(N_timeSteps,1);
+matlab_Fz = nan(N_timeSteps,4);
+matlab_time = nan(N_timeSteps,1);
 
 counter = 1;
 for t = 0:deltaT:TotalTime
-matlab_time(counter) = t;
+    matlab_time(counter) = t;
 
-%% Inputs
-delta_f = (1-1*(0<t-Period))*steering_amplitude*sin((2*pi/Period)*t); % front steering angle
-steering_angle = [delta_f; delta_f; 0; 0];
+    %% Inputs
+    ax = acceleration(1)*sin(pi/Period*t);
+    ay = acceleration(2)*sin(pi/Period*t);
 
-Vx = abs(U*sin((0.5*pi/Period)*t + pi/2));
-Vy = V*sin((pi/Period)*t);
-yaw_rate = r*sin((2*pi/Period)*t);
+    %% Normal Forces
+    normal_force = fcn_VD_dtNormalForce([ax;ay],vehicle,road_properties,...
+        type_of_transfer);
+    matlab_Fz(counter,:) = normal_force';
 
-%% Slips
-% Slip Angle/Lateral Slip
-slip_angle = fcn_VD_dtSlipAngle(Vx,Vy,yaw_rate,steering_angle,vehicle);
-matlab_alpha(counter,:) = slip_angle';
-
-counter = counter+1;
+    counter = counter+1;
 end
 
 %% Plots to compare MATLAB simulation with Simulink simulation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   _____  _       _   _   _             
-%  |  __ \| |     | | | | (_)            
-%  | |__) | | ___ | |_| |_ _ _ __   __ _ 
+%   _____  _       _   _   _
+%  |  __ \| |     | | | | (_)
+%  | |__) | | ___ | |_| |_ _ _ __   __ _
 %  |  ___/| |/ _ \| __| __| | '_ \ / _` |
 %  | |    | | (_) | |_| |_| | | | | (_| |
 %  |_|    |_|\___/ \__|\__|_|_| |_|\__, |
 %                                   __/ |
-%                                  |___/ 
+%                                  |___/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-fcn_VD_plotCompareSlipAngle(time,alpha,'Simulink',...
-    matlab_time,matlab_alpha,'Matlab');
+fcn_VD_plotCompareNormalForce(time,Fz,'Simulink',...
+    matlab_time,matlab_Fz,'Matlab');
