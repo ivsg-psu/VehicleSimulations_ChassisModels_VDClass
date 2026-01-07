@@ -66,7 +66,7 @@ type_of_transfer = 'longitudinal';
 % Items used to define steering input
 steering_amplitude = 2*pi/180; % 2 degrees of steering amplitude for input sinewave
 Period = 3; % Units are seconds. A typical lane change is about 3 to 4 seconds based on experimental highway measurements
-wheel_torque = [0; 5]; % wheel torque [Nm]
+wheel_torque = [0; 5]; % wheel torque [Nm] of front/rear
 
 % Define items used to determine how long to run sim
 TotalTime = 1.5*Period; % This is how long the simulation will run.
@@ -152,12 +152,50 @@ end
 %                                   __/ |
 %                                  |___/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-fcn_VD_plotTimeSlipAngle(matlab_time,matlab_alpha);
-fcn_VD_plotTimeWheelSlip(matlab_time,matlab_kappa);
-fcn_VD_plotTimeNormalForce(matlab_time,matlab_Fz);
-fcn_VD_plotTimeLongitudinalTireForce(matlab_time,matlab_Fx);
-fcn_VD_plotTimeLateralTireForce(matlab_time,matlab_Fy);
-fcn_VD_plotTimeWheelSpeed(matlab_time,matlab_States(:,(4:5)));
+
+if 1==0
+    time = matlab_time;
+    slipAngles = matlab_alpha;
+    filename = fullfile(pwd,'Data','testing_data_for_plotTimeSlipAngle');
+    save(filename,'time','slipAngles')
+
+    wheelSlips = matlab_kappa;
+    filename = fullfile(pwd,'Data','testing_data_for_plotTimeWheelSlip');
+    save(filename,'time','wheelSlips')
+    
+    normalForces = matlab_Fz;
+    filename = fullfile(pwd,'Data','testing_data_for_plotTimeNormalForce');
+    save(filename,'time','normalForces')
+    
+    longTireForces = matlab_Fx;
+    filename = fullfile(pwd,'Data','testing_data_for_plotTimeLongitudinalTireForce');
+    save(filename,'time','longTireForces')
+    
+    latTireForces = matlab_Fx;
+    filename = fullfile(pwd,'Data','testing_data_for_plotTimeLateralTireForce');
+    save(filename,'time','latTireForces')
+    
+    wheelSpeeds = matlab_States(:,(4:5));
+    filename = fullfile(pwd,'Data','testing_data_for_plotTimeWheelSpeed');
+    save(filename,'time','wheelSpeeds')
+    
+    Ntimes = length(time(:,1));
+    wheelTorques = ones(Ntimes,1)*[wheel_torque(1) wheel_torque(1) wheel_torque(2) wheel_torque(2)];
+    filename = fullfile(pwd,'Data','testing_data_for_plotTimeWheelTorque');
+    save(filename,'time','wheelTorques')
+    
+    
+
+
+end
+
+
+fcn_VD_plotTimeSlipAngle(matlab_time,matlab_alpha); %
+fcn_VD_plotTimeWheelSlip(matlab_time,matlab_kappa); %
+fcn_VD_plotTimeNormalForce(matlab_time,matlab_Fz); %
+fcn_VD_plotTimeLongitudinalTireForce(matlab_time,matlab_Fx); %
+fcn_VD_plotTimeLateralTireForce(matlab_time,matlab_Fy); %
+fcn_VD_plotTimeWheelSpeed(matlab_time,matlab_States(:,(4:5))); %
 
 fcn_VD_plotTimeLongitudinalVelocity(matlab_time,matlab_States(:,1));
 fcn_VD_plotTimeLateralVelocity(matlab_time,matlab_States(:,2));

@@ -1,25 +1,19 @@
-function slip_angles = fcn_VD_stSlipAngle(U, V, r, steering_angle, vehicle, varargin)
-%% fcn_VD_stSlipAngle
-%   This function computes slip-angles for front and rear wheels. It
-%   uses a single-track/bicycle model.
-%
-%   Coordinate System: ISO
+function fcn_VD_plotTimeWheelSpeed(time, wheelSpeeds, varargin)
+%% fcn_VD_plotTimeWheelSpeed
+%   fcn_VD_plotTimeWheelSpeed plots the longitudinal wheel speed(s) versus
+%   time where the columns are wheel slips of each tire.
 %
 % FORMAT:
 %
-%   slip_angles = fcn_VD_stSlipAngle(U, V, r, steering_angle, vehicle, (figNum))
+%       fcn_VD_plotTimeWheelSpeed(time, wheelSpeeds, (figNum))
 %
 % INPUTS:
 %
-%      U: Longitudinal velocity [m/s]
+%     time: an Nx1 vector representing time [sec]
 %
-%      V: Lateral velocity [m/s]
-%
-%      r: Yaw rate [rad/s]
-%
-%      steering_angle: A 2x1 vector of steering angles [rad] [Front; Rear]
-%
-%      vehicle: MATLAB structure containing vehicle properties
+%     wheelSpeeds: an NxM vector representing the longitudinal wheel speed(s)
+%     of M tires [rad/sec], in the following order: FL, FR, RL, RR if 4
+%     columns, or F and R if 2 columns
 %
 %     (OPTIONAL INPUTS)
 %
@@ -27,7 +21,7 @@ function slip_angles = fcn_VD_stSlipAngle(U, V, r, steering_angle, vehicle, vara
 %
 % OUTPUTS:
 %
-%     slip_angles: A 2x1 vector containing slip-angles of front and rear wheels [rad]
+%     (none)
 %
 % DEPENDENCIES:
 %
@@ -35,7 +29,7 @@ function slip_angles = fcn_VD_stSlipAngle(U, V, r, steering_angle, vehicle, vara
 %
 % EXAMPLES:
 %
-%     See the script: script_test_fcn_VD_stSlipAngle
+%     See the script: script_test_fcn_VD_plotTimeWheelSpeed
 %     for a full test suite.
 %
 % This function was written on 2021_08_13 by Satya Prasad and is maintained
@@ -48,7 +42,7 @@ function slip_angles = fcn_VD_stSlipAngle(U, V, r, steering_angle, vehicle, vara
 % 
 % 2026_01_07 by Sean Brennan, sbrennan@psu.edu
 % - Fixed header formatting to standard form
-% - Renamed "slip_+angle" variable to be wheelSlips
+% - Renamed "slip_+angle" variable to be wheelSpeeds
 
 % TO-DO:
 %
@@ -60,7 +54,7 @@ function slip_angles = fcn_VD_stSlipAngle(U, V, r, steering_angle, vehicle, vara
 % Check if flag_max_speed set. This occurs if the figNum variable input
 % argument (varargin) is given a number of -1, which is not a valid figure
 % number.
-MAX_NARGIN = 6; % The largest Number of argument inputs to the function
+MAX_NARGIN = 3; % The largest Number of argument inputs to the function
 flag_max_speed = 0; % The default. This runs code with all error checking
 if (nargin==MAX_NARGIN && isequal(varargin{end},-1))
     flag_do_debug = 0; % Flag to plot the results for debugging
@@ -103,24 +97,14 @@ end
 if 0==flag_max_speed
     if flag_check_inputs
         % Are there the right number of inputs?
-        narginchk(5,MAX_NARGIN);
+        narginchk(2,MAX_NARGIN);
 
-        % Check the U input to be sure it has 1 column and 1 row, positive
-        fcn_DebugTools_checkInputsToFunctions(U, 'positive_1column_of_numbers',[1 1]);
+        % Check the time input to be sure it has 1 column and 1 row, positive
+        fcn_DebugTools_checkInputsToFunctions(time, 'positive_1column_of_numbers',[1 2]);
+        Ndata = size(time,1);
 
-        % Check the V input to be sure it has 1 column and 1 row
-        fcn_DebugTools_checkInputsToFunctions(V, '1column_of_numbers',[1 1]);
-
-        % Check the r input to be sure it has 1 column and 1 row
-        fcn_DebugTools_checkInputsToFunctions(r, '1column_of_numbers',[1 1]);
-
-        % Check the steering_angle input to be sure it has 1 column and 2 rows
-        fcn_DebugTools_checkInputsToFunctions(steering_angle, '1column_of_numbers',[2 2]);
-
-        % Check the vehicle input to be sure it is right structure
-        template_structure = struct('m',{},'Izz',{},'Iw',{},'Re',{},'a',{},'L',{},'b',{},'d',{},'h_cg',{},'Ca',{},'Cx',{});
-        fcn_DebugTools_checkInputsToFunctions(vehicle, 'likestructure',template_structure);
-
+        % Check the wheelSpeeds input to be sure it has 1 column and 1 row, positive
+        fcn_DebugTools_checkInputsToFunctions(wheelSpeeds, '1orMorecolumn_of_numbers',[Ndata Ndata]);
 
     end
 end
@@ -162,13 +146,18 @@ end
 
 % Does user want to show the plots?
 flag_do_plots = 1; % Default is to NOT show plots
-figNum = []; %#ok<NASGU>
+figNum = [];
 if (0==flag_max_speed) && (MAX_NARGIN == nargin) 
     temp = varargin{end};
     if ~isempty(temp) % Did the user NOT give an empty figure number?
-        figNum = temp; %#ok<NASGU>
+        figNum = temp; 
         flag_do_plots = 1;
     end
+end
+
+if isempty(figNum)
+    fig = figure;
+    figNum = fig.Number;
 end
 
 %% Differential equation for 5-DOF model
@@ -182,9 +171,7 @@ end
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-wheel_velocity = fcn_VD_stWheelVelocity(U,V,r,vehicle); % calculate wheel velocities
-slip_angles    = atan(wheel_velocity(:,2)./wheel_velocity(:,1))-steering_angle; % Slip angle
-
+Ntires = size(wheelSpeeds,2);
 
 %% Plot the results (for debugging)?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -199,45 +186,45 @@ slip_angles    = atan(wheel_velocity(:,2)./wheel_velocity(:,1))-steering_angle; 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if flag_do_plots
 
-    % max_value = max(wheelSlips, [], 'all');
-    % min_value = min(wheelSlips, [], 'all');
-    % offset    = 0.1*(max_value-min_value);
-    % if 0 == offset
-    %     offset = 0.5;
-    % end
-    % 
-    % h_fig = figure(figNum);
-    % set(h_fig, 'Name', 'fcn_VD_plotTimeWheelSlip');
-    % % width = 600; height = 400; right = 100; bottom = 400;
-    % % set(gcf, 'position', [right, bottom, width, height])
-    % clf
-    % hold on
-    % 
-    % if 4==Ntires
-    %     colorStrings = {'b','r','m--','g--'};
-    %     lineWidths = [2.4; 1.2; 2.4; 1.2];
-    %     labelStrings = {'FL','FR','RL','RR'};
-    % elseif 2== Ntires
-    %     colorStrings = {'b','r'};
-    %     lineWidths = [2.4; 2.4];
-    %     labelStrings = {'F','R'};
-    % else
-    %     error('Plotting not set up yet to plot %.0f tires. Throwing an error.',Ntires);
-    % end
-    % 
-    % for ith_tire = 1:Ntires
-    %     plot(time,wheelSlips(:,ith_tire),colorStrings{ith_tire},'Linewidth',lineWidths(ith_tire), 'DisplayName', labelStrings{ith_tire});
-    % end
-    % 
-    % grid on
-    % legend('Interpreter','latex','Fontsize',13,...
-    %     'NumColumns',1,'Location','best')
-    % 
-    % set(gca,'Fontsize',13)
-    % ylabel('Wheel Slip $[unitless]$','Interpreter','latex','Fontsize',18)
-    % xlabel('Time $[s]$','Interpreter','latex','Fontsize',18)
-    % ylim([min_value-offset max_value+offset])
-    % xlim([time(1) time(end)])
+    max_value = max(wheelSpeeds, [], 'all');
+    min_value = min(wheelSpeeds, [], 'all');
+    offset    = 0.1*(max_value-min_value);
+    if 0 == offset
+        offset = 0.5;
+    end
+
+    h_fig = figure(figNum);
+    set(h_fig, 'Name', 'fcn_VD_plotTimeWheelSpeed');
+    % width = 600; height = 400; right = 100; bottom = 400;
+    % set(gcf, 'position', [right, bottom, width, height])
+    clf
+    hold on
+
+    if 4==Ntires
+        colorStrings = {'b','r','m--','g--'};
+        lineWidths = [2.4; 1.2; 2.4; 1.2];
+        labelStrings = {'FL','FR','RL','RR'};
+    elseif 2== Ntires
+        colorStrings = {'b','r'};
+        lineWidths = [2.4; 2.4];
+        labelStrings = {'F','R'};
+    else
+        error('Plotting not set up yet to plot %.0f tires. Throwing an error.',Ntires);
+    end
+
+    for ith_tire = 1:Ntires
+        plot(time,wheelSpeeds(:,ith_tire),colorStrings{ith_tire},'Linewidth',lineWidths(ith_tire), 'DisplayName', labelStrings{ith_tire});
+    end
+
+    grid on
+    legend('Interpreter','latex','Fontsize',13,...
+        'NumColumns',1,'Location','best')
+
+    set(gca,'Fontsize',13)
+    ylabel('Wheel Speed $[rad/sec]$','Interpreter','latex','Fontsize',18)
+    xlabel('Time $[s]$','Interpreter','latex','Fontsize',18)
+    ylim([min_value-offset max_value+offset])
+    xlim([time(1) time(end)])
 
 
     

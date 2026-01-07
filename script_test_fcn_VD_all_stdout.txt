@@ -641,3 +641,438 @@ fcn_VD_plotTimeWheelSpeed(matlab_time,matlab_States(:,(4:5)));
 Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_plotTimeWheelSpeed', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeWheelSpeed.m', 64)" style="font-weight:bold">fcn_VD_plotTimeWheelSpeed</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeWheelSpeed.m',64,0)">line 64</a>)
 plot(time,wheel_speed(:,3),'m--','Linewidth',2.4)
 } 
+fcn_VD_plotTimeLongitudinalVelocity(matlab_time,matlab_States(:,1));
+fcn_VD_plotTimeLateralVelocity(matlab_time,matlab_States(:,2));
+fcn_VD_plotTimeYawRate(matlab_time,matlab_States(:,3));
+fcn_VD_plotTimeLongitudinalAcceleration(matlab_time,matlab_States(:,6));
+fcn_VD_plotTimeLateralAcceleration(matlab_time,matlab_States(:,7));
+
+fcn_VD_plotTrajectory(matlab_pose(:,[1,2]));
+fcn_VD_plotTimeYaw(matlab_time,matlab_pose(:,3));
+clc
+close all
+script_test_fcn_VD_5dofStateEquation
+Figure: 1XXXXXX: DEMO cases
+Figure 10001: DEMO case: basic function call
+Figure: 2XXXXXX: TEST mode cases
+Figure 20001: TEST case: This one returns nothing since there is no portion of the path in criteria
+Figure: 8XXXXXX: FAST mode cases
+Figure: 80001: FAST mode, empty figNum
+Figure: 80002: FAST mode, figNum=-1
+Figure: 80003: FAST mode comparisons
+script_test_fcn_VD_st5dofModel
+[Warning: fcn_VD_checkInputsToFunctions is being deprecated. Use fcn_DebugTools_checkInputsToFunctions instead.] 
+[> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_checkInputsToFunctions', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Functions\DEPRECATED\fcn_VD_checkInputsToFunctions.m', 15)" style="font-weight:bold">fcn_VD_checkInputsToFunctions</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Functions\DEPRECATED\fcn_VD_checkInputsToFunctions.m',15,0)">line 15</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_stSlipAngle', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\fcn_VD_stSlipAngle.m', 54)" style="font-weight:bold">fcn_VD_stSlipAngle</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\fcn_VD_stSlipAngle.m',54,0)">line 54</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_st5dofModel', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m', 109)" style="font-weight:bold">script_test_fcn_VD_st5dofModel</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m',109,0)">line 109</a>)] 
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+{Index in position 2 exceeds array bounds. Index must not exceed 2.
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_plotTimeWheelSlip', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeWheelSlip.m', 64)" style="font-weight:bold">fcn_VD_plotTimeWheelSlip</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeWheelSlip.m',64,0)">line 64</a>)
+plot(time,wheel_slip(:,3),'m--','Linewidth',2.4)
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_st5dofModel', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m', 156)" style="font-weight:bold">script_test_fcn_VD_st5dofModel</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m',156,0)">line 156</a>)
+fcn_VD_plotTimeWheelSlip(matlab_time,matlab_kappa);
+} 
+opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m',156,0)
+script_test_fcn_VD_st5dofModel
+[Warning: fcn_VD_checkInputsToFunctions is being deprecated. Use fcn_DebugTools_checkInputsToFunctions instead.] 
+[> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_checkInputsToFunctions', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Functions\DEPRECATED\fcn_VD_checkInputsToFunctions.m', 15)" style="font-weight:bold">fcn_VD_checkInputsToFunctions</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Functions\DEPRECATED\fcn_VD_checkInputsToFunctions.m',15,0)">line 15</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_stSlipAngle', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\fcn_VD_stSlipAngle.m', 54)" style="font-weight:bold">fcn_VD_stSlipAngle</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\fcn_VD_stSlipAngle.m',54,0)">line 54</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_st5dofModel', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m', 109)" style="font-weight:bold">script_test_fcn_VD_st5dofModel</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m',109,0)">line 109</a>)] 
+MATLAB has lost its connection to the license server.
+MATLAB will make 9 more reconnection attempt(s) and then exit. Any unsaved changes will be lost.
+
+
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbquit; end
+uiopen('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Utilities\PathClass_v2025_11_13\Functions\script_test_fcn_Path_fillSamplePaths.m',1)
+MATLAB has lost its connection to the license server.
+MATLAB will make 8 more reconnection attempt(s) and then exit. Any unsaved changes will be lost.
+
+
+uiopen('C:\Users\snb10\Desktop\GitHubRepos\IVSG\FeatureExtraction\DataClean\BreakDataIntoLaps\Functions\script_test_fcn_Laps_breakDataIntoLapIndices.m',1)
+script_test_fcn_VD_plotTimeSlipAngle
+Figure: 1XXXXXX: DEMO cases
+Figure 10001: DEMO case: basic call with 4 tires
+{Execution of script script_test_fcn_DebugTools_checkInputsToFunctions as a function is not supported:
+C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Utilities\DebugTools_v2025_12_18\Functions\script_test_fcn_DebugTools_checkInputsToFunctions.m
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_plotTimeSlipAngle', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeSlipAngle.m', 106)" style="font-weight:bold">fcn_VD_plotTimeSlipAngle</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeSlipAngle.m',106,0)">line 106</a>)
+        script_test_fcn_DebugTools_checkInputsToFunctions(slipAngles, '1orMorecolumn_of_numbers',[Ndata Ndata]);
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_plotTimeSlipAngle', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\script_test_fcn_VD_plotTimeSlipAngle.m', 46)" style="font-weight:bold">script_test_fcn_VD_plotTimeSlipAngle</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\script_test_fcn_VD_plotTimeSlipAngle.m',46,0)">line 46</a>)
+fcn_VD_plotTimeSlipAngle(time, slipAngles, (figNum))
+} 
+script_test_fcn_VD_plotTimeSlipAngle
+Figure: 1XXXXXX: DEMO cases
+Figure 10001: DEMO case: basic call with 4 tires
+{Unrecognized function or variable 'fig_num'.
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_plotTimeSlipAngle', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeSlipAngle.m', 195)" style="font-weight:bold">fcn_VD_plotTimeSlipAngle</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeSlipAngle.m',195,0)">line 195</a>)
+    h_fig = figure(fig_num);
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_plotTimeSlipAngle', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\script_test_fcn_VD_plotTimeSlipAngle.m', 46)" style="font-weight:bold">script_test_fcn_VD_plotTimeSlipAngle</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\script_test_fcn_VD_plotTimeSlipAngle.m',46,0)">line 46</a>)
+fcn_VD_plotTimeSlipAngle(time, slipAngles, (figNum))
+} 
+opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeSlipAngle.m',195,0)
+script_test_fcn_VD_plotTimeSlipAngle
+Figure: 1XXXXXX: DEMO cases
+Figure 10001: DEMO case: basic call with 4 tires
+{Unrecognized function or variable 'cell_array_of_lap_indices'.
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_plotTimeSlipAngle', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\script_test_fcn_VD_plotTimeSlipAngle.m', 51)" style="font-weight:bold">script_test_fcn_VD_plotTimeSlipAngle</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\script_test_fcn_VD_plotTimeSlipAngle.m',51,0)">line 51</a>)
+assert(iscell(cell_array_of_lap_indices));
+} 
+script_test_fcn_VD_plotTimeSlipAngle
+Figure: 1XXXXXX: DEMO cases
+Figure 10001: DEMO case: basic call with 4 tires
+Figure: 2XXXXXX: TEST mode cases
+Figure 20001: TEST case: This one returns nothing since there is no portion of the path in criteria
+Figure: 8XXXXXX: FAST mode cases
+Figure: 80001: FAST mode, empty figNum
+{Error using <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_plotTimeSlipAngle>fcn_INTERNAL_loadExampleData')" style="font-weight:bold">script_test_fcn_VD_plotTimeSlipAngle>fcn_INTERNAL_loadExampleData</a>
+Too many input arguments.
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_plotTimeSlipAngle', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\script_test_fcn_VD_plotTimeSlipAngle.m', 136)" style="font-weight:bold">script_test_fcn_VD_plotTimeSlipAngle</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\script_test_fcn_VD_plotTimeSlipAngle.m',136,0)">line 136</a>)
+tempXYdata = fcn_INTERNAL_loadExampleData(dataSetNumber);
+} 
+Figure 10001: DEMO case: basic call with 4 tires
+Figure 10001: DEMO case: basic call with 4 tires
+Figure 10001: DEMO case: basic call with 4 tires
+whos slipAngles
+  Name              Size            Bytes  Class     Attributes
+
+  slipAngles      451x2              7216  double              
+
+uiopen('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\script_test_fcn_VD_plotTimeWheelSlip.m',1)
+script_test_fcn_VD_plotTimeSlipAngle
+Figure: 1XXXXXX: DEMO cases
+Figure 10001: DEMO case: basic call with 4 tires
+Figure: 2XXXXXX: TEST mode cases
+Figure: 8XXXXXX: FAST mode cases
+Figure: 80001: FAST mode, empty figNum
+Figure: 80002: FAST mode, figNum=-1
+Figure: 80003: FAST mode comparisons
+script_test_fcn_VD_plotTimeSlipAngle
+Figure: 1XXXXXX: DEMO cases
+Figure 10001: DEMO case: basic call with 4 tires
+Figure: 2XXXXXX: TEST mode cases
+Figure: 8XXXXXX: FAST mode cases
+Figure: 80001: FAST mode, empty figNum
+Figure: 80002: FAST mode, figNum=-1
+close all
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+Error using <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('save')" style="font-weight:bold">save</a>
+Variable 'wheelSlips' not found.
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_st5dofModel', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m', 165)" style="font-weight:bold">script_test_fcn_VD_st5dofModel</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m',165,0)">line 165</a>)
+    save(filename,'time','wheelSlips')
+
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbquit; end
+script_test_fcn_VD_plotTimeSlipAngle
+Figure: 1XXXXXX: DEMO cases
+Figure 10001: DEMO case: basic call with 4 tires
+Figure: 2XXXXXX: TEST mode cases
+Figure: 8XXXXXX: FAST mode cases
+Figure: 80001: FAST mode, empty figNum
+Figure: 80002: FAST mode, figNum=-1
+script_test_fcn_VD_plotTimeWheelSlip
+Figure: 1XXXXXX: DEMO cases
+Figure 10001: DEMO case: basic call with 4 tires
+Figure: 2XXXXXX: TEST mode cases
+Figure: 8XXXXXX: FAST mode cases
+Figure: 80001: FAST mode, empty figNum
+Figure: 80002: FAST mode, figNum=-1
+uiopen('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeNormalForce.m',1)
+uiopen('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\script_test_fcn_VD_plotTimeNormalForce.m',1)
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbquit; end
+script_test_fcn_VD_plotTimeNormalForce
+Figure: 1XXXXXX: DEMO cases
+Figure 10001: DEMO case: basic call with 4 tires
+Figure: 2XXXXXX: TEST mode cases
+Figure: 8XXXXXX: FAST mode cases
+Figure: 80001: FAST mode, empty figNum
+Figure: 80002: FAST mode, figNum=-1
+uiopen('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\script_test_fcn_VD_plotLongitudinalTireForce.m',1)
+uiopen('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeLongitudinalTireForce_OLD.m',1)
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbquit; end
+script_test_fcn_VD_plotLongitudinalTireForce
+Figure: 1XXXXXX: DEMO cases
+Figure 10001: DEMO case: basic call with 4 tires
+{Error using <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('load')" style="font-weight:bold">load</a>
+Unable to find file or directory
+'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Data\testing_data_for_plotTimeLongitudinalTireForce'.
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_plotLongitudinalTireForce>fcn_INTERNAL_loadExampleData', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\script_test_fcn_VD_plotLongitudinalTireForce.m', 241)" style="font-weight:bold">script_test_fcn_VD_plotLongitudinalTireForce>fcn_INTERNAL_loadExampleData</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\script_test_fcn_VD_plotLongitudinalTireForce.m',241,0)">line 241</a>)
+load(filename,'time','longTireForces')
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_plotLongitudinalTireForce', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\script_test_fcn_VD_plotLongitudinalTireForce.m', 43)" style="font-weight:bold">script_test_fcn_VD_plotLongitudinalTireForce</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\script_test_fcn_VD_plotLongitudinalTireForce.m',43,0)">line 43</a>)
+[time, longTireForces] = fcn_INTERNAL_loadExampleData;
+} 
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbquit; end
+script_test_fcn_VD_plotLongitudinalTireForce
+Figure: 1XXXXXX: DEMO cases
+Figure 10001: DEMO case: basic call with 4 tires
+Figure: 2XXXXXX: TEST mode cases
+Figure: 8XXXXXX: FAST mode cases
+Figure: 80001: FAST mode, empty figNum
+Figure: 80002: FAST mode, figNum=-1
+uiopen('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeLateralTireForce_OLD.m',1)
+uiopen('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeLateralTireForce.m',1)
+uiopen('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\script_test_fcn_VD_plotLateralTireForce.m',1)
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbquit; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbquit; end
+script_test_fcn_VD_plotLateralTireForce
+Figure: 1XXXXXX: DEMO cases
+Figure 10001: DEMO case: basic call with 4 tires
+Figure: 2XXXXXX: TEST mode cases
+Figure: 8XXXXXX: FAST mode cases
+Figure: 80001: FAST mode, empty figNum
+Figure: 80002: FAST mode, figNum=-1
+clc
+script_test_fcn_VD_plotLateralTireForce
+Figure: 1XXXXXX: DEMO cases
+Figure 10001: DEMO case: basic call with 4 tires
+Figure: 2XXXXXX: TEST mode cases
+Figure: 8XXXXXX: FAST mode cases
+Figure: 80001: FAST mode, empty figNum
+Figure: 80002: FAST mode, figNum=-1
+close all
+uiopen('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\script_test_fcn_VD_plotTimeWheelSpeed.m',1)
+uiopen('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeWheelSpeed_OLD.m',1)
+uiopen('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeWheelSpeed.m',1)
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbquit; end
+script_test_fcn_VD_plotTimeWheelSpeed
+Figure: 1XXXXXX: DEMO cases
+Figure 10001: DEMO case: basic call with 4 tires
+Figure: 2XXXXXX: TEST mode cases
+Figure: 8XXXXXX: FAST mode cases
+Figure: 80001: FAST mode, empty figNum
+Figure: 80002: FAST mode, figNum=-1
+uiopen('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeWheelTorque_OLD.m',1)
+uiopen('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeWheelTorque.m',1)
+uiopen('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\script_test_fcn_VD_plotTimeWheelTorque.m',1)
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbquit; end
+script_test_fcn_VD_plotTimeWheelTorque
+Figure: 1XXXXXX: DEMO cases
+Figure 10001: DEMO case: basic call with 4 tires
+Figure: 2XXXXXX: TEST mode cases
+Figure: 8XXXXXX: FAST mode cases
+Figure: 80001: FAST mode, empty figNum
+Figure: 80002: FAST mode, figNum=-1
+uiopen('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\VD_Utilities_DualTrack\fcn_VD_plotTimeLateralOffsetError_OLD.m',1)
+script_test_fcn_VD_st5dofModel
+[Warning: fcn_VD_checkInputsToFunctions is being deprecated. Use fcn_DebugTools_checkInputsToFunctions instead.] 
+[> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_checkInputsToFunctions', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Functions\DEPRECATED\fcn_VD_checkInputsToFunctions.m', 15)" style="font-weight:bold">fcn_VD_checkInputsToFunctions</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Functions\DEPRECATED\fcn_VD_checkInputsToFunctions.m',15,0)">line 15</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_stSlipAngle', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\fcn_VD_stSlipAngle.m', 54)" style="font-weight:bold">fcn_VD_stSlipAngle</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\fcn_VD_stSlipAngle.m',54,0)">line 54</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_st5dofModel', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m', 109)" style="font-weight:bold">script_test_fcn_VD_st5dofModel</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m',109,0)">line 109</a>)] 
+opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\fcn_VD_stSlipAngle.m',54,0)
+if system_dependent('IsDebugMode')==1, dbquit; end
+opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m',109,0)
+script_test_fcn_VD_st5dofModel
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+steering_angle
+
+steering_angle =
+
+     0
+     0
+
+        % Check the steering_angle input to be sure it has 1 column and 2 rows
+        fcn_DebugTools_checkInputsToFunctions(steering_angle, '2column_of_numbers',[1 1]);
+{Error using <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_stSlipAngle', 'fcn_VD_stSlipAngle.m', 118)" style="font-weight:bold">fcn_VD_stSlipAngle</a> (<a href="matlab: opentoline('fcn_VD_stSlipAngle.m',118,0)">line 118</a>)
+The steering_angle input must have exactly 2 columns.
+
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_st5dofModel', 'script_test_fcn_VD_st5dofModel.m', 109)" style="font-weight:bold">script_test_fcn_VD_st5dofModel</a> (<a href="matlab: opentoline('script_test_fcn_VD_st5dofModel.m',109,0)">line 109</a>)
+} 
+        % Check the steering_angle input to be sure it has 1 column and 2 rows
+        fcn_DebugTools_checkInputsToFunctions(steering_angle, '1column_of_numbers',[2 2]);
+        % Check the vehicle input to be sure it is right structure
+        template_structure = struct('m',{},'Izz',{},'Iw',{},'Re',{},'a',{},'L',{},'b',{},'d',{},'h_cg',{},'Ca',{},'Cx',{});
+        fcn_DebugTools_checkInputsToFunctions(vehicle, 'likestructure',template_structure);
+if system_dependent('IsDebugMode')==1, dbquit all; end
+clc
+script_test_fcn_VD_st5dofModel
+[Warning: fcn_VD_checkInputsToFunctions is being deprecated. Use fcn_DebugTools_checkInputsToFunctions instead.] 
+[> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_checkInputsToFunctions', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Functions\DEPRECATED\fcn_VD_checkInputsToFunctions.m', 15)" style="font-weight:bold">fcn_VD_checkInputsToFunctions</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Functions\DEPRECATED\fcn_VD_checkInputsToFunctions.m',15,0)">line 15</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_stWheelVelocity', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\fcn_VD_stWheelVelocity.m', 55)" style="font-weight:bold">fcn_VD_stWheelVelocity</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\fcn_VD_stWheelVelocity.m',55,0)">line 55</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('fcn_VD_stSlipAngle', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\fcn_VD_stSlipAngle.m', 185)" style="font-weight:bold">fcn_VD_stSlipAngle</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\fcn_VD_stSlipAngle.m',185,0)">line 185</a>)
+In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_fcn_VD_st5dofModel', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m', 109)" style="font-weight:bold">script_test_fcn_VD_st5dofModel</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_fcn_VD_st5dofModel.m',109,0)">line 109</a>)] 
+if system_dependent('IsDebugMode')==1, dbquit; end
+clc
+close all
+script_demo_VD
+if system_dependent('IsDebugMode')==1, dbcont; end
+	Adding library: DebugTools_v2025_12_18 ...Done.
+	Copying function fcn_DebugTools_autoInstallRepos.m to Installer folder...Done.
+	Skipping already installed library: GeometryClass_v2025_10_20
+	Skipping already installed library: PathClass_v2025_11_13
+	Skipping already installed library: GPSClass_v2023_06_29
+Welcome to the demo code for the Vehicle Dynamics (VD) class library!
+uiopen('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_all_functions.m',1)
+script_test_all_functions
+<strong>Checking root folder:
+	C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB:
+</strong><strong></strong><strong>	Checking that there is 1 m-file in root folder: </strong><strong>FAILED... 11 were found in folder: 
+		C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\!
+</strong><strong>	Checking that there is a demo file, script_demo_VD.m: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a README.md file: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Functions subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Data subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Documents subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Installer subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Images subfolder: </strong><strong>PASSED.
+</strong><strong>Checking main demo file:
+	script_demo_VD.m:
+</strong><strong>	Checking that main demo contains required strings: </strong><strong>	Checking that it contains "REVISION HISTORY": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "TO-DO": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "MATLABFLAG_VD_FLAG_CHECK_INPUTS": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "MATLABFLAG_VD_FLAG_DO_DEBUG": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "fcn_DebugTools_autoInstallRepos": </strong><strong>PASSED.
+</strong><strong>Checking functions folder:
+	C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB:
+</strong><strong>	Checking that functions folder contains no forbidden strings: </strong><strong>PASSED.
+</strong><strong>	Checking that functions folder contains no warning strings: </strong><strong>PASSED.
+</strong><strong>	Checking that all files in functions folder contains required strings: </strong><strong>FAILED.
+</strong>
+
+		m-filename                                                         	string found?	
+Folder: C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB:
+	1	fcn_VD_5dofStateEquation.m                                         	1            	
+	2	fcn_VD_bicycle2dofModel.m                                          	0            	
+	3	fcn_VD_st5dofForceEquation.m                                       	0            	
+	4	fcn_VD_st5dofModel.m                                               	1            	
+	5	fcn_VD_stAligningMomentBrush.m                                     	0            	
+	6	fcn_VD_stCombinedSlip.m                                            	0            	
+	7	fcn_VD_stEstimateFrictionCoefficient.m                             	0            	
+	8	fcn_VD_stLateralDynamics.m                                         	0            	
+	9	fcn_VD_stNormalForce.m                                             	0            	
+	10	fcn_VD_stSlipAngle.m                                               	1            	
+	11	fcn_VD_stTireForceBrush.m                                          	0            	
+	12	fcn_VD_stTireForceLinear.m                                         	0            	
+	13	fcn_VD_stWheel2BodyCoordinates.m                                   	0            	
+	14	fcn_VD_stWheelSlip.m                                               	0            	
+	15	fcn_VD_stWheelVelocity.m                                           	0            	
+	16	script_test_all_functions.m                                        	1            	
+	17	script_test_fcn_VD_5dofStateEquation.m                             	1            	
+	18	script_test_fcn_VD_bicycle2dofModel.m                              	1            	
+	19	script_test_fcn_VD_st5dofModel.m                                   	1            	
+	20	script_test_fcn_VD_stAligningMomentBrush.m                         	1            	
+	21	script_test_fcn_VD_stNormalForce.m                                 	1            	
+	22	script_test_fcn_VD_stSlipAngle.m                                   	1            	
+	23	script_test_fcn_VD_stTireForceBrush.m                              	1            	
+	24	script_test_fcn_VD_stWheelSlip.m                                   	1            	
+{Error using <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_all_functions', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_all_functions.m', 249)" style="font-weight:bold">script_test_all_functions</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_all_functions.m',249,0)">line 249</a>)
+A "REVISION HISTORY" required string was NOT found in one of the functions or scripts - see listing above. This
+should be fixed to maintain compatibilty.
+} 
+try open('fcn_VD_bicycle2dofModel'); catch edit('fcn_VD_bicycle2dofModel'); end
+try open('fcn_VD_5dofStateEquation'); catch edit('fcn_VD_5dofStateEquation'); end
+try open('fcn_VD_st5dofModel'); catch edit('fcn_VD_st5dofModel'); end
+script_test_all_functions
+<strong>Checking root folder:
+	C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB:
+</strong><strong></strong><strong>	Checking that there is 1 m-file in root folder: </strong><strong>FAILED... 11 were found in folder: 
+		C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\!
+</strong><strong>	Checking that there is a demo file, script_demo_VD.m: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a README.md file: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Functions subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Data subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Documents subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Installer subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Images subfolder: </strong><strong>PASSED.
+</strong><strong>Checking main demo file:
+	script_demo_VD.m:
+</strong><strong>	Checking that main demo contains required strings: </strong><strong>	Checking that it contains "REVISION HISTORY": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "TO-DO": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "MATLABFLAG_VD_FLAG_CHECK_INPUTS": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "MATLABFLAG_VD_FLAG_DO_DEBUG": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "fcn_DebugTools_autoInstallRepos": </strong><strong>PASSED.
+</strong><strong>Checking functions folder:
+	C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB:
+</strong><strong>	Checking that functions folder contains no forbidden strings: </strong><strong>PASSED.
+</strong><strong>	Checking that functions folder contains no warning strings: </strong><strong>PASSED.
+</strong><strong>	Checking that all files in functions folder contains required strings: </strong><strong>FAILED.
+</strong>
+
+		m-filename                                                         	string found?	
+Folder: C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB:
+	1	fcn_VD_5dofStateEquation.m                                         	1            	
+	2	fcn_VD_bicycle2dofModel.m                                          	1            	
+	3	fcn_VD_st5dofForceEquation.m                                       	0            	
+	4	fcn_VD_st5dofModel.m                                               	1            	
+	5	fcn_VD_stAligningMomentBrush.m                                     	0            	
+	6	fcn_VD_stCombinedSlip.m                                            	0            	
+	7	fcn_VD_stEstimateFrictionCoefficient.m                             	0            	
+	8	fcn_VD_stLateralDynamics.m                                         	0            	
+	9	fcn_VD_stNormalForce.m                                             	0            	
+	10	fcn_VD_stSlipAngle.m                                               	1            	
+	11	fcn_VD_stTireForceBrush.m                                          	0            	
+	12	fcn_VD_stTireForceLinear.m                                         	0            	
+	13	fcn_VD_stWheel2BodyCoordinates.m                                   	0            	
+	14	fcn_VD_stWheelSlip.m                                               	0            	
+	15	fcn_VD_stWheelVelocity.m                                           	0            	
+	16	script_test_all_functions.m                                        	1            	
+	17	script_test_fcn_VD_5dofStateEquation.m                             	1            	
+	18	script_test_fcn_VD_bicycle2dofModel.m                              	1            	
+	19	script_test_fcn_VD_st5dofModel.m                                   	1            	
+	20	script_test_fcn_VD_stAligningMomentBrush.m                         	1            	
+	21	script_test_fcn_VD_stNormalForce.m                                 	1            	
+	22	script_test_fcn_VD_stSlipAngle.m                                   	1            	
+	23	script_test_fcn_VD_stTireForceBrush.m                              	1            	
+	24	script_test_fcn_VD_stWheelSlip.m                                   	1            	
+{Error using <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_all_functions', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_all_functions.m', 249)" style="font-weight:bold">script_test_all_functions</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\VehicleSimulations\ChassisModels\VDClass\Bicycle_MATLAB\script_test_all_functions.m',249,0)">line 249</a>)
+A "REVISION HISTORY" required string was NOT found in one of the functions or scripts - see listing above. This
+should be fixed to maintain compatibilty.
+} 

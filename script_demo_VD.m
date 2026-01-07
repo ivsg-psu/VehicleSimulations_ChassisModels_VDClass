@@ -38,7 +38,7 @@ cd(filepath);
 %%% START OF STANDARD INSTALLER CODE %%%%%%%%%
 
 %% Clear paths and folders, if needed
-if 1==0
+if 1==1
     clear flag_Laps_Folders_Initialized
 end
 
@@ -113,7 +113,7 @@ if ~exist('flag_Laps_Folders_Initialized','var')
         'Bicycle_Simulink',...
         'DualTrack_MATLAB',...
         'DualTrack_Simulink',...
-        'VD_Utilities_DualTrack',...
+        'VD_plot',...
         'Datafiles'};
     fcn_DebugTools_addSubdirectoriesToPath(pwd,this_project_folders)
 
