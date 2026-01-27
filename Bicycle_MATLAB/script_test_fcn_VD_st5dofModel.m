@@ -203,9 +203,11 @@ fcn_VD_plotTimeYawRate(matlab_time,matlab_States(:,3));
 fcn_VD_plotTimeLongitudinalAcceleration(matlab_time,matlab_States(:,6));
 fcn_VD_plotTimeLateralAcceleration(matlab_time,matlab_States(:,7));
 
-filename = fullfile(pwd,'Data','testing_data_for_plotTimeWheelTorque');
-load(filename,'time','wheelTorques')
-
+if 1==0
+    trajectory = matlab_pose(:,[1,2]);
+    filename = fullfile(pwd,'Data','testing_data_for_plotTrajectory');
+    save(filename,'trajectory')
+end
 fcn_VD_plotTrajectory(matlab_pose(:,[1,2]));
 
 fcn_VD_plotTimeYaw(matlab_time,matlab_pose(:,3));
