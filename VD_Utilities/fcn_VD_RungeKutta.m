@@ -78,7 +78,7 @@ k2 = input_function(initial_time+time_interval/2, ...
 k3 = input_function(initial_time+time_interval/2, ...
                     initial_states+(time_interval/2)*k2);
 k4 = input_function(final_time, initial_states+time_interval*k3);
-final_states = initial_states + (time_interval/6)*(k1+2*k2+2*k3+k4);
+final_states = initial_states + (time_interval/6)*(k1 + 2*k2 +2*k3 + k4);
 
 %% Any debugging?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

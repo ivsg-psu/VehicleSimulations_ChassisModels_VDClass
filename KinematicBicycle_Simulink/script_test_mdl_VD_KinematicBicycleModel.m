@@ -1,4 +1,4 @@
-%% script_test_mdl_VD_KinematicPointMassModel.m
+%% script_test_mdl_VD_KinematicBicycleModel.m
 % Plots the results of a outputs of a simulink model: the all-integrator
 % form.
 
@@ -7,7 +7,7 @@
 % 2021_06_15 by Wushuang Bai and Satya Prasad, szm888@psu.edu
 % - First write of function
 % 
-% 2025_12_29 by Sean Brennan, sbrennan@psu.edu
+% 2026_01_27 by Sean Brennan, sbrennan@psu.edu
 % - Updated header formatting and comments
 % - Updated tab stops
 
@@ -35,7 +35,7 @@ close all; % close all the plots
 % Set core simulation inputs: time, the speed, and steering amplitude
 
 % Items used to define steering inputs
-steering_amplitude_degrees = 2; % 2 degrees of steering amplitude for input sinewave
+steering_amplitude_degrees = 20; % 2 degrees of steering amplitude for input sinewave
 Period = 3; % Units are seconds. A typical lane change is about 3 to 4 seconds based on experimental highway measurements
 
 % Define items used to determine how long to run sim, number of time
@@ -47,7 +47,7 @@ N_timeSteps = length(simulationTimes); % This is the number of time steps we sho
 
 U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: mph ~= 2* m/s)
 
-steering = steering_amplitude_degrees*sin((2*pi/Period)*simulationTimes); % steering angle
+steering = steering_amplitude_degrees*pi/180*sin((2*pi/Period)*simulationTimes); % steering angle
 
 steeringInputs = [simulationTimes steering];
 
@@ -104,7 +104,7 @@ for vehicle_i=1:N_vehicles
     Car = vehicle(vehicle_i).Car;
 
     % Run the simulation in SIMULINK
-    sim('mdl_VD_KinematicPointMassModel.slx', TotalTime);
+    sim('mdl_VD_KinematicBicycleModel.slx', TotalTime);
 
     % Save the results in a big array (for plotting in next part)
     % Before saving, we need to check if the full vector is shorter than

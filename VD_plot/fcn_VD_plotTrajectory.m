@@ -1,10 +1,10 @@
-function fcn_VD_plotTrajectory(trajectory, varargin)
+function h_plot = fcn_VD_plotTrajectory(trajectory, varargin)
 %% fcn_VD_plotTrajectory
-%   fcn_VD_plotTrajectory plots XY trajectory.
+%   h_plot = fcn_VD_plotTrajectory plots XY trajectory.
 %
 % FORMAT:
 %
-%       fcn_VD_plotTrajectory(trajectory, (figNum))
+%       h_plot = fcn_VD_plotTrajectory(trajectory, (figNum))
 %
 % INPUTS:
 %
@@ -16,7 +16,7 @@ function fcn_VD_plotTrajectory(trajectory, varargin)
 %
 % OUTPUTS:
 %
-%     (none)
+%     h_plot: the plot handle
 %
 % DEPENDENCIES:
 %
@@ -37,6 +37,8 @@ function fcn_VD_plotTrajectory(trajectory, varargin)
 % 
 % 2026_01_27 by Sean Brennan, sbrennan@psu.edu
 % - Fixed header formatting to standard form
+% - Added plot handle output
+% - Changed default color and linewidths to something more readable
 
 % TO-DO:
 %
@@ -94,7 +96,7 @@ if 0==flag_max_speed
         narginchk(MAX_NARGIN-1,MAX_NARGIN);
 
         % Check the trajectory input to be sure it has 1 column and 1 row, positive
-        fcn_DebugTools_checkInputsToFunctions(trajectory, 'positive_2column_of_numbers',[1 2]);
+        fcn_DebugTools_checkInputsToFunctions(trajectory, '2column_of_numbers',[1 2]);
 
     end
 end
@@ -188,7 +190,7 @@ if flag_do_plots
 
     hold on
 
-    plot(trajectory(:,1),trajectory(:,2),'g','Linewidth',1.2, 'DisplayName','XY Trajectory')
+    h_plot = plot(trajectory(:,1),trajectory(:,2),'-','Linewidth',3, 'DisplayName','XY Trajectory');
     axis equal
     set(gca,'Fontsize',13)
     xlabel('East [m]','Interpreter','Latex','Fontsize',18)
