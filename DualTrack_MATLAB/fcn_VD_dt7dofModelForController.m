@@ -66,13 +66,25 @@ if flag_check_inputs
         error('Incorrect number of input arguments.')
     end
 
-    % Check the inputs
-    fcn_VD_checkInputsToFunctions(t,'non negative');
-    fcn_VD_checkInputsToFunctions(y,'vector10');
-    fcn_VD_checkInputsToFunctions(steering_angle,'vector4');
-    fcn_VD_checkInputsToFunctions(wheel_torque,'vector4');
-    fcn_VD_checkInputsToFunctions(friction_coefficient,'vector4');
-    fcn_VD_checkInputsToFunctions(type_of_transfer,'string');
+	% Check the friction_coefficient input to be sure it has 4 col, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(friction_coefficient, '4column_of_numbers',[1 2]);
+
+	% Check the t input to be sure it has 1 col, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(t, '1column_of_numbers',[1 2]);
+
+	% Check the y input to be sure it has 10 col, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(y, '10column_of_numbers',[1 2]);
+
+	% Check the steering_angle input to be sure it has 4 col, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(steering_angle, '4column_of_numbers',[1 2]);
+
+	% Check the wheel_torque input to be sure it has 4 col, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(wheel_torque, '4column_of_numbers',[1 2]);
+
+	% Check the type_of_transfer input to be sure it is a char or string
+	fcn_DebugTools_checkInputsToFunctions(type_of_transfer, '_of_char_strings');
+
+
 end
 
 %% Implement 7-DoF Vehicle Model

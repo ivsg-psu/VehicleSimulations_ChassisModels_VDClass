@@ -168,12 +168,6 @@ if 0==flag_max_speed
         % string
         fcn_DebugTools_checkInputsToFunctions(type_of_transfer, '_of_char_strings');
 
-        % % Check the inputs
-        % fcn_VD_checkInputsToFunctions(t,'non negative');
-        % fcn_VD_checkInputsToFunctions(y,'vector8');
-        % fcn_VD_checkInputsToFunctions(friction_coefficient,'vector2');
-        % fcn_VD_checkInputsToFunctions(type_of_transfer,'string');
-
     end
 end
 

@@ -53,9 +53,13 @@ if flag_check_inputs
         error('Incorrect number of input arguments.')
     end
 
-    % Check the inputs
-    fcn_VD_checkInputsToFunctions(y,'vector7');
-    fcn_VD_checkInputsToFunctions(acceleration,'vector7');
+
+	% Check the y input to be sure it has 7 col, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(y, '7column_of_numbers',[1 2]);
+
+	% Check the acceleration input to be sure it has 7 col, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(acceleration, '7column_of_numbers',[1 2]);
+
 end
 
 %% Differential equation for 7-DOF model

@@ -1,17 +1,25 @@
-function dydt = fcn_VD_kinematicPointMassModel( y, inputOmega, U, varargin)
+function dydt = fcn_VD_derivativesKinematicPointMassModel( y, inputOmega, U, varargin)
 
-%% fcn_VD_kinematicPointMassModel
-%   This implements the point-mass kinematic model
+%% fcn_VD_derivativesKinematicPointMassModel
+%   Fill in the state derivatives for the point-mass kinematic model
 %
 % FORMAT:
 %
-%      dydt = fcn_VD_kinematicPointMassModel( y, inputOmega, U, (figNum))
+%      dydt = fcn_VD_derivativesKinematicPointMassModel( y, inputOmega, U, (figNum))
 %
 % INPUTS:
 %
-%      y: A 3x1 vector of velocities and global pose [X; Y; Phi]
+%      y: A 3x1 vector of velocities and global pose in the form of 
+%         [X; Y; Phi], which stand for:
+% 
+%         X: Global X position in meters
 %
-%      inputOmega: the rate of change of the angle of the vehicle (input: deg/sec)
+%         Y: Global Y position in meters
+%
+%         phi: Global yaw angle in radians, measured positive from X axis
+%         to Y axis
+%
+%      inputOmega: the rate of change of the yaw angle of the vehicle (input: rad/sec)
 %
 %      U: Longitudinal velocity [m/s]
 %
@@ -31,7 +39,7 @@ function dydt = fcn_VD_kinematicPointMassModel( y, inputOmega, U, varargin)
 %
 % EXAMPLES:
 %
-%     See the script: script_test_fcn_VD_kinematicPointMassModel
+%     See the script: script_test_fcn_VD_derivativesKinematicPointMassModel
 %     for a full test suite.
 %
 % This function was written on 2026_01_26 
@@ -39,8 +47,18 @@ function dydt = fcn_VD_kinematicPointMassModel( y, inputOmega, U, varargin)
 
 % REVISION HISTORY:
 %
+% As: fcn_VD_kinematicPointMassModel
+%
 % 2026_01_26 by Sean Brennan, sbrennan@psu.edu
 % - First write of function, using fcn_VD_bicycle2dofModel as starter
+%
+% As: fcn_VD_derivativesKinematicPointMassModel
+%
+% 2026_01_31 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_derivativesKinematicPointMassModel
+%   % * Renamed function to indicate that it is for derivatives only
+%   % * Improved header comments
+
 
 % TO-DO:
 % - 2026_01_26 by Sean Brennan, sbrennan@psu.edu
@@ -146,7 +164,7 @@ flag_do_plots = 0; % Default is to NOT show plots
 if (0==flag_max_speed) && (MAX_NARGIN == nargin) 
     temp = varargin{end};
     if ~isempty(temp) % Did the user NOT give an empty figure number?
-        figNum = temp; %#ok<NASGU>
+        figNum = temp; 
         flag_do_plots = 1;
     end
 end
@@ -162,6 +180,8 @@ end
 %  |_|  |_|\__,_|_|_| |_|
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+X = y(1);
+Y = y(2);
 theta = y(3); % Yaw angle of the vehicle
 
 %% Newtonian Dynamics of CG
@@ -186,118 +206,25 @@ dydt = [DvelDt; DposeDt];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if flag_do_plots
     
-    % % plot the final XY result
-    % figure(figNum);
-    % clf;
-    % 
-    % % Everything put together
-    % subplot(1,2,1);
-    % hold on;
-    % grid on
-    % title('Results of breaking data into laps');
-    % 
-    % 
-    % 
-    % % Plot the indices per lap
-    % all_ones = ones(length(input_path(:,1)),1);
-    % 
-    % % fill in data
-    % start_of_lap_x = [];
-    % start_of_lap_y = [];
-    % lap_x = [];
-    % lap_y = [];
-    % end_of_lap_x = [];
-    % end_of_lap_y = [];
-    % for ith_lap = 1:Nlaps
-    %     start_of_lap_x = [start_of_lap_x; cell_array_of_entry_indices{ith_lap}; NaN]; %#ok<AGROW>
-    %     start_of_lap_y = [start_of_lap_y; all_ones(cell_array_of_entry_indices{ith_lap})*ith_lap; NaN]; %#ok<AGROW>;
-    %     lap_x = [lap_x; cell_array_of_lap_indices{ith_lap}; NaN]; %#ok<AGROW>
-    %     lap_y = [lap_y; all_ones(cell_array_of_lap_indices{ith_lap})*ith_lap; NaN]; %#ok<AGROW>;
-    %     end_of_lap_x = [end_of_lap_x; cell_array_of_exit_indices{ith_lap}; NaN]; %#ok<AGROW>
-    %     end_of_lap_y = [end_of_lap_y; all_ones(cell_array_of_exit_indices{ith_lap})*ith_lap; NaN]; %#ok<AGROW>;
-    % end
-    % 
-    % % Plot results
-    % plot(start_of_lap_x,start_of_lap_y,'g-','Linewidth',3,'DisplayName','Prelap');
-    % plot(lap_x,lap_y,'b-','Linewidth',3,'DisplayName','Lap');
-    % plot(end_of_lap_x,end_of_lap_y,'r-','Linewidth',3,'DisplayName','Postlap');
-    % 
-    % h_legend = legend;
-    % set(h_legend,'AutoUpdate','off');
-    % 
-    % xlabel('Indices');
-    % ylabel('Lap number');
-    % axis([0 length(input_path(:,1)) 0 Nlaps+0.5]);
-    % 
-    % 
-    % subplot(1,2,2);
-    % % Plot the XY coordinates of the traversals
-    % hold on;
-    % grid on
-    % title('Results of breaking data into laps');
-    % axis equal
-    % 
-    % cellArrayOfPathsToPlot = cell(Nlaps+1,1);
-    % cellArrayOfPathsToPlot{1,1}     = input_path;
-    % for ith_lap = 1:Nlaps
-    %     temp_indices = cell_array_of_lap_indices{ith_lap};
-    %     if length(temp_indices)>1
-    %         dummy_path = input_path(temp_indices,:);
-    %     else
-    %         dummy_path = [];
-    %     end
-    %     cellArrayOfPathsToPlot{ith_lap+1,1} = dummy_path;
-    % end
-    % h = fcn_Laps_plotLapsXY(cellArrayOfPathsToPlot,figNum);
-    % 
-    % % Make input be thin line
-    % set(h(1),'Color',[0 0 0],'Marker','none','Linewidth', 0.75);
-    % 
-    % % Make all the laps have thick lines
-    % for ith_plot = 2:(length(h))
-    %     set(h(ith_plot),'Marker','none','Linewidth', 5);
-    % end
-    % 
-    % % Add legend
-    % legend_text = {};
-    % legend_text = [legend_text, 'Input path'];
-    % for ith_lap = 1:Nlaps
-    %     legend_text = [legend_text, sprintf('Lap %d',ith_lap)]; %#ok<AGROW>
-    % end
-    % 
-    % h_legend = legend(legend_text);
-    % set(h_legend,'AutoUpdate','off');
-    % 
-    % 
-    % 
-    % %     % Plot the start, excursion, and end conditions
-    % %     % Start point in green
-    % %     if flag_start_is_a_point_type==1
-    % %         Xcenter = start_zone_definition(1,1);
-    % %         Ycenter = start_zone_definition(1,2);
-    % %         radius  = start_zone_definition(1,3);
-    % %         INTERNAL_plot_circle(Xcenter, Ycenter, radius, [0 .7 0], 4);
-    % %     end
-    % %
-    % %     % End point in red
-    % %     if flag_end_is_a_point_type==1
-    % %         Xcenter = end_definition(1,1);
-    % %         Ycenter = end_definition(1,2);
-    % %         radius  = end_definition(1,3);
-    % %         INTERNAL_plot_circle(Xcenter, Ycenter, radius, [0.7 0 0], 2);
-    % %     end
-    % %     legend_text = [legend_text, 'Start condition'];
-    % %     legend_text = [legend_text, 'End condition'];
-    % %     h_legend = legend(legend_text);
-    % %     set(h_legend,'AutoUpdate','off');
-    % 
-    % % Plot start zone
-    % h_start_zone = fcn_Laps_plotZoneDefinition(start_zone_definition,'g-',figNum);
-    % 
-    % % Plot end zone
-    % h_end_zone = fcn_Laps_plotZoneDefinition(end_zone_definition,'r-',figNum);
+    % plot the derivative outputs as a vector
+    figure(figNum);
 
-    
+	quiver(X,Y,DvelDt(1), DvelDt(2), 0);
+	hold on;
+	axis equal;
+	axis padded;
+
+	% Plot the rotation. this is done by putting a small, grey vector at
+	% the end that points in the direction and magnitude of the rotation.
+	rotationAngle = inputOmega;
+	changeVector = [DvelDt(1) DvelDt(2)];
+	newChange = changeVector*[cos(rotationAngle) sin(rotationAngle); -sin(rotationAngle) cos(rotationAngle)];
+	rotationStartPoint = [X Y]+changeVector;
+	rotationEndPoint = [X Y]+newChange;
+	differenceVector = rotationEndPoint - rotationStartPoint;
+	quiver(rotationStartPoint(1),rotationStartPoint(2), differenceVector(1), differenceVector(2),0,'Color',0.8*[1 1 1]);
+
+
 end
 
 if flag_do_debug

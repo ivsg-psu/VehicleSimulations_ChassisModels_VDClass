@@ -1,63 +1,87 @@
-function [finalTime, finalStates] = fcn_VD_RungeKutta(inputFunction, ...
-                                      initialStates, initialTime, ...
-                                      timeInterval, varargin)
-%% fcn_VD_RungeKutta
-%   This function calculates 'finalStates' by integrating the
-%   'inputFunction' using Runge-Kutta 4th Order and using
-%   'initialStates', 'initialTime', and 'timeInterval'.
+function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelRK4(initialStates, deltaT, timeInterval, steeringAndTimeInputs, U, varargin)
+
+%% fcn_VD_kinematicPointMassModelRK4
+%   Simulates the point-mass kinematic model using Runga Kutta 4th-order
 %
 % FORMAT:
 %
-%   [finalTime, finalStates] = fcn_VD_RungeKutta(inputFunction, ...
-%                                initialStates, initialTime, ...
-%                                timeInterval, (figNum))
+%      [stateTrajectory, t, steeringUsed] =
+%      fcn_VD_kinematicPointMassModelRK4(initialStates, deltaT,
+%      timeInterval, steeringAndTimeInputs, U, (figNum))
 %
 % INPUTS:
 %
-%      inputFunction: A function handle.
+%      initialStates: A 1x3 vector of inital global pose in form of
+%         [X Y Phi], which stand for:
+% 
+%         X: Global X position in meters
 %
-%      initialStates: The initial value of the states. The size of output
-%      states will be same as the input states.
+%         Y: Global Y position in meters
 %
-%      initialTime: Time related to 'initialStates'.
+%         phi: Global yaw angle in radians, measured positive from X axis
+%         to Y axis
 %
-%      timeInterval: Time interval.
+%      deltaT: a 1x1 positive number denoting the time step to use, in
+%      seconds
+%
+%      timeInterval: a 1x2 vector denoting [startTime endTime] in seconds
+%
+%      steeringAndTimeInputs: a Mx2 vector denoting 
+%      [steeringTime steeringValues] 
+%      in units of [sec rad] respectively. This is interpolated using
+%      linear interpolation at the sampling times. For times outside the
+%      given interval, zero values are used.
+%
+%      U: A 1x1 positive numeric value representing the longitudinal
+%      velocity, in [m/s]
+%
+%      (OPTIONAL INPUTS)
+%
+%      figNum: a FID number to print results. If set to -1, skips any
+%      input checking or debugging, no prints will be generated, and sets
+%      up code to maximize speed.
 %
 % OUTPUTS:
 %
-%      finalTime: Final time is sum of initial time and time interval.
+%      stateTrajectory: An Nx3 vector of the state trajectory, with the
+%      columns as [X Y Phi] in units of [m],[m],[rad]
 %
-%      finalStates: Output states.
+%      t: An Nx1 vector of the simulation times, in seconds
+%
+%      steeringUsed: An Nx1 vector of the steering values used in the sim,
+%      in units of [rad]
 %
 % DEPENDENCIES:
 %
 %      fcn_DebugTools_checkInputsToFunctions
+%      fcn_VD_kinematicPointMassModel
 %
 % EXAMPLES:
 %
-%     See the script: script_test_fcn_VD_RungeKutta
+%     See the script: script_test_fcn_VD_kinematicPointMassModelRK4
 %     for a full test suite.
 %
-% This function was written on 2021_05_16 by Satya Prasad and maintained by
-% Sean Brennan
-% Questions or comments? sbrennan@psu.edu
-
+% This function was written on 2026_01_26 
+% by Sean Brennan. Questions or comments? sbrennan@psu.edu
 
 % REVISION HISTORY:
 %
-% 2021_05_16 by Satya Prasad, szm888@psu.edu
-% - First write of function
+% As: fcn_VD_kinematicPointMassModel
+%
+% 2026_01_26 by Sean Brennan, sbrennan@psu.edu
+% - First write of function, using fcn_VD_bicycle2dofModel as starter
+%
+% As: fcn_VD_kinematicPointMassModelRK4
 %
 % 2026_01_31 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_VD_RungeKutta
-%   % * Fixed function header to match standard format
-%   % * Fixed debugging and input checking
-%   % * Fixed variable names to match standard form
-%   % * Changed input checking to avoid use of checkInputsToFunctions
+% - In fcn_VD_kinematicPointMassModelRK4
+%   % * Renamed function to indicate that it is for derivatives only
+%   % * Improved header comments
+%   % * Fixed input checking to use DebugTools
 
 
 % TO-DO:
-% - 2026_01_31 by Sean Brennan, sbrennan@psu.edu
+% - 2026_01_26 by Sean Brennan, sbrennan@psu.edu
 %   % (add items here)
 
 %% Debugging and Input checks
@@ -65,7 +89,7 @@ function [finalTime, finalStates] = fcn_VD_RungeKutta(inputFunction, ...
 % Check if flag_max_speed set. This occurs if the figNum variable input
 % argument (varargin) is given a number of -1, which is not a valid figure
 % number.
-MAX_NARGIN = 5; % The largest Number of argument inputs to the function
+MAX_NARGIN = 6; % The largest Number of argument inputs to the function
 flag_max_speed = 0; % The default. This runs code with all error checking
 if (nargin==MAX_NARGIN && isequal(varargin{end},-1))
     flag_do_debug = 0; % Flag to plot the results for debugging
@@ -106,25 +130,27 @@ end
 % See: http://patorjk.com/software/taag/#p=display&f=Big&t=Inputs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if 0==flag_max_speed
-	if flag_check_inputs
-		% Are there the right number of inputs?
-		narginchk(MAX_NARGIN-1,MAX_NARGIN);
+    if flag_check_inputs
+        % Are there the right number of inputs?
+        narginchk(MAX_NARGIN-1,MAX_NARGIN);
 
-		% Validate that the inputFunction input is a function handle
-		if ~isa(inputFunction,'function_handle')
-			error('The %s input must be function handle', variable_name);
-		end
+        % Validate that the initialStates input has 3 column, 1 row
+        fcn_DebugTools_checkInputsToFunctions(initialStates, '3column_of_numbers',[1 1]);
 
-		 % Validate that the initialStates input has 1 column, 1+ rows
-        fcn_DebugTools_checkInputsToFunctions(initialStates, '1column_of_numbers',[1 2]);
+        % Validate that the deltaT input has 1 column, 1 row
+        fcn_DebugTools_checkInputsToFunctions(deltaT, '1column_of_numbers',[1 1]);
 
-		% Check the initialTime input to be sure it has 1 col, 1 row
-        fcn_DebugTools_checkInputsToFunctions(initialTime, '1column_of_numbers',[1 1]);
+        % Validate that the timeInterval input has 2 columns, 1 row
+        fcn_DebugTools_checkInputsToFunctions(timeInterval, '2column_of_numbers',[1 1]);
 
-		% Check the timeInterval input to be sure it has 1 col, 1 row, positive
-		fcn_DebugTools_checkInputsToFunctions(timeInterval, 'positive_1column_of_numbers',[1 1]);
+        % Validate that the steeringAndTimeInputs input has 2 columns, 2+
+		% rows
+        fcn_DebugTools_checkInputsToFunctions(steeringAndTimeInputs, '2column_of_numbers',[2 3]);
 
-	end
+		% Check the U input to be sure it has 1 col, 1 row, positive
+        fcn_DebugTools_checkInputsToFunctions(U, 'positive_1column_of_numbers',[1 1]);
+
+    end
 end
 
 
@@ -165,7 +191,7 @@ flag_do_plots = 0; % Default is to NOT show plots
 if (0==flag_max_speed) && (MAX_NARGIN == nargin) 
     temp = varargin{end};
     if ~isempty(temp) % Did the user NOT give an empty figure number?
-        figNum = temp; %#ok<NASGU>
+        figNum = temp; 
         flag_do_plots = 1;
     end
 end
@@ -181,16 +207,39 @@ end
 %  |_|  |_|\__,_|_|_| |_|
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-finalTime = initialTime+timeInterval;  % find the final time
+%% RK4 in MATLAB Script
+startTime = timeInterval(1);
+endTime = timeInterval(2);
+simulationTimes = (startTime:deltaT:endTime)';
+N_timeSteps = length(simulationTimes); % This is the number of time steps we should have
 
-k1 = inputFunction(initialTime, initialStates);
-k2 = inputFunction(initialTime+timeInterval/2, ...
-                    initialStates+(timeInterval/2)*k1);
-k3 = inputFunction(initialTime+timeInterval/2, ...
-                    initialStates+(timeInterval/2)*k2);
-k4 = inputFunction(finalTime, initialStates+timeInterval*k3);
-finalStates = initialStates + (timeInterval/6)*(k1 + 2*k2 +2*k3 + k4);
+% Initialize variables
+stateTrajectory = nan(N_timeSteps,3);
+t = nan(N_timeSteps,1);
+steeringUsed = interp1(steeringAndTimeInputs(:,1), steeringAndTimeInputs(:,2), simulationTimes,'linear',0);
 
+
+% Set initial conditions
+currentStates = initialStates;
+
+
+for ith_time = 1:N_timeSteps
+	thisTime       = simulationTimes(ith_time);
+
+	% Fill in the results to save
+	t(ith_time,1)  = thisTime; % Update time
+	stateTrajectory(ith_time,:)   = currentStates;
+
+
+	% Use Runga-Kutta to predict next position
+	y = currentStates';
+	inputOmega = steeringUsed(ith_time,1);
+	[~, y] = fcn_VD_RungeKutta(...
+		@(t,y) fcn_VD_derivativesKinematicPointMassModel(y,inputOmega, U, -1), ...
+		currentStates', thisTime, deltaT, -1);
+
+	currentStates = y';
+end
 
 %% Plot the results (for debugging)?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -204,7 +253,9 @@ finalStates = initialStates + (timeInterval/6)*(k1 + 2*k2 +2*k3 + k4);
 %                           |___/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if flag_do_plots
-    % Add items here
+    
+    % plot the outputs
+    fcn_VD_plotTrajectory(stateTrajectory(:,1:2),(figNum));
 
 end
 

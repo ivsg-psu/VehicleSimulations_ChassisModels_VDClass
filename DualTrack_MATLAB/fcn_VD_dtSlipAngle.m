@@ -54,11 +54,18 @@ if flag_check_inputs
         error('Incorrect number of input arguments.')
     end
 
-    % Check the inputs
-    fcn_VD_checkInputsToFunctions(U,'non negative');
-    fcn_VD_checkInputsToFunctions(V,'number');
-    fcn_VD_checkInputsToFunctions(r,'number');
-    fcn_VD_checkInputsToFunctions(steering_angle,'vector4');
+	% Check the U input to be sure it has 1 col, 1 row, positive
+	fcn_DebugTools_checkInputsToFunctions(U, 'positive_1column_of_numbers',[1 1]);
+
+	% Check the V input to be sure it has 1 col, 1 row
+	fcn_DebugTools_checkInputsToFunctions(V, '1column_of_numbers',[1 1]);
+
+	% Check the r input to be sure it has 1 col, 1 row
+	fcn_DebugTools_checkInputsToFunctions(r, '1column_of_numbers',[1 1]);
+
+	% Check the steering_angle input to be sure it has 4 col, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(steering_angle, '1column_of_numbers',[1 2]);
+
 end
 
 %% Calculate Slip-Angles

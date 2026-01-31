@@ -49,10 +49,16 @@ if flag_check_inputs
         error('Incorrect number of input arguments.')
     end
     
-    % Check the inputs
-    fcn_VD_checkInputsToFunctions(y,'vector2');
-    fcn_VD_checkInputsToFunctions(U,'non negative');
-    fcn_VD_checkInputsToFunctions(lateral_forces,'vector2');
+
+	% Check the y input to be sure it has 2 col, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(y, '2column_of_numbers',[1 2]);
+
+	% Check the U input to be sure it has 1 col, 1 row, positive
+	fcn_DebugTools_checkInputsToFunctions(U, 'positive_1column_of_numbers',[1 1]);
+
+	% Check the lateral_forces input to be sure it has 2 col, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(lateral_forces, '2column_of_numbers',[1 2]);
+
 end
 
 %% Calculate Lateral acceleration and Yaw acceleration

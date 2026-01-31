@@ -48,9 +48,12 @@ if flag_check_inputs
         error('Incorrect number of input arguments.')
     end
 
-    % Check the inputs
-    fcn_VD_checkInputsToFunctions(wheel_variable,'matrix4by2');
-    fcn_VD_checkInputsToFunctions(steering_angle,'vector4');
+	% Check the wheel_variable input to be sure it has 2 col, 4 row
+	fcn_DebugTools_checkInputsToFunctions(wheel_variable, '2column_of_numbers',[4 4]);
+
+	% Check the steering_angle input to be sure it has 1 col, 1 row
+	fcn_DebugTools_checkInputsToFunctions(steering_angle, '4column_of_numbers',[1 2]);
+
 end
 
 %% Convert from Wheel to Body Coordinates

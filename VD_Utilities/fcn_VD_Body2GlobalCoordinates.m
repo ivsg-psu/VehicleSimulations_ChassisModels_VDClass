@@ -48,11 +48,18 @@ if flag_check_inputs
         error('Incorrect number of input arguments.')
     end
     
-    % Check the inputs
-    fcn_VD_checkInputsToFunctions(y,'vector3');
-    fcn_VD_checkInputsToFunctions(U,'non negative');
-    fcn_VD_checkInputsToFunctions(V,'number');
-    fcn_VD_checkInputsToFunctions(r,'number');
+	% Validate that the y input has 3 columns, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(y, '3column_of_numbers',[1 2]);
+
+	% Check the U input to be sure it has 1 col, 1 row, positive
+	fcn_DebugTools_checkInputsToFunctions(U, 'positive_1column_of_numbers',[1 1]);
+
+	% Check the V input to be sure it has 1 col, 1 row
+	fcn_DebugTools_checkInputsToFunctions(V, '1column_of_numbers',[1 1]);
+
+	% Check the r input to be sure it has 1 col, 1 row
+	fcn_DebugTools_checkInputsToFunctions(r, '1column_of_numbers',[1 1]);
+
 end
 
 %% Calculate velocities in Global coordinates

@@ -58,11 +58,18 @@ if flag_check_inputs
         error('Incorrect number of input arguments.')
     end
 
-    % Check the inputs
-    fcn_VD_checkInputsToFunctions(slip_angle,'vector4');
-    fcn_VD_checkInputsToFunctions(wheel_slip,'vector4');
-    fcn_VD_checkInputsToFunctions(normal_force,'vector4');
-    fcn_VD_checkInputsToFunctions(friction_coefficient,'vector4');
+	% Check the slip_angle input to be sure it has 4 col, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(slip_angle, '4column_of_numbers',[1 2]);
+
+	% Check the wheel_slip input to be sure it has 4 col, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(wheel_slip, '4column_of_numbers',[1 2]);
+
+	% Check the normal_force input to be sure it has 4 col, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(normal_force, '4column_of_numbers',[1 2]);
+
+	% Check the friction_coefficient input to be sure it has 4 col, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(friction_coefficient, '4column_of_numbers',[1 2]);
+
 end
 
 %% Calculate Tire Forces using Brush Model

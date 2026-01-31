@@ -54,9 +54,14 @@ if flag_check_inputs
         error('Incorrect number of input arguments.')
     end
     
-    % Check the inputs
-    fcn_VD_checkInputsToFunctions(acceleration,'vector2');
-    fcn_VD_checkInputsToFunctions(type_of_transfer,'string');
+
+	% Check the acceleration input to be sure it has 2 col, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(acceleration, '2column_of_numbers',[1 2]);
+
+	% Check the type_of_transfer input to be sure it is a char or string
+	fcn_DebugTools_checkInputsToFunctions(type_of_transfer, '_of_char_strings');
+
+
 end
 
 %% Calculate Normal Forces

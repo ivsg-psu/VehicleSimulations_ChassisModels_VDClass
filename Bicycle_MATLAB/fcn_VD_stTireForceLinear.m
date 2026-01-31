@@ -45,8 +45,10 @@ if flag_check_inputs
         error('Incorrect number of input arguments.')
     end
     
-    % Check the inputs
-    fcn_VD_checkInputsToFunctions(slip_angles,'vector2');
+
+	% Check the slip_angles input to be sure it has 2 col, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(slip_angles, '2column_of_numbers',[1 2]);
+
 end
 
 %% Calculate Lateral Tire Forces

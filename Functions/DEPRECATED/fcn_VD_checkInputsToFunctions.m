@@ -10,7 +10,7 @@ else
     end
 end
 
-if 1==flagShowWarning
+if 1==1 % flagShowWarning
     warning('on','backtrace');
     warning(['fcn_VD_checkInputsToFunctions is being deprecated. ' ...
         'Use fcn_DebugTools_checkInputsToFunctions instead.']);

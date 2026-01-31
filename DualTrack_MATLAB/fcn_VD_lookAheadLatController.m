@@ -54,9 +54,13 @@ if flag_check_inputs
         error('Incorrect number of input arguments.')
     end
     
-    % Check the inputs
-    fcn_VD_checkInputsToFunctions(pose,'vector3');
-    fcn_VD_checkInputsToFunctions(target_lookAhead_pose,'vector3');
+
+	% Check the pose input to be sure it has 3 col, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(pose, '3column_of_numbers',[1 2]);
+
+	% Check the target_lookAhead_pose input to be sure it has 3 col, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(target_lookAhead_pose, '3column_of_numbers',[1 2]);
+
 end
 
 %% Calculate Steering Angle

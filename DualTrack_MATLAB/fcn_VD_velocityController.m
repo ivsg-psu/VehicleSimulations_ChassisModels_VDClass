@@ -50,9 +50,14 @@ if flag_check_inputs
         error('Incorrect number of input arguments.')
     end
     
-    % Check the inputs
-    fcn_VD_checkInputsToFunctions(longitudinal_velocity,'non negative');
-    fcn_VD_checkInputsToFunctions(target_longitudinal_velocity,'non negative');
+
+	% Check the longitudinal_velocity input to be sure it has 1 col, 1 row, positive
+	fcn_DebugTools_checkInputsToFunctions(longitudinal_velocity, 'positive_1column_of_numbers',[1 1]);
+
+
+	% Check the target_longitudinal_velocity input to be sure it has 1 col, 1 row, positive
+	fcn_DebugTools_checkInputsToFunctions(target_longitudinal_velocity, 'positive_1column_of_numbers',[1 1]);
+
 end
 
 %% Calculate Wheel Torque

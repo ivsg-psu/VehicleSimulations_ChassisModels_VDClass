@@ -55,11 +55,16 @@ if flag_check_inputs
     if 5~=nargin
         error('Incorrect number of input arguments.')
     end
+    
+	% Check the wheel_force input to be sure it has 2 col, 4 rows
+	fcn_DebugTools_checkInputsToFunctions(wheel_force, '2column_of_numbers',[4 4]);
 
-    % Check the inputs
-    fcn_VD_checkInputsToFunctions(wheel_force,'matrix4by2');
-    fcn_VD_checkInputsToFunctions(wheel_torque,'vector4');
-    fcn_VD_checkInputsToFunctions(steering_angle,'vector4');
+	% Check the wheel_torque input to be sure it has 4 col, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(wheel_torque, '4column_of_numbers',[1 2]);
+
+	% Check the steering_angle input to be sure it has 4 col, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(steering_angle, '4column_of_numbers',[1 2]);
+
 end
 
 %% Calculate accelerations

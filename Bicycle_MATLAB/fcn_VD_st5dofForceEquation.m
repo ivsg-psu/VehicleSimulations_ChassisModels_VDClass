@@ -29,6 +29,14 @@ function acceleration = fcn_VD_st5dofForceEquation(wheel_force,wheel_torque,...
 % This function was written on 2021/08/13 by Satya Prasad
 % Questions or comments? szm888@psu.edu
 
+
+% 2026_01_31 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_kinematicPointMassModelRK4
+%   % * Renamed function to indicate that it is for derivatives only
+%   % * Improved header comments
+%   % * Fixed input checking to use DebugTools
+
+
 flag_do_debug = 0; % Flag to plot the results for debugging
 flag_check_inputs = 1; % Flag to perform input checking
 
@@ -55,10 +63,15 @@ if flag_check_inputs
         error('Incorrect number of input arguments.')
     end
 
-    % Check the inputs
-    fcn_VD_checkInputsToFunctions(wheel_force,'matrix2by2');
-    fcn_VD_checkInputsToFunctions(wheel_torque,'vector2');
-    fcn_VD_checkInputsToFunctions(steering_angle,'vector2');
+	% Validate that the wheel_force input has 1 column, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(wheel_force, '2column_of_numbers',[2 2]);
+
+	% Check the wheel_torque input to be sure it has 2 col, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(wheel_torque, '2column_of_numbers',[1 2]);
+
+	% Check the steering_angle input to be sure it has 2 col, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(steering_angle, '2column_of_numbers',[1 2]);
+
 end
 
 %% Calculate accelerations

@@ -52,8 +52,8 @@ if flag_check_inputs
         error('Incorrect number of input arguments.')
     end
 
-    % Check the inputs
-    fcn_VD_checkInputsToFunctions(pose,'vector3');
+	% Check the pose input to be sure it has 3 col, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(pose, '3column_of_numbers',[1 2]);
 end
 
 %% Find nearest neighbour on the traversal at a look ahead distance

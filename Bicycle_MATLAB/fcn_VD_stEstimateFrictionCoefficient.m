@@ -53,11 +53,16 @@ if flag_check_inputs
     if 4~=nargin
         error('Incorrect number of input arguments.')
     end
-    
-    % Check the inputs
-    fcn_VD_checkInputsToFunctions(slip_angle,'vector2');
-    fcn_VD_checkInputsToFunctions(normal_force,'vector2');
-    fcn_VD_checkInputsToFunctions(aligning_moment,'vector2');
+        
+	% Check the slip_angle input to be sure it has 2 col, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(slip_angle, '2column_of_numbers',[1 2]);
+
+	% Check the normal_force input to be sure it has 2 col, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(normal_force, '2column_of_numbers',[1 2]);
+
+	% Check the aligning_moment input to be sure it has 2 col, 1+ rows
+	fcn_DebugTools_checkInputsToFunctions(aligning_moment, '2column_of_numbers',[1 2]);
+
 end
 
 %% Estimate Friction Coefficient

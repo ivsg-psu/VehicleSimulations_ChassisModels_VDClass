@@ -1,5 +1,6 @@
-%% script_test_fcn_VD_kinematicPointMassModel.m
-% This scripts test the model 'fcn_VD_kinematicPointMassModel'
+%% script_test_fcn_VD_kinematicPointMassModel_manyVehicles
+% This scripts test the model 'fcn_VD_kinematicPointMassModel' across many
+% vehicles
 
 % REVISION HISTORY:
 %
@@ -26,22 +27,23 @@ close all;  % close all the plots
 %              |_| 
 % See: http://patorjk.com/software/taag/#p=display&f=Big&t=Inputs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Set core simulation inputs: time, the speed, and steering amplitude
 
-% Items used to define steering inputs
+% Set the simulation time/state arguments
+initialStates = [0 0 0]; % [X Y phi] in [m],[m],[rad]
+deltaT = 0.01; % Units are [sec]
+startTime = 0;
+endTime = 4.5;
+timeInterval = [startTime endTime];  % Units are [sec]
+simulationTimes = (startTime:deltaT:endTime)';
+N_timeSteps = length(simulationTimes);
+
+% Set up inputs
 steering_amplitude_degrees = 2; % 2 degrees of steering amplitude for input sinewave
 Period = 3; % Units are seconds. A typical lane change is about 3 to 4 seconds based on experimental highway measurements
+steeringAndTimeInputs = [simulationTimes steering_amplitude_degrees*sin((2*pi/Period)*simulationTimes)]; % [times steering angles]
 
-% Define items used to determine how long to run sim, number of time
-% points, etc.
-TotalTime = 1.5*Period;  % This is how long the simulation will run. Usually 1.5 times the period is enough.
-deltaT = 0.01; % This is the time step of the simulation. See the "Model Settings" submenu in Simulink to see where this variable is used.
-simulationTimes = (0:deltaT:TotalTime)';
-N_timeSteps = length(simulationTimes); % This is the number of time steps we should have
-
-U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: mph ~= 2* m/s)
-
-steeringInputs = steering_amplitude_degrees*sin((2*pi/Period)*simulationTimes); % steering angle
+% Set up parameters
+U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
 
 %% Fill in the vehicle parameters. 
 % Use a structure array so we can have several vehicles
@@ -79,7 +81,7 @@ N_vehicles = length(vehicles);
 all_X   = nan(N_timeSteps,N_vehicles);
 all_Y   = nan(N_timeSteps,N_vehicles);
 all_phi = nan(N_timeSteps,N_vehicles);
-t       = nan(N_timeSteps,N_vehicles);
+all_t   = nan(N_timeSteps,N_vehicles);
 
 % Loop through all the vehicles, simulating the trajectory of each within
 % the for loop
@@ -87,28 +89,18 @@ for ith_vehicle = 1:N_vehicles
     % Print to the console which vehicle we are working on
     fprintf(1,'Working on vehicle: %d\n', ith_vehicle);
     
-    %% RK4 in MATLAB Script
-    % Set initial conditions
-    initialStates = [0; 0; 0];
-    currentStates = initialStates;
-    
-    for ith_time = 1:N_timeSteps
-        thisTime = simulationTimes(ith_time);
-        t(ith_time,ith_vehicle)       = simulationTimes(ith_time); % Update time
-        inputOmega = steeringInputs(ith_time,1);
+    %%%%%%
+	%  RK4 in MATLAB Script
+	% Call the function
+	[stateTrajectory, t, steeringUsed] = ...
+		fcn_VD_kinematicPointMassModelRK4(initialStates, deltaT, ...
+		timeInterval, steeringAndTimeInputs, U, (-1));
 
-        % Fill in the results to save
-        all_X(ith_time,ith_vehicle)   = currentStates(1);
-        all_Y(ith_time,ith_vehicle)   = currentStates(2);
-        all_phi(ith_time,ith_vehicle) = currentStates(3);
-
-        % Use Runga-Kutta to predict next position
-        [~, y] = fcn_VD_RungeKutta(...
-                @(t,y) fcn_VD_kinematicPointMassModel(y,inputOmega, U), ...
-                currentStates, thisTime, deltaT);
-
-        currentStates = y;
-    end
+	% Fill in the results to save
+	all_t(:,ith_vehicle)   = t;
+	all_X(:,ith_vehicle)   = stateTrajectory(:,1);
+	all_Y(:,ith_vehicle)   = stateTrajectory(:,2);
+	all_phi(:,ith_vehicle) = stateTrajectory(:,3);
 end
 
 %% Plot the results
@@ -127,13 +119,13 @@ end
 
 figNum = 777;
 
-indexToAttachLabel = (2==t);
+indexToAttachLabel = (2==all_t);
 % Loop through each of the vehicles
 for ith_vehicle=1:N_vehicles
     trajectory = [all_X(:,ith_vehicle),all_Y(:,ith_vehicle)];
 
     % The XY Plots
-    fcn_VD_plotTrajectory(trajectory,(figNum))
+    fcn_VD_plotTrajectory(trajectory,(figNum));
     text(all_X(indexToAttachLabel,ith_vehicle), all_Y(indexToAttachLabel,ith_vehicle), ...
         ['vehicle' num2str(ith_vehicle)]);
 end
