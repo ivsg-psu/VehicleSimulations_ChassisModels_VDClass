@@ -1,5 +1,5 @@
-% script_test_fcn_VD_derivativesKinematicPointMassModel.m
-% tests fcn_VD_derivativesKinematicPointMassModel.m
+% script_test_fcn_VD_derivativesKinematicBicycleModel.m
+% tests fcn_VD_derivativesKinematicBicycleModel.m
 
 % REVISION HISTORY:
 %
@@ -41,11 +41,12 @@ figure(figNum); clf;
 
 % Set the input arguments
 y = [1; 1; pi/4]; % meters, meters, radians
-inputOmega = -100*pi/180; % radians
+inputFrontRoadWheelAngleRadians = 10*pi/180; % radians
 U = 20; % meters per second
+L = 2.5; % meters
 
 % Call the function
-dydt = fcn_VD_derivativesKinematicPointMassModel( y, inputOmega, U, (figNum));
+dydt = fcn_VD_derivativesKinematicBicycleModel( y, inputFrontRoadWheelAngleRadians, U, L, (figNum));
 
 sgtitle(titleString, 'Interpreter','none');
 
@@ -57,7 +58,7 @@ assert(size(dydt,1)==3);
 assert(size(dydt,2)==1); 
 
 % Check variable values
-assert(isequal(dydt, [U*cos(y(3)); U*sin(y(3)); inputOmega])); 
+assert(isequal(dydt, [U*cos(y(3)); U*sin(y(3)); (U/L)*tan(inputFrontRoadWheelAngleRadians)]));  
 
 % Make sure plot opened up
 assert(isequal(get(gcf,'Number'),figNum));
@@ -108,11 +109,12 @@ figure(figNum); close(figNum);
 
 % Set the input arguments
 y = [1; 1; pi/4]; % meters, meters, radians
-inputOmega = -100*pi/180; % radians
+inputFrontRoadWheelAngleRadians = 10*pi/180; % radians
 U = 20; % meters per second
+L = 2.5; % meters
 
 % Call the function
-dydt = fcn_VD_derivativesKinematicPointMassModel( y, inputOmega, U, ([]));
+dydt = fcn_VD_derivativesKinematicBicycleModel( y, inputFrontRoadWheelAngleRadians, U, L, ([]));
 
 % Check variable types
 assert(isnumeric(dydt));
@@ -122,7 +124,7 @@ assert(size(dydt,1)==3);
 assert(size(dydt,2)==1); 
 
 % Check variable values
-assert(isequal(dydt, [U*cos(y(3)); U*sin(y(3)); inputOmega])); 
+assert(isequal(dydt, [U*cos(y(3)); U*sin(y(3)); (U/L)*tan(inputFrontRoadWheelAngleRadians)]));  
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
@@ -136,11 +138,12 @@ figure(figNum); close(figNum);
 
 % Set the input arguments
 y = [1; 1; pi/4]; % meters, meters, radians
-inputOmega = -100*pi/180; % radians
+inputFrontRoadWheelAngleRadians = 10*pi/180; % radians
 U = 20; % meters per second
+L = 2.5; % meters
 
 % Call the function
-dydt = fcn_VD_derivativesKinematicPointMassModel( y, inputOmega, U, (-1));
+dydt = fcn_VD_derivativesKinematicBicycleModel( y, inputFrontRoadWheelAngleRadians, U, L, (-1));
 
 % Check variable types
 assert(isnumeric(dydt));
@@ -150,7 +153,7 @@ assert(size(dydt,1)==3);
 assert(size(dydt,2)==1); 
 
 % Check variable values
-assert(isequal(dydt, [U*cos(y(3)); U*sin(y(3)); inputOmega])); 
+assert(isequal(dydt, [U*cos(y(3)); U*sin(y(3)); (U/L)*tan(inputFrontRoadWheelAngleRadians)]));  
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
@@ -165,8 +168,9 @@ close(figNum);
 
 % Set the input arguments
 y = [1; 1; pi/4]; % meters, meters, radians
-inputOmega = -100*pi/180; % radians
+inputFrontRoadWheelAngleRadians = 10*pi/180; % radians
 U = 20; % meters per second
+L = 2.5; % meters
 
 Niterations = 500;
 
@@ -174,7 +178,7 @@ Niterations = 500;
 tic;
 for ith_test = 1:Niterations
 	% Call the function
-	dydt = fcn_VD_derivativesKinematicPointMassModel( y, inputOmega, U, ([]));
+	dydt = fcn_VD_derivativesKinematicBicycleModel( y, inputFrontRoadWheelAngleRadians, U, L, ([]));
 end
 slow_method = toc;
 
@@ -182,7 +186,7 @@ slow_method = toc;
 tic;
 for ith_test = 1:Niterations
 	% Call the function
-	dydt = fcn_VD_derivativesKinematicPointMassModel( y, inputOmega, U, (-1));
+	dydt = fcn_VD_derivativesKinematicBicycleModel( y, inputFrontRoadWheelAngleRadians, U, L, (-1));
 end
 fast_method = toc;
 

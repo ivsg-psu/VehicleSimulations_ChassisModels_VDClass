@@ -48,6 +48,8 @@
 %   % * Added many versioned SLX files (R2018b through R2025b) under
 %   %   % KinematicPointMass_Simulink and a top-level
 %   %   % mdl_VD_KinematicPointMassModel_2024b.slx.
+% - Moved comparison scripts out of main codes and into subfolder
+%   % * Added this to path
 
 % TO-DO:
 % - 2025_12_29 by Sean Brennan, sbrennan@psu.edu
@@ -143,6 +145,7 @@ if ~exist('flag_Laps_Folders_Initialized','var')
         'DualTrack_MATLAB',...
         'DualTrack_Simulink',...
         'VD_plot',...
+		'ComparisonScripts',...
         'Datafiles'};
     fcn_DebugTools_addSubdirectoriesToPath(pwd,this_project_folders)
 

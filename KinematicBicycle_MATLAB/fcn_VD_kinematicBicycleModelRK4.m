@@ -1,13 +1,13 @@
-function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelRK4(initialStates, deltaT, timeInterval, steeringAndTimeInputs, U, varargin)
+function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicBicycleModelRK4(initialStates, deltaT, timeInterval, steeringAndTimeInputs, U, L, varargin)
 
-%% fcn_VD_kinematicPointMassModelRK4
-%   Simulates the point-mass kinematic model using Runga Kutta 4th-order
+%% fcn_VD_kinematicBicycleModelRK4
+%   Simulates the bicycle kinematic model using Runga Kutta 4th-order
 %
 % FORMAT:
 %
 %      [stateTrajectory, t, steeringUsed] =
-%      fcn_VD_kinematicPointMassModelRK4(initialStates, deltaT,
-%      timeInterval, steeringAndTimeInputs, U, (figNum))
+%      fcn_VD_kinematicBicycleModelRK4(initialStates, deltaT,
+%      timeInterval, steeringAndTimeInputs, U, L, (figNum))
 %
 % INPUTS:
 %
@@ -35,6 +35,8 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelRK4(
 %      U: A 1x1 positive numeric value representing the longitudinal
 %      velocity, in [m/s]
 %
+%      L: wheelbase [m]
+%
 %      (OPTIONAL INPUTS)
 %
 %      figNum: a FID number to print results. If set to -1, skips any
@@ -54,11 +56,11 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelRK4(
 % DEPENDENCIES:
 %
 %      fcn_DebugTools_checkInputsToFunctions
-%      fcn_VD_kinematicPointMassModel
+%      fcn_VD_kinematicBicycleModel
 %
 % EXAMPLES:
 %
-%     See the script: script_test_fcn_VD_kinematicPointMassModelRK4
+%     See the script: script_test_fcn_VD_kinematicBicycleModelRK4
 %     for a full test suite.
 %
 % This function was written on 2026_01_26 
@@ -66,15 +68,15 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelRK4(
 
 % REVISION HISTORY:
 %
-% As: fcn_VD_kinematicPointMassModel
+% As: fcn_VD_kinematicBicycleModel
 %
 % 2026_01_26 by Sean Brennan, sbrennan@psu.edu
-% - First write of fcn_VD_kinematicPointMassModelRK4 function
+% - First write of fcn_VD_kinematicBicycleModelRK4 function
 %
-% As: fcn_VD_kinematicPointMassModelRK4
+% As: fcn_VD_kinematicBicycleModelRK4
 %
 % 2026_01_31 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_VD_kinematicPointMassModelRK4
+% - In fcn_VD_kinematicBicycleModelRK4
 %   % * Renamed function to indicate that it is for derivatives only
 %   % * Improved header comments
 %   % * Fixed input checking to use DebugTools
@@ -89,7 +91,7 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelRK4(
 % Check if flag_max_speed set. This occurs if the figNum variable input
 % argument (varargin) is given a number of -1, which is not a valid figure
 % number.
-MAX_NARGIN = 6; % The largest Number of argument inputs to the function
+MAX_NARGIN = 7; % The largest Number of argument inputs to the function
 flag_max_speed = 0; % The default. This runs code with all error checking
 if (nargin==MAX_NARGIN && isequal(varargin{end},-1))
     flag_do_debug = 0; % Flag to plot the results for debugging
@@ -150,6 +152,8 @@ if 0==flag_max_speed
 		% Check the U input to be sure it has 1 col, 1 row, positive
         fcn_DebugTools_checkInputsToFunctions(U, 'positive_1column_of_numbers',[1 1]);
 
+        % Check the L input to be sure it has 1 col, 1 row, positive
+        fcn_DebugTools_checkInputsToFunctions(L, 'positive_1column_of_numbers',[1 1]);
     end
 end
 
@@ -233,9 +237,9 @@ for ith_time = 1:N_timeSteps
 
 	% Use Runga-Kutta to predict next position
 	y = currentStates';
-	inputOmega = steeringUsed(ith_time,1);
+	inputFrontRoadWheelAngleRadians = steeringUsed(ith_time,1);
 	[~, y] = fcn_VD_RungeKutta(...
-		@(t,y) fcn_VD_derivativesKinematicPointMassModel(y,inputOmega, U, -1), ...
+		@(t,y) fcn_VD_derivativesKinematicBicycleModel(y,inputFrontRoadWheelAngleRadians, U, L, -1), ...
 		currentStates', thisTime, deltaT, -1);
 
 	currentStates = y';
