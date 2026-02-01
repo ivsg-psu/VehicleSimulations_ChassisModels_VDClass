@@ -1,12 +1,12 @@
-function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelRK4(initialStates, deltaT, timeInterval, steeringAndTimeInputs, U, varargin)
+function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelSimulink(initialStates, deltaT, timeInterval, steeringAndTimeInputs, U, varargin)
 
-%% fcn_VD_kinematicPointMassModelRK4
-%   Simulates the point-mass kinematic model using Runga Kutta 4th-order
+%% fcn_VD_kinematicPointMassModelSimulink
+%   Simulates the point-mass kinematic model using Simulink
 %
 % FORMAT:
 %
 %      [stateTrajectory, t, steeringUsed] =
-%      fcn_VD_kinematicPointMassModelRK4(initialStates, deltaT,
+%      fcn_VD_kinematicPointMassModelSimulink(initialStates, deltaT,
 %      timeInterval, steeringAndTimeInputs, U, (figNum))
 %
 % INPUTS:
@@ -58,7 +58,7 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelRK4(
 %
 % EXAMPLES:
 %
-%     See the script: script_test_fcn_VD_kinematicPointMassModelRK4
+%     See the script: script_test_fcn_VD_kinematicPointMassModelSimulink
 %     for a full test suite.
 %
 % This function was written on 2026_01_26 
@@ -71,10 +71,10 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelRK4(
 % 2026_01_26 by Sean Brennan, sbrennan@psu.edu
 % - First write of function, using fcn_VD_bicycle2dofModel as starter
 %
-% As: fcn_VD_kinematicPointMassModelRK4
+% As: fcn_VD_kinematicPointMassModelSimulink
 %
 % 2026_01_31 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_VD_kinematicPointMassModelRK4
+% - In fcn_VD_kinematicPointMassModelSimulink
 %   % * Renamed function to indicate that it is for derivatives only
 %   % * Improved header comments
 %   % * Fixed input checking to use DebugTools
@@ -213,33 +213,88 @@ endTime = timeInterval(2);
 simulationTimes = (startTime:deltaT:endTime)';
 N_timeSteps = length(simulationTimes); % This is the number of time steps we should have
 
-% Initialize variables
-stateTrajectory = nan(N_timeSteps,3);
-t = nan(N_timeSteps,1);
-steeringUsed = interp1(steeringAndTimeInputs(:,1), steeringAndTimeInputs(:,2), simulationTimes,'linear',0);
+
+% Which model to use? Depends on the version
+currentMATLABversion = version('-release');
+
+% ONLY for saving (used by Dr. B). Set 1==0 to 1==1 to convert into all
+% possible earlier versions 
+if 1==0
+	nameRootString = 'mdl_VD_KinematicPointMassModel';
+	thisVersionName = cat(2,nameRootString,'_R2025b_SLX');
+	thisVersionNameWithExtension = cat(2,thisVersionName,'.slx');
+	load_system(thisVersionNameWithExtension);
+	simulinkFileInfo = Simulink.MDLInfo(thisVersionNameWithExtension);
+
+	% Confirm that this is 2025b
+	if ~strcmpi(simulinkFileInfo.ReleaseName,'R2025b')
+		error('Expected release version 2025b, but found %s instead. Exiting!',info.ReleaseName);
+	end
 
 
-% Set initial conditions
-currentStates = initialStates;
+	thisVersionFullPath = which(thisVersionName);
+	folderPath = fileparts(thisVersionFullPath);
+	exportVersionList = {
+		'R2025a_SLX';
+		'R2024b_SLX';
+		'R2024a_SLX';
+		'R2023b_SLX';
+		'R2023a_SLX';
+		'R2022b_SLX';
+		'R2022a_SLX';
+		'R2021b_SLX';
+		'R2021a_SLX';
+		'R2020b_SLX';
+		'R2020a_SLX';
+		'R2019b_SLX';
+		'R2019a_SLX';
+		'R2018b_SLX';
+		};
+	for ith_version = 1:length(exportVersionList)
+		olderVersion = exportVersionList{ith_version};
+		olderVersionName = cat(2,nameRootString,'_',olderVersion,'.slx');
+		olderVersionFullPath = fullfile(folderPath,olderVersionName);
+		fprintf(1,'Converting:\n\tFrom: %s\n\tTo: %s\n',thisVersionName,olderVersionName);
 
+		% Call a special command to convert from current version to older
+		% version
+		exportResult = Simulink.exportToVersion(thisVersionName,olderVersionFullPath,olderVersion,'AllowPrompt',true,'BreakUserLinks',true);
 
-for ith_time = 1:N_timeSteps
-	thisTime       = simulationTimes(ith_time);
-
-	% Fill in the results to save
-	t(ith_time,1)  = thisTime; % Update time
-	stateTrajectory(ith_time,:)   = currentStates;
-
-
-	% Use Runga-Kutta to predict next position
-	y = currentStates';
-	inputOmega = steeringUsed(ith_time,1);
-	[~, y] = fcn_VD_RungeKutta(...
-		@(t,y) fcn_VD_derivativesKinematicPointMassModel(y,inputOmega, U, -1), ...
-		currentStates', thisTime, deltaT, -1);
-
-	currentStates = y';
+		% Make sure export worked
+		if ~strcmp(exportResult,olderVersionFullPath)
+			error('Export failed!');
+		end
+	end
 end
+modelToUse = cat(2,'mdl_VD_KinematicPointMassModel_R',currentMATLABversion,'_SLX.slx');
+
+
+% Run the simulation in SIMULINK
+simout = sim(modelToUse);
+
+% Save the results in a big array (for plotting in next part)
+% Before saving, we need to check if the full vector is shorter than
+% expected length of N_timeSteps
+N_simSteps = length(simout.simTime);
+if  N_simSteps~= N_timeSteps
+	warning('More time was spent (N=%.0f time steps) than expected (expected %.0f time steps) in the simulation. Keeping only the expected time portion.', N_simSteps,N_timeSteps);
+end
+
+% Keep the shorter of either the actual length, or expected length:
+shorter_index = min(N_timeSteps,N_simSteps);
+
+% Initialize variables
+stateTrajectory = nan(shorter_index,3);
+t = nan(shorter_index,1);
+
+% Fill in the results to save
+t(:,1)                 = simout.simTime(1:shorter_index,1); % Update time
+steeringUsed           = simout.steeringUsed(1:shorter_index,1);
+stateTrajectory(:,1)   = simout.X(1:shorter_index,1);
+stateTrajectory(:,2)   = simout.Y(1:shorter_index,1);
+stateTrajectory(:,3)   = simout.phi(1:shorter_index,1);
+
+
 
 %% Plot the results (for debugging)?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -255,8 +310,9 @@ end
 if flag_do_plots
     
     % plot the outputs
-    fcn_VD_plotTrajectory(stateTrajectory(:,1:2),(figNum));
-	set(h_plot,'DisplayName','XY Trajectory (MATLAB RK4)')
+    h_plot = fcn_VD_plotTrajectory(stateTrajectory(:,1:2),(figNum));
+	set(h_plot,'DisplayName','XY Trajectory (Simulink RK4)')
+
 end
 
 if flag_do_debug
