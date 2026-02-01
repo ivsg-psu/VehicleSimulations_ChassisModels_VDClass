@@ -22,7 +22,32 @@
 % 2025_12_30 by Sean Brennan, sbrennan@psu.edu
 % - Updated formatting of Bicycle_MATLAB subdirectory functions
 %   % * Edited these to standard form 
-
+%
+% 2026_01_31 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_kinematicPointMassModelRK4
+%   % * Renamed function to indicate that it is for derivatives only
+%   % * Improved header comments
+%   % * Fixed input checking to use DebugTools
+%   % * Set plot handle DisplayName for RK4 MATLAB plot.
+% - In fcn_VD_kinematicPointMassModelSimulink
+%   % * Renamed function to indicate that it is for derivatives only
+%   % * Improved header comments
+%   % * Fixed input checking to use DebugTools
+% - In script_test_fcn_VD_kinematicPointMassModelSimulink
+%   % * Wrote the code originally, using breakDataIntoLaps as starter
+% - In script_test_fcn_VD_kinematicPointMassModelRK4
+%   % * Wrote the code originally, using breakDataIntoLaps as starter
+%
+% 2026_02_01 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_kinematicPointMassModelSimulink
+%   % * Added a Simulink-based interface and multiple release-specific
+%   %   % model files, plus a test script, and a small MATLAB plot fix.
+%   % * Added fcn_VD_kinematicPointMassModelSimulink.m: Simulink-based
+%   %   % simulation wrapper that runs the appropriate release SLX, extracts
+%   %   % outputs, and plots results.
+%   % * Added many versioned SLX files (R2018b through R2025b) under
+%   %   % KinematicPointMass_Simulink and a top-level
+%   %   % mdl_VD_KinematicPointMassModel_2024b.slx.
 
 % TO-DO:
 % - 2025_12_29 by Sean Brennan, sbrennan@psu.edu

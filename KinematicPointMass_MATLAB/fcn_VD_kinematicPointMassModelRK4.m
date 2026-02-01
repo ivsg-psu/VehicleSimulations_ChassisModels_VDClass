@@ -69,7 +69,7 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelRK4(
 % As: fcn_VD_kinematicPointMassModel
 %
 % 2026_01_26 by Sean Brennan, sbrennan@psu.edu
-% - First write of function, using fcn_VD_bicycle2dofModel as starter
+% - First write of fcn_VD_kinematicPointMassModelRK4 function
 %
 % As: fcn_VD_kinematicPointMassModelRK4
 %

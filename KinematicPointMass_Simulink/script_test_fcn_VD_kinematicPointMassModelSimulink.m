@@ -4,7 +4,8 @@
 % REVISION HISTORY:
 %
 % 2026_01_31 by Sean Brennan, sbrennan@psu.edu
-% - wrote the code originally, using breakDataIntoLaps as starter
+% - In script_test_fcn_VD_kinematicPointMassModelSimulink
+%   % * Wrote the code originally, using breakDataIntoLaps as starter
 
 % TO-DO:
 %

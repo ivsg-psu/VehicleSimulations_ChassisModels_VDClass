@@ -79,7 +79,7 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelSimu
 %   % * Improved header comments
 %   % * Fixed input checking to use DebugTools
 %
-% 2026_01_31 by Sean Brennan, sbrennan@psu.edu
+% 2026_02_01 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_VD_kinematicPointMassModelSimulink
 %   % * Added a Simulink-based interface and multiple release-specific
 %   %   % model files, plus a test script, and a small MATLAB plot fix.
