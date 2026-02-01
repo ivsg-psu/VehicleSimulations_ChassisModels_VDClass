@@ -78,7 +78,17 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelSimu
 %   % * Renamed function to indicate that it is for derivatives only
 %   % * Improved header comments
 %   % * Fixed input checking to use DebugTools
-
+%
+% 2026_01_31 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_kinematicPointMassModelSimulink
+%   % * Added a Simulink-based interface and multiple release-specific
+%   %   % model files, plus a test script, and a small MATLAB plot fix.
+%   % * Added fcn_VD_kinematicPointMassModelSimulink.m: Simulink-based
+%   %   % simulation wrapper that runs the appropriate release SLX, extracts
+%   %   % outputs, and plots results.
+%   % * Added many versioned SLX files (R2018b through R2025b) under
+%   %   % KinematicPointMass_Simulink and a top-level
+%   %   % mdl_VD_KinematicPointMassModel_2024b.slx.
 
 % TO-DO:
 % - 2026_01_26 by Sean Brennan, sbrennan@psu.edu

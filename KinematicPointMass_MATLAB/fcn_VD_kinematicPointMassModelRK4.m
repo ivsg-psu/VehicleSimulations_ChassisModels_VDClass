@@ -78,7 +78,7 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelRK4(
 %   % * Renamed function to indicate that it is for derivatives only
 %   % * Improved header comments
 %   % * Fixed input checking to use DebugTools
-
+%   % * Set plot handle DisplayName for RK4 MATLAB plot.
 
 % TO-DO:
 % - 2026_01_26 by Sean Brennan, sbrennan@psu.edu
