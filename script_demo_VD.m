@@ -50,6 +50,10 @@
 %   %   % mdl_VD_KinematicPointMassModel_2024b.slx.
 % - Moved comparison scripts out of main codes and into subfolder
 %   % * Added this to path
+%
+% 2026_02_10 by Sean Brennan, sbrennan@psu.edu
+% - In script_demo_VD
+%   % * Added check if repo is ready for release
 
 % TO-DO:
 % - 2025_12_29 by Sean Brennan, sbrennan@psu.edu
@@ -175,6 +179,13 @@ setenv('MATLABFLAG_PLOTROAD_REFERENCE_ALTITUDE','344.189');
 % plotting data
 setenv('MATLABFLAG_PLOTROAD_ALIGNMATLABLLAPLOTTINGIMAGES_LAT','-0.0000008');
 setenv('MATLABFLAG_PLOTROAD_ALIGNMATLABLLAPLOTTINGIMAGES_LON','0.0000054');
+
+%% Check if repo is ready for release
+if 1==0
+	figNum = 999999;
+	repoShortName = '_VD_';
+	fcn_DebugTools_testRepoForRelease(repoShortName, (figNum));
+end
 
 %% Start of Demo Code
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
