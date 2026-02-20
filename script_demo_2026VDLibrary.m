@@ -3,7 +3,7 @@
 %
 % This is the explanation of the code that can be found by running
 %
-%       script_demo_2026VD.m
+%       script_demo_2026VDLibrary.m
 %
 % This is a script to demonstrate the functions within the "VD"
 % library. This code repo is typically located at:
@@ -57,11 +57,10 @@
 % - In script_demo_VD
 %   % * Added check if repo is ready for release
 %
-% (As script_demo_2026VD)
-%
+% (As script_demo_2026VDLibrary)
 %
 % 2026_02_20 by Sean Brennan, sbrennan@psu.edu
-% - In script_demo_2026VD
+% - In script_demo_2026VDLibrary
 %   % * Ported code over from VDClass library
 
 
@@ -111,6 +110,17 @@ ith_repo = ith_repo+1;
 dependencyURLs{ith_repo} = 'https://github.com/ivsg-psu/FieldDataCollection_GPSRelatedCodes_GPSClass';
 dependencySubfolders{ith_repo} = {'Functions'};
 
+ith_repo = ith_repo+1;
+dependencyURLs{ith_repo} = 'https://github.com/ivsg-psu/PathPlanning_GeomTools_GeomClassLibrary';
+dependencySubfolders{ith_repo} = {'Functions','Data'};
+
+ith_repo = ith_repo+1;
+dependencyURLs{ith_repo} = 'https://github.com/ivsg-psu/PathPlanning_PathTools_PathClassLibrary';
+dependencySubfolders{ith_repo} = {'Functions','Data'};
+
+ith_repo = ith_repo+1;
+dependencyURLs{ith_repo} = 'https://github.com/ivsg-psu/FieldDataCollection_GPSRelatedCodes_GPSClass';
+dependencySubfolders{ith_repo} = {'Functions'};
 
 % ith_repo = ith_repo+1;
 % dependencyURLs{ith_repo} = 'https://github.com/ivsg-psu/PathPlanning_PathTools_GetUserInputPath';
@@ -152,8 +162,8 @@ if ~exist('flag_Laps_Folders_Initialized','var')
 		'KinematicPointMass_MATLAB',...
         'KinematicPointMass_Simulink',...
 		'KinematicBicycle_MATLAB',...
-		'KinematicBicycle_Simulink',... % 'Bicycle_MATLAB', ...
-        'VD_Utilities_Bicycle',...  % 'Bicycle_Simulink',...     % 'DualTrack_MATLAB',...   % 'DualTrack_Simulink',...
+		'KinematicBicycle_Simulink',
+        'VD_Utilities_Bicycle',...  % (added later, as we build them)... % 'Bicycle_MATLAB', ... % 'Bicycle_Simulink',...     % 'DualTrack_MATLAB',...   % 'DualTrack_Simulink',...
         'VD_plot',...
 		'ComparisonScripts',...
         'Datafiles'};
