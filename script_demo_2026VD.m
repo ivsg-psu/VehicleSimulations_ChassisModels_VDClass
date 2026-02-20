@@ -1,12 +1,14 @@
-% Script to demonstrate the Vehicle Dynamics (VD) library.
+% Script to demonstrate the Vehicle Dynamics (VD) library (special release
+% for 2026 VD class)
 %
 % This is the explanation of the code that can be found by running
-%       script_demo_VD.m
+%
+%       script_demo_2026VD.m
 %
 % This is a script to demonstrate the functions within the "VD"
 % library. This code repo is typically located at:
 %
-% https://github.com/ivsg-psu/VehicleSimulations_ChassisModels_VDClass
+% https://github.com/ivsg-psu/Classes_VehicleDynamics_2026VDLibrary
 %
 % This script was written by S. Brennan using code from Satya
 % Questions or comments? sbrennan@psu.edu
@@ -54,6 +56,14 @@
 % 2026_02_10 by Sean Brennan, sbrennan@psu.edu
 % - In script_demo_VD
 %   % * Added check if repo is ready for release
+%
+% (As script_demo_2026VD)
+%
+%
+% 2026_02_20 by Sean Brennan, sbrennan@psu.edu
+% - In script_demo_2026VD
+%   % * Ported code over from VDClass library
+
 
 % TO-DO:
 % - 2025_12_29 by Sean Brennan, sbrennan@psu.edu
@@ -142,12 +152,8 @@ if ~exist('flag_Laps_Folders_Initialized','var')
 		'KinematicPointMass_MATLAB',...
         'KinematicPointMass_Simulink',...
 		'KinematicBicycle_MATLAB',...
-		'KinematicBicycle_Simulink',...
-        'Bicycle_MATLAB', ...
-        'VD_Utilities_Bicycle',...
-        'Bicycle_Simulink',...
-        'DualTrack_MATLAB',...
-        'DualTrack_Simulink',...
+		'KinematicBicycle_Simulink',... % 'Bicycle_MATLAB', ...
+        'VD_Utilities_Bicycle',...  % 'Bicycle_Simulink',...     % 'DualTrack_MATLAB',...   % 'DualTrack_Simulink',...
         'VD_plot',...
 		'ComparisonScripts',...
         'Datafiles'};
