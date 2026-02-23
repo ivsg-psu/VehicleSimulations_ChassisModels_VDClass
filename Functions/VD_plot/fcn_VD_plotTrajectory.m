@@ -96,7 +96,7 @@ if 0==flag_max_speed
         narginchk(MAX_NARGIN-1,MAX_NARGIN);
 
         % Check the trajectory input to be sure it has 1 column and 1 row, positive
-        fcn_DebugTools_checkInputsToFunctions(trajectory, '2column_of_numbers',[1 2]);
+        fcn_DebugTools_checkInputsToFunctions(trajectory, '2column_of_mixed',[1 2]);
 
     end
 end
