@@ -420,24 +420,24 @@ V(1) = min(U_initial, U_corner(1))^2; % V_initial
 for ith_step = 1:(Nrows-1)
     % Local values at the start (a) and end (b) of the step
     kappa_a = kappa(ith_step);
-    mu_a    = mu(ith_step);
+    mu_a = mu(ith_step);
     theta_a = theta(ith_step);
     kappa_b = kappa(ith_step + 1);
-    mu_b    = mu(ith_step + 1);
+    mu_b = mu(ith_step + 1);
     theta_b = theta(ith_step + 1);
 
     % Midpoint values via linear interpolation
     kappa_m = 0.5 * (kappa_a + kappa_b);
-    mu_m    = 0.5 * (mu_a    + mu_b);
+    mu_m    = 0.5 * (mu_a + mu_b);
     theta_m = 0.5 * (theta_a + theta_b);
 
     V_curr = V(ith_step);
 
     % RK4 stages on dV/ds = f(s, V)
-    k1 = fcn_INTERNAL_speedODE(V_curr,             kappa_a, mu_a, theta_a, lambda, g, pass_sign);
+    k1 = fcn_INTERNAL_speedODE(V_curr, kappa_a, mu_a, theta_a, lambda, g, pass_sign);
     k2 = fcn_INTERNAL_speedODE(V_curr + 0.5*ds*k1, kappa_m, mu_m, theta_m, lambda, g, pass_sign);
     k3 = fcn_INTERNAL_speedODE(V_curr + 0.5*ds*k2, kappa_m, mu_m, theta_m, lambda, g, pass_sign);
-    k4 = fcn_INTERNAL_speedODE(V_curr + ds*k3,     kappa_b, mu_b, theta_b, lambda, g, pass_sign);
+    k4 = fcn_INTERNAL_speedODE(V_curr + ds*k3, kappa_b, mu_b, theta_b, lambda, g, pass_sign);
 
     V_next = V_curr + (ds/6) * (k1 + 2*k2 + 2*k3 + k4);
 
@@ -471,8 +471,7 @@ function dVds = fcn_INTERNAL_speedODE(V, kappa_local, mu_local, theta_local, lam
 
 budget_sq  = (lambda * mu_local * g * cos(theta_local))^2;
 lateral_sq = (kappa_local * V)^2;
-dVds = 2 * sqrt(max(0, budget_sq - lateral_sq)) ...
-       - 2 * g * sin(theta_local) * pass_sign;
+dVds = 2 * sqrt(max(0, budget_sq - lateral_sq)) - 2 * g * sin(theta_local) * pass_sign;
 
 end % Ends fcn_INTERNAL_speedODE
 
