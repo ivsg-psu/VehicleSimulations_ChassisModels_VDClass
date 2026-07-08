@@ -97,19 +97,19 @@ h_plot = fcn_VD_plotTrajectory(stateTrajectorySimulink(:,1:2),(figNum));
 set(h_plot,'LineWidth',3);
 
 subplot(4,1,2);
-plot(t, abs(stateTrajectoryMATLAB(:,1) - stateTrajectorySimulink(:,1)));
+plot(tMATLAB, abs(stateTrajectoryMATLAB(:,1) - stateTrajectorySimulink(:,1)));
 xlabel('Time [s]','Interpreter','Latex','Fontsize',18)
 ylabel('X-error [m]','Interpreter','Latex','Fontsize',18)
 grid on
 
 subplot(4,1,3);
-plot(t, abs(stateTrajectoryMATLAB(:,2) - (stateTrajectorySimulink(:,2)+eps*10)));
+plot(tMATLAB, abs(stateTrajectoryMATLAB(:,2) - (stateTrajectorySimulink(:,2)+eps*10)));
 xlabel('Time [s]','Interpreter','Latex','Fontsize',18)
 ylabel('Y-error [m]','Interpreter','Latex','Fontsize',18)
 grid on
 
 subplot(4,1,4);
-plot(t, abs(steeringUsedMATLAB(:,1) - steeringUsedSimulink(:,1)));
+plot(tMATLAB, abs(steeringUsedMATLAB(:,1) - steeringUsedSimulink(:,1)));
 xlabel('Time [s]','Interpreter','Latex','Fontsize',18)
 ylabel('Y-error [m]','Interpreter','Latex','Fontsize',18)
 grid on
