@@ -179,7 +179,7 @@ end
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Extract the inputs into local variables 
+% Extract the inputs into local variables (make them column matrices)
 s = road.s(:);
 kappa = road.kappa(:); % Curvature
 mu = mu(:);
@@ -195,10 +195,10 @@ else
     theta = zeros(Nrows, 1);
 end
 
-U_posted   = speedPlannerSpecs.U_posted;
+U_posted = speedPlannerSpecs.U_posted;
 U_initial  = speedPlannerSpecs.U_initial;
 U_terminal = speedPlannerSpecs.U_terminal;
-lambda     = speedPlannerSpecs.lambda;
+lambda = speedPlannerSpecs.lambda;
 if isfield(speedPlannerSpecs, 'g') && ~isempty(speedPlannerSpecs.g)
     g = speedPlannerSpecs.g;
 else
@@ -285,13 +285,12 @@ U_backward = flipud(U_backward_flipped);
 
 Ux_desired = min(U_forward, U_backward);
 
-
 %% Finding accelerations from the ODE (avoids finite-diff spikes)
 %
 % At each station, determine which pass binds (forward, backward, or
 % cornering/posted), then evaluate the ODE-based longitudinal acceleration:
 %
-%   forward binding:   a_x = +sqrt((lambda*mu*g*cos(theta))^2 - (kappa*Ux^2)^2)
+%   forward binding: a_x = +sqrt((lambda*mu*g*cos(theta))^2 - (kappa*Ux^2)^2)
 %                             - g*sin(theta)
 %   backward binding:  a_x = -sqrt(...) - g*sin(theta)
 %   cornering/posted:  a_x = 0        (Ux constant along s; steady state)

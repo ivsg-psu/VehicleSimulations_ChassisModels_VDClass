@@ -244,7 +244,7 @@ R_curve  = 300;
 k_arc    = 1/R_curve;
 L_spiral = 60;
 dHead_spiral = L_spiral * (0 + k_arc) / 2;   % heading change per spiral
-arc_angle    = pi/2 - 2 * dHead_spiral;       % so total turn = pi/2
+arc_angle = pi/2 - 2 * dHead_spiral;       % so total turn = pi/2
 
 clear roadSpec
 roadSpec(1).type   = 'straight';
