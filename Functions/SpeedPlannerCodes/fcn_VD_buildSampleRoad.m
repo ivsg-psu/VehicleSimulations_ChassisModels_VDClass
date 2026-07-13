@@ -502,7 +502,7 @@ if flag_do_plots
         seg = road_specifications(ith_road_segment);
 
         s_start = segBounds(ith_road_segment,1);
-        s_end   = segBounds(ith_road_segment,2);
+        s_end = segBounds(ith_road_segment,2);
 
         if ith_road_segment < numel(road_specifications)
             in_this_segment = (s >= s_start) & (s < s_end);
@@ -549,7 +549,7 @@ if flag_do_plots
     grid on;
 
     plot(x, y, 'LineWidth', 2);
-    plot(x(1), y(1),   'go', 'MarkerSize', 10, 'MarkerFaceColor', 'g');
+    plot(x(1), y(1), 'go', 'MarkerSize', 10, 'MarkerFaceColor', 'g');
     plot(x(end), y(end), 'rs', 'MarkerSize', 10, 'MarkerFaceColor', 'r');
 
     % Overlay each low-mu region on the road geometry
@@ -599,37 +599,15 @@ end % Ends main function
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%§
 
 function runs = fcn_INTERNAL_findLowMURegions(logicalVec)
-% Returns an [Mx2] array of [startIdx endIdx] for each contiguous run of
-% true values in the input logical column vector.
+% Returns an [Mx2] array of [startIdx endIdx] for each run of true values
+% in the input logical column vector.
+
+% Make sure the segement indices are in a column matrix
 logicalVec = logicalVec(:);
 d = diff([false; logicalVec; false]);
-startIdx = find(d ==  1);
-endIdx   = find(d == -1) - 1;
+
+% Find the start and end indices of the segment
+startIdx = find(d == 1);
+endIdx = find(d == -1) - 1;
 runs = [startIdx, endIdx];
 end
-
-% function plotStationVSCurvature(road_specifications, segBounds)
-% 
-% for ith_road_segment = 1:numel(road_specifications)
-%     seg = road_specifications(ith_road_segment);
-% 
-% 
-%     switch lower(seg.type)
-%         case 'straight'
-%             kappa_seg = zeros(nSteps, 1);
-%         case 'arc'
-%             k_arc = sign(seg.angle) / abs(seg.radius);
-%             kappa_seg = k_arc * ones(nSteps, 1);
-%         case 'spiral'
-%             % Curvature varies linearly with arc length from k_start to
-%             % k_end. This is the OpenDRIVE 'spiral' (clothoid) geometry,
-%             % required for any realistic transition between segments of
-%             % different curvature.
-% 
-%             s_param = linspace(0, L, nSteps + 1).';
-%             kappa_full = seg.k_start + (seg.k_end - seg.k_start) * s_param / L;
-%             kappa_seg = kappa_full(2:end);
-%     end
-% end
-% 
-% end
