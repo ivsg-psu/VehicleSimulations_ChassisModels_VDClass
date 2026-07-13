@@ -93,7 +93,6 @@ function [UxDesired, road, intersectionPoints, ...
 %
 % - Add formal input checking using DebugTools.
 % - Support curved road definitions based directly on predictedPath.
-% - Extend the function to multiple road boundaries or obstacles.
 
 %% Optional figure input
 
@@ -105,14 +104,43 @@ end
 
 %% Detect intersections
 
-[intersectionPoints, ...
- sCoordinatesInPredictedPath, ...
- ~] = ...
-    fcn_Path_findIntersectionsBetweenPaths( ...
-        predictedPath, ...
-        boundaryPath, ...
-        []);
+% Allow a single boundary path or several independent boundary paths
+if iscell(boundaryPath)
+    boundaryPaths = boundaryPath;
+else
+    boundaryPaths = {boundaryPath};
+end
 
+numberOfBoundaries = numel(boundaryPaths);
+
+intersectionPointsCell = cell(numberOfBoundaries,1);
+sCoordinatesCell = cell(numberOfBoundaries,1);
+
+for ithBoundary = 1:numberOfBoundaries
+
+    currentBoundaryPath = boundaryPaths{ithBoundary};
+
+    [currentIntersectionPoints, ...
+     currentSCoordinatesInPredictedPath, ...
+     ~] = ...
+        fcn_Path_findIntersectionsBetweenPaths( ...
+            predictedPath, ...
+            currentBoundaryPath, ...
+            []);
+
+    intersectionPointsCell{ithBoundary} = ...
+        currentIntersectionPoints;
+
+    sCoordinatesCell{ithBoundary} = ...
+        currentSCoordinatesInPredictedPath;
+
+end
+
+intersectionPoints = ...
+    vertcat(intersectionPointsCell{:});
+
+sCoordinatesInPredictedPath = ...
+    vertcat(sCoordinatesCell{:});
 %% Determine road length and terminal condition
 
 if isempty(intersectionPoints)
