@@ -1,14 +1,16 @@
-% script_demo_predictiveSafetySpeedPlanning
+%% script_demo_predictiveSafetySpeedPlanning
 %
 % This script demonstrates predictive safety speed planning using a future
-% vehicle path and a road boundary.
+% vehicle path and one or multiple path boundaries.
 %
-% The script detects whether the predicted vehicle path intersects a
-% boundary. If a collision is predicted, the first collision station is
-% passed to the speed planner as a zero-terminal-speed constraint.
+% The script detects whether the predicted vehicle path intersects any
+% boundary. If a boundary crossing is predicted, the first intersection
+% station is passed to the speed planner as a zero-terminal-speed
+% constraint.
 %
 % The resulting backward pass determines the station where braking must
-% begin so that the vehicle reaches zero speed at the collision location.
+% begin so that the vehicle reaches zero speed at the predicted boundary
+% crossing.
 %
 % The script also compares the effect of different friction coefficients
 % on braking distance.
@@ -20,16 +22,13 @@
 %
 % 2026_07_10 by Jaime Rodriguez
 % - Created predictive safety speed-planning demonstration.
-% - Added path-intersection detection.
-% - Added collision-based speed-profile calculation.
+% - Added path-boundary intersection detection.
+% - Added boundary-crossing-based speed-profile calculation.
 % - Added braking-start visualization.
 % - Added friction-coefficient comparison.
 %
 % TO-DO:
 %
-% - Replace the straight path with measured or predicted vehicle paths.
-% - Integrate the method with online path updates.
-% - Validate the method experimentally on the vehicle platform.
 
 %% Prep the workspace
 close all;

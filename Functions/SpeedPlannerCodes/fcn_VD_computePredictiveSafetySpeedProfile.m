@@ -7,8 +7,8 @@ function [UxDesired, road, intersectionPoints, ...
 
 % fcn_VD_computePredictiveSafetySpeedProfile
 %
-% Detects intersections between a predicted vehicle path and a boundary
-% and computes a longitudinal speed profile.
+% Detects intersections between a predicted vehicle path and one or
+% multiple boundaries and computes a longitudinal speed profile.
 %
 % If an intersection is detected, the function selects the first
 % intersection along the predicted path and imposes a zero terminal speed
@@ -32,7 +32,9 @@ function [UxDesired, road, intersectionPoints, ...
 %     N-by-2 matrix containing the predicted vehicle path as [X Y].
 %
 % boundaryPath:
-%     M-by-2 matrix containing a road boundary or obstacle as [X Y].
+%     M-by-2 matrix containing a road boundary or obstacle as [X Y], or a
+%     cell array of M-by-2 matrices containing multiple boundaries or
+%     obstacles.
 %
 % muValue:
 %     Scalar friction coefficient.
@@ -91,8 +93,6 @@ function [UxDesired, road, intersectionPoints, ...
 %
 % TO-DO:
 %
-% - Add formal input checking using DebugTools.
-% - Support curved road definitions based directly on predictedPath.
 
 %% Optional figure input
 

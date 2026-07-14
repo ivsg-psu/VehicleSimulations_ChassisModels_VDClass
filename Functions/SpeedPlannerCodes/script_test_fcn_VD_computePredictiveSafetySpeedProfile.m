@@ -4,14 +4,36 @@
 %
 %       fcn_VD_computePredictiveSafetySpeedProfile
 %
+% The function evaluates a predicted vehicle path against one or multiple
+% path boundaries. If the predicted path intersects a boundary, the first
+% intersection along the path is interpreted as a future safety violation,
+% and the existing speed planner is used to compute a braking profile that
+% brings the vehicle to rest before that point.
+%
 % The following cases are evaluated:
 %
-% 1. A predicted path with one intersection.
-% 2. A predicted path with no intersections.
-% 3. A predicted path with two intersections.
+% The following cases are evaluated:
+%
+% 1. A predicted path with one boundary intersection.
+% 2. A predicted path with no boundary intersections.
+% 3. A predicted path with two boundary intersections.
+% 4. A curved predicted path, showing that the collision station is based
+%    on distance along the path and not on the global x-coordinate.
+% 5. A sample path generated using the Path Class Library.
+% 6. A friction-coefficient sweep, showing the effect of available friction
+%    on braking distance.
+% 7. Several independent obstacles represented as multiple boundary paths.
+% 8. A mapped pavement-boundary dataset used as a preliminary boundary test.
+% 9. A case where the collision is too close for the vehicle to stop from
+%    the requested initial speed.
+% 10. A Gao-based oval trajectory used as an additional non-trivial
+%     predicted-path test case.
+% 11. Mapped Test Track boundaries represented as outer and inner limits of
+%     the drivable area.
 %
 % The tests verify the detected collision station, terminal speed,
-% braking-start station, and behavior when no collision is present.
+% braking-start station, braking distance, behavior when no collision is
+% present, and behavior when multiple boundaries are provided.
 %
 % REVISION HISTORY:
 %
@@ -26,7 +48,9 @@
 % - Added tests for curved predicted paths.
 % - Added tests for different friction coefficients.
 % - Added tests for several independent obstacles.
-% - Added tests using mapped test-track boundaries.
+% - Added tests using mapped Test Track boundaries.
+% - Added test for infeasible stopping distance.
+% - Added test using a Gao-based oval predicted path.
 %
 % TO-DO:
 %
