@@ -62,7 +62,10 @@
 % 2026_02_20 by Sean Brennan, sbrennan@psu.edu
 % - In script_demo_2026VDLibrary
 %   % * Ported code over from VDClass library
-
+%
+% 2026_09_02 by Sean Brennan, sbrennan@psu.edu
+% - In script_demo_2026VDLibrary
+%   % * Ported code over from VDClass library
 
 % TO-DO:
 % - 2025_12_29 by Sean Brennan, sbrennan@psu.edu
