@@ -46,7 +46,9 @@ function dydt = fcn_VD_derivativesFirstOrderEngineModel( y, inputTorqueNewtonMet
 % As: fcn_VD_derivativesFirstOrderEngineModel
 %
 % 2026_09_02 by Sean Brennan, sbrennan@psu.edu
-% - First write of function, using fcn_VD_derivativesKinematicBicycleModel as starter
+% - In fcn_VD_derivativesFirstOrderEngineModel
+%   % * First write of function,
+%   % * Using fcn_VD_derivativesKinematicBicycleModel as starter
 %
 
 % TO-DO:

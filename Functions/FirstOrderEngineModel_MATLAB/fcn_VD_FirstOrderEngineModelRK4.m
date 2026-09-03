@@ -69,7 +69,8 @@ function [stateTrajectory, t, inputHistory] = fcn_VD_FirstOrderEngineModelRK4(in
 % As: fcn_VD_FirstOrderEngineModelRK4
 %
 % 2026_09_02 by Sean Brennan, sbrennan@psu.edu
-% - First write of fcn_VD_FirstOrderEngineModelRK4 function
+% - In fcn_VD_FirstOrderEngineModelRK4
+%   % * First write of fcn_VD_FirstOrderEngineModelRK4 function
 %   % * Used fcn_VD_kinematicBicycleModelRK4 as a starter
 
 % TO-DO:

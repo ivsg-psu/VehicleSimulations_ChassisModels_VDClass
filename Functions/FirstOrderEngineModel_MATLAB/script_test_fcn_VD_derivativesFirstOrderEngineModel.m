@@ -4,7 +4,9 @@
 % REVISION HISTORY:
 %
 % 2026_09_02 by Sean Brennan, sbrennan@psu.edu
-% - wrote the code originally, using breakDataIntoLaps as starter
+% - In script_test_fcn_VD_derivativesFirstOrderEngineModel
+%   % * Wrote the code originally, 
+%   % * Using breakDataIntoLaps as starter
 
 % TO-DO:
 %

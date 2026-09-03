@@ -89,6 +89,11 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelSimu
 %   % * Added many versioned SLX files (R2018b through R2025b) under
 %   %   % KinematicPointMass_Simulink and a top-level
 %   %   % mdl_VD_KinematicPointMassModel_2024b.slx.
+%
+% 2026_09_03 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_kinematicPointMassModelSimulink
+%   % * Added explicit variable inport into model to prevent scope errors
+
 
 % TO-DO:
 % - 2026_01_26 by Sean Brennan, sbrennan@psu.edu
@@ -278,9 +283,18 @@ if 1==0
 end
 modelToUse = cat(2,'mdl_VD_KinematicPointMassModel_R',currentMATLABversion,'_SLX.slx');
 
+% Set the parameters for simulink (must be done since function variables
+% are local and not automatically passed into the model)
+modelWithParameters = Simulink.SimulationInput(modelToUse); % Copies model from the one given into a "hold" model
+modelWithParameters = modelWithParameters.setVariable('initialStates', initialStates);      % makes initialStates available to model
+modelWithParameters = modelWithParameters.setVariable('startTime', startTime);              % makes startTime available to model
+modelWithParameters = modelWithParameters.setVariable('endTime', endTime);                  % makes endTime available to model
+modelWithParameters = modelWithParameters.setVariable('deltaT', deltaT);                    % makes deltaT available to model
+modelWithParameters = modelWithParameters.setVariable('steeringAndTimeInputs', steeringAndTimeInputs);        % makes steeringAndTimeInputs available to model
+modelWithParameters = modelWithParameters.setVariable('U', U);            % makes U available to model
 
 % Run the simulation in SIMULINK
-simout = sim(modelToUse);
+simout = sim(modelWithParameters);
 
 % Save the results in a big array (for plotting in next part)
 % Before saving, we need to check if the full vector is shorter than

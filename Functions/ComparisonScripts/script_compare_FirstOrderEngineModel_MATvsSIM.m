@@ -66,74 +66,79 @@ parameters.B = 2.5; % B is the rotational viscous drag, in (N-m)/(rad/sec)
 
 % Call the MATLAB RK4 function
 [stateTrajectoryMATLAB, tMATLAB, steeringUsedMATLAB] = ...
-fcn_VD_FirstOrderEngineModelRK4(initialStates, deltaT, ...
-timeInterval, inputsVsTime, parameters, (-1));
+	fcn_VD_FirstOrderEngineModelRK4(initialStates, deltaT, ...
+	timeInterval, inputsVsTime, parameters, (-1));
 
 % Call the Simulink runing RK4 solver
 [stateTrajectorySimulink, tSimulink, steeringUsedSimulink] = ...
-fcn_VD_FirstOrderEngineModelSimulink(initialStates, deltaT, ...
-timeInterval, inputsVsTime, parameters, (-1));
+	fcn_VD_FirstOrderEngineModelSimulink(initialStates, deltaT, ...
+	timeInterval, inputsVsTime, parameters, (-1));
 sgtitle(titleString, 'Interpreter','none');
 
+% Check variable types
+assert(isnumeric(stateTrajectoryMATLAB));
+assert(isnumeric(stateTrajectorySimulink));
+assert(isnumeric(tMATLAB));
+assert(isnumeric(tSimulink));
+assert(isnumeric(steeringUsedMATLAB));
+assert(isnumeric(steeringUsedSimulink));
+
+% Check variable sizes
+assert(size(stateTrajectoryMATLAB,1)==size(stateTrajectorySimulink,1));
+assert(size(stateTrajectoryMATLAB,2)==size(stateTrajectorySimulink,2));
+
+assert(size(tMATLAB,1)==size(stateTrajectoryMATLAB,1));
+assert(size(tMATLAB,1)==size(tSimulink,1));
+assert(size(tMATLAB,2)==1);
+assert(size(steeringUsedMATLAB,1)==size(stateTrajectoryMATLAB,1));
+assert(size(steeringUsedMATLAB,1)==size(steeringUsedSimulink,1));
+assert(size(steeringUsedMATLAB,2)==1);
+
+% Check variable values
+% (too complex to check with assertions - check with plots)
 
 figure(figNum);
 subplot(4,1,1)
 hold on;
-h_plot = plot(t,steeringUsedMATLAB(:,1),'-', 'LineWidth',5);
+h_plot = plot(tMATLAB,steeringUsedMATLAB(:,1),'-', 'LineWidth',5);
 set(h_plot,'DisplayName','Input (MATLAB RK4)')
-h_plot = plot(t,steeringUsedSimulink(:,1),'-');
+h_plot = plot(tMATLAB,steeringUsedSimulink(:,1),'-');
 set(h_plot,'DisplayName','Input (Simulink)')
+xlabel('Time [s]','Interpreter','Latex','Fontsize',18)
+ylabel('Input Torque [N-m]','Interpreter','Latex','Fontsize',18)
+grid on
 legend;
 
 subplot(4,1,2)
 hold on;
-h_plot = plot(t,stateTrajectoryMATLAB(:,1),'-', 'LineWidth',5);
+h_plot = plot(tMATLAB,stateTrajectoryMATLAB(:,1),'-', 'LineWidth',5);
 set(h_plot,'DisplayName','Engine Rotational Speed (MATLAB RK4)')
-h_plot = plot(t,stateTrajectorySimulink(:,1),'-');
+h_plot = plot(tMATLAB,stateTrajectorySimulink(:,1),'-');
 set(h_plot,'DisplayName','Input (Simulink)')
+xlabel('Time [s]','Interpreter','Latex','Fontsize',18)
+ylabel('Engine Speed [rad/sec]','Interpreter','Latex','Fontsize',18)
+grid on
 legend;
 
-% subplot(4,1,1);
-% h_plot = fcn_VD_plotTrajectory(stateTrajectoryMATLAB(:,1:2),(figNum));
-% set(h_plot,'LineWidth',5);
-% h_plot = fcn_VD_plotTrajectory(stateTrajectorySimulink(:,1:2),(figNum));
-% set(h_plot,'LineWidth',3);
-% 
-% subplot(4,1,2);
-% plot(tMATLAB, abs(stateTrajectoryMATLAB(:,1) - stateTrajectorySimulink(:,1)));
-% xlabel('Time [s]','Interpreter','Latex','Fontsize',18)
-% ylabel('X-error [m]','Interpreter','Latex','Fontsize',18)
-% grid on
-% 
-% subplot(4,1,3);
-% plot(tMATLAB, abs(stateTrajectoryMATLAB(:,2) - (stateTrajectorySimulink(:,2)+eps*10)));
-% xlabel('Time [s]','Interpreter','Latex','Fontsize',18)
-% ylabel('Y-error [m]','Interpreter','Latex','Fontsize',18)
-% grid on
-% 
-% subplot(4,1,4);
-% plot(tMATLAB, abs(steeringUsedMATLAB(:,1) - steeringUsedSimulink(:,1)));
-% xlabel('Time [s]','Interpreter','Latex','Fontsize',18)
-% ylabel('Y-error [m]','Interpreter','Latex','Fontsize',18)
-% grid on
+subplot(4,1,3)
+hold on;
+h_plot = plot(tMATLAB,abs(steeringUsedMATLAB(:,1) - steeringUsedSimulink(:,1)),'-', 'LineWidth',5);
+set(h_plot,'DisplayName','Absolute input difference abs(MATLAB - Simulink)')
+xlabel('Time [s]','Interpreter','Latex','Fontsize',18)
+ylabel('Error [N-m]','Interpreter','Latex','Fontsize',18)
+grid on
+legend;
 
+subplot(4,1,4)
+hold on;
+h_plot = plot(tMATLAB,abs(stateTrajectoryMATLAB(:,1) - stateTrajectorySimulink(:,1)),'-', 'LineWidth',5);
+set(h_plot,'DisplayName','Absolute prediction difference abs(MATLAB - Simulink)')
+xlabel('Time [s]','Interpreter','Latex','Fontsize',18)
+ylabel('Error [rad/sec]','Interpreter','Latex','Fontsize',18)
+grid on
+legend;
 
-% % Check variable types
-% assert(isnumeric(stateTrajectory));
-% assert(isnumeric(t));
-% assert(isnumeric(steeringUsed));
-% 
-% % Check variable sizes
-% assert(size(stateTrajectory,1)>=1); 
-% assert(size(stateTrajectory,2)==3); 
-% assert(size(t,1)==size(stateTrajectory,1)); 
-% assert(size(t,2)==1); 
-% assert(size(steeringUsed,1)==size(stateTrajectory,1)); 
-% assert(size(steeringUsed,2)==1); 
-
-% Check variable values
-% (too complex to check)
-
+sgtitle('First Order Engine Model Comparing MATLAB and Simulink RK4')
 % Make sure plot opened up
 assert(isequal(get(gcf,'Number'),figNum));
 
@@ -180,124 +185,124 @@ fprintf(1,'Figure: 8XXXXXX: FAST mode cases\n');
 % figNum = 80001;
 % fprintf(1,'Figure: %.0f: FAST mode, empty figNum\n',figNum);
 % figure(figNum); close(figNum);
-% 
+%
 % % Set the simulation time/state arguments
 % initialStates = [0 0 0]; % [X Y phi] in [m],[m],[rad]
 % deltaT = 0.01; % Units are [sec]
 % startTime = 0;
 % endTime = 4.5;
 % timeInterval = [startTime endTime];  % Units are [sec]
-% 
+%
 % % Set up inputs
 % steering_amplitude_degrees = 2; % 2 degrees of steering amplitude for input sinewave
 % Period = 3; % Units are seconds. A typical lane change is about 3 to 4 seconds based on experimental highway measurements
 % simulationTimes = (startTime:deltaT:endTime)';
 % inputsVsTime = [simulationTimes steering_amplitude_degrees*sin((2*pi/Period)*simulationTimes)]; % [times steering angles]
-% 
+%
 % % Set up parameters
 % U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
-% 
+%
 % % Call the function
 % [stateTrajectory, t, steeringUsed] = ...
 % fcn_VD_FirstOrderEngineModelRK4(initialStates, deltaT, ...
 % timeInterval, inputsVsTime, U, ([]));
-% 
+%
 % % sgtitle(titleString, 'Interpreter','none');
-% 
+%
 % % Check variable types
 % assert(isnumeric(stateTrajectory));
 % assert(isnumeric(t));
 % assert(isnumeric(steeringUsed));
-% 
+%
 % % Check variable sizes
-% assert(size(stateTrajectory,1)>=1); 
-% assert(size(stateTrajectory,2)==3); 
-% assert(size(t,1)==size(stateTrajectory,1)); 
-% assert(size(t,2)==1); 
-% assert(size(steeringUsed,1)==size(stateTrajectory,1)); 
-% assert(size(steeringUsed,2)==1); 
-% 
+% assert(size(stateTrajectory,1)>=1);
+% assert(size(stateTrajectory,2)==3);
+% assert(size(t,1)==size(stateTrajectory,1));
+% assert(size(t,2)==1);
+% assert(size(steeringUsed,1)==size(stateTrajectory,1));
+% assert(size(steeringUsed,2)==1);
+%
 % % Check variable values
 % % (too complex to check)
-% 
+%
 % % Make sure plot did NOT open up
 % figHandles = get(groot, 'Children');
 % assert(~any(figHandles==figNum));
-% 
-% 
+%
+%
 % %% Basic fast mode - NO FIGURE, FAST MODE
 % figNum = 80002;
 % fprintf(1,'Figure: %.0f: FAST mode, figNum=-1\n',figNum);
 % figure(figNum); close(figNum);
-% 
+%
 % % Set the simulation time/state arguments
 % initialStates = [0 0 0]; % [X Y phi] in [m],[m],[rad]
 % deltaT = 0.01; % Units are [sec]
 % startTime = 0;
 % endTime = 4.5;
 % timeInterval = [startTime endTime];  % Units are [sec]
-% 
+%
 % % Set up inputs
 % steering_amplitude_degrees = 2; % 2 degrees of steering amplitude for input sinewave
 % Period = 3; % Units are seconds. A typical lane change is about 3 to 4 seconds based on experimental highway measurements
 % simulationTimes = (startTime:deltaT:endTime)';
 % inputsVsTime = [simulationTimes steering_amplitude_degrees*sin((2*pi/Period)*simulationTimes)]; % [times steering angles]
-% 
+%
 % % Set up parameters
 % U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
-% 
+%
 % % Call the function
 % [stateTrajectory, t, steeringUsed] = ...
 % fcn_VD_FirstOrderEngineModelRK4(initialStates, deltaT, ...
 % timeInterval, inputsVsTime, U, (-1));
-% 
+%
 % % sgtitle(titleString, 'Interpreter','none');
-% 
+%
 % % Check variable types
 % assert(isnumeric(stateTrajectory));
 % assert(isnumeric(t));
 % assert(isnumeric(steeringUsed));
-% 
+%
 % % Check variable sizes
-% assert(size(stateTrajectory,1)>=1); 
-% assert(size(stateTrajectory,2)==3); 
-% assert(size(t,1)==size(stateTrajectory,1)); 
-% assert(size(t,2)==1); 
-% assert(size(steeringUsed,1)==size(stateTrajectory,1)); 
-% assert(size(steeringUsed,2)==1); 
-% 
+% assert(size(stateTrajectory,1)>=1);
+% assert(size(stateTrajectory,2)==3);
+% assert(size(t,1)==size(stateTrajectory,1));
+% assert(size(t,2)==1);
+% assert(size(steeringUsed,1)==size(stateTrajectory,1));
+% assert(size(steeringUsed,2)==1);
+%
 % % Check variable values
 % % (too complex to check)
-% 
+%
 % % Make sure plot did NOT open up
 % figHandles = get(groot, 'Children');
 % assert(~any(figHandles==figNum));
-% 
-% 
+%
+%
 % %% Compare speeds of pre-calculation versus post-calculation versus a fast variant
 % figNum = 80003;
 % fprintf(1,'Figure: %.0f: FAST mode comparisons\n',figNum);
 % figure(figNum);
 % close(figNum);
-% 
+%
 % % Set the simulation time/state arguments
 % initialStates = [0 0 0]; % [X Y phi] in [m],[m],[rad]
 % deltaT = 0.01; % Units are [sec]
 % startTime = 0;
 % endTime = 4.5;
 % timeInterval = [startTime endTime];  % Units are [sec]
-% 
+%
 % % Set up inputs
 % steering_amplitude_degrees = 2; % 2 degrees of steering amplitude for input sinewave
 % Period = 3; % Units are seconds. A typical lane change is about 3 to 4 seconds based on experimental highway measurements
 % simulationTimes = (startTime:deltaT:endTime)';
 % inputsVsTime = [simulationTimes steering_amplitude_degrees*sin((2*pi/Period)*simulationTimes)]; % [times steering angles]
-% 
+%
 % % Set up parameters
 % U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
-% 
+%
 % Niterations = 50;
-% 
+%
 % % Do calculation without pre-calculation
 % tic;
 % for ith_test = 1:Niterations
@@ -307,7 +312,7 @@ fprintf(1,'Figure: 8XXXXXX: FAST mode cases\n');
 % 		timeInterval, inputsVsTime, U, ([]));
 % end
 % slow_method = toc;
-% 
+%
 % % Do calculation with pre-calculation, FAST_MODE on
 % tic;
 % for ith_test = 1:Niterations
@@ -317,23 +322,23 @@ fprintf(1,'Figure: 8XXXXXX: FAST mode cases\n');
 % 		timeInterval, inputsVsTime, U, (-1));
 % end
 % fast_method = toc;
-% 
+%
 % % Make sure plot did NOT open up
 % figHandles = get(groot, 'Children');
 % assert(~any(figHandles==figNum));
-% 
+%
 % % Plot results as bar chart
 % figure(373737);
 % clf;
 % hold on;
-% 
+%
 % X = categorical({'Normal mode','Fast mode'});
 % X = reordercats(X,{'Normal mode','Fast mode'}); % Forces bars to appear in this exact order, not alphabetized
 % Y = [slow_method fast_method ]*1000/Niterations;
 % bar(X,Y)
 % ylabel('Execution time (Milliseconds)')
-% 
-% 
+%
+%
 % % Make sure plot did NOT open up
 % figHandles = get(groot, 'Children');
 % assert(~any(figHandles==figNum));
@@ -355,11 +360,11 @@ fprintf(1,'Figure: 8XXXXXX: FAST mode cases\n');
 
 % close all;
 
-%% BUG 
+%% BUG
 
 %% Fail conditions
 if 1==0
-    
+
 end
 
 

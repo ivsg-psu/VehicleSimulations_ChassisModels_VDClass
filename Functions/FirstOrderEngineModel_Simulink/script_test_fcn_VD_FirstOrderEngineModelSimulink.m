@@ -5,7 +5,8 @@
 %
 % 2026_09_02 by Sean Brennan, sbrennan@psu.edu
 % - In script_test_fcn_VD_FirstOrderEngineModelSimulink
-%   % * Wrote the code originally, using breakDataIntoLaps as starter
+%   % * Wrote the code originally, 
+%   % * Using breakDataIntoLaps as starter
 
 % TO-DO:
 %

@@ -69,7 +69,9 @@ function [stateTrajectory, t, inputHistory] = fcn_VD_FirstOrderEngineModelSimuli
 % As: fcn_VD_FirstOrderEngineModelSimulink
 %
 % 2026_09_02 by Sean Brennan, sbrennan@psu.edu
-% - First write of function, using fcn_VD_FirstOrderEngineModelSimulink as starter
+% - In fcn_VD_FirstOrderEngineModelSimulink
+%   % First write of function, 
+%   % Using fcn_VD_FirstOrderEngineModelSimulink as starter
 %
 
 % TO-DO:
@@ -172,6 +174,8 @@ simulationTimes = (startTime:deltaT:endTime)';
 N_timeSteps = length(simulationTimes); % This is the number of time steps we should have
 N_variables = length(initialStates);
 
+
+
 % Which model to use? Depends on the version
 currentMATLABversion = version('-release');
 
@@ -226,8 +230,19 @@ if 1==0
 end
 modelToUse = cat(2,'mdl_VD_FirstOrderEngineModel_R',currentMATLABversion,'_SLX.slx');
 
+% Set the parameters for simulink (must be done since function variables
+% are local and not automatically passed into the model)
+modelWithParameters = Simulink.SimulationInput(modelToUse); % Copies model from the one given into a "hold" model
+modelWithParameters = modelWithParameters.setVariable('initialStates', initialStates);      % makes initialStates available to model
+modelWithParameters = modelWithParameters.setVariable('startTime', startTime);              % makes startTime available to model
+modelWithParameters = modelWithParameters.setVariable('endTime', endTime);                  % makes endTime available to model
+modelWithParameters = modelWithParameters.setVariable('deltaT', deltaT);                    % makes deltaT available to model
+modelWithParameters = modelWithParameters.setVariable('inputsVsTime', inputsVsTime);        % makes inputsVsTime available to model
+modelWithParameters = modelWithParameters.setVariable('parameters', parameters);            % makes parameters available to model
+
+
 % Run the simulation in SIMULINK
-simout = sim(modelToUse);
+simout = sim(modelWithParameters);
 
 % Save the results in a big array (for plotting in next part)
 % Before saving, we need to check if the full vector is shorter than
