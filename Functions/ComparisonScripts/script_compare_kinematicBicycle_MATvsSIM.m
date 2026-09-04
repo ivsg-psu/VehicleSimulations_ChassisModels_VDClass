@@ -5,10 +5,16 @@
 % REVISION HISTORY:
 %
 % 2026_01_27 by Sean Brennan, sbrennan@psu.edu
-% - First write of function
+% - In script_compare_kinematicBicycle_MATvsSIM
+%   % * First write of script
 %
 % 2026_02_01 by Sean Brennan, sbrennan@psu.edu
-% - Cleaned up script to use same formats
+% - In script_compare_kinematicBicycle_MATvsSIM
+%   % * Cleaned up script to use same formats
+%
+% 2026_09_03 by Sean Brennan, sbrennan@psu.edu
+% - In script_compare_kinematicBicycle_MATvsSIM
+%   % * Changed input naming to match general form (parameters, inputs)
 
 
 % TO-DO:
@@ -17,24 +23,6 @@
 
 %% Prepare the workspace
 close all; % close all the plots
-
-% script_test_fcn_VD_kinematicBicycleModelRK4.m
-% tests fcn_VD_kinematicBicycleModelRK4.m
-
-% REVISION HISTORY:
-%
-% 2026_01_31 by Sean Brennan, sbrennan@psu.edu
-% - In script_test_fcn_VD_kinematicBicycleModelRK4
-%   % * Wrote the code originally, using breakDataIntoLaps as starter
-
-% TO-DO:
-%
-% 2026_01_31 by Sean Brennan, sbrennan@psu.edu
-% - (fill in items here)
-
-
-%% Set up the workspace
-close all
 
 %% Code demos start here
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -74,19 +62,19 @@ simulationTimes = (startTime:deltaT:endTime)';
 steeringAndTimeInputs = [simulationTimes steering_amplitude_degrees*pi/180*sin((2*pi/Period)*simulationTimes)]; % [times steering angles]
 
 % Set up parameters
-U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
-L = 2.5; % wheelbase in meters
-
+clear parameters
+parameters.U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
+parameters.L = 2.5; % wheelbase in meters
 
 % Call the MATLAB RK4 function
 [stateTrajectoryMATLAB, tMATLAB, steeringUsedMATLAB] = ...
 fcn_VD_kinematicBicycleModelRK4(initialStates, deltaT, ...
-timeInterval, steeringAndTimeInputs, U, L, (-1));
+timeInterval, steeringAndTimeInputs, parameters, (-1));
 
 % Call the Simulink runing RK4 solver
 [stateTrajectorySimulink, tSimulink, steeringUsedSimulink] = ...
 fcn_VD_kinematicBicycleModelSimulink(initialStates, deltaT, ...
-timeInterval, steeringAndTimeInputs, U, L, (-1));
+timeInterval, steeringAndTimeInputs, parameters, (-1));
 sgtitle(titleString, 'Interpreter','none');
 
 % The XY Plots
@@ -192,8 +180,10 @@ fprintf(1,'Figure: 8XXXXXX: FAST mode cases\n');
 % steeringAndTimeInputs = [simulationTimes steering_amplitude_degrees*sin((2*pi/Period)*simulationTimes)]; % [times steering angles]
 % 
 % % Set up parameters
-% U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
-% 
+% clear parameters
+% parameters.U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
+% parameters.L = 2.5; % wheelbase in meters
+%
 % % Call the function
 % [stateTrajectory, t, steeringUsed] = ...
 % fcn_VD_kinematicBicycleModelRK4(initialStates, deltaT, ...
@@ -241,7 +231,9 @@ fprintf(1,'Figure: 8XXXXXX: FAST mode cases\n');
 % steeringAndTimeInputs = [simulationTimes steering_amplitude_degrees*sin((2*pi/Period)*simulationTimes)]; % [times steering angles]
 % 
 % % Set up parameters
-% U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
+% clear parameters
+% parameters.U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
+% parameters.L = 2.5; % wheelbase in meters
 % 
 % % Call the function
 % [stateTrajectory, t, steeringUsed] = ...
@@ -291,7 +283,9 @@ fprintf(1,'Figure: 8XXXXXX: FAST mode cases\n');
 % steeringAndTimeInputs = [simulationTimes steering_amplitude_degrees*sin((2*pi/Period)*simulationTimes)]; % [times steering angles]
 % 
 % % Set up parameters
-% U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
+% clear parameters
+% parameters.U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
+% parameters.L = 2.5; % wheelbase in meters
 % 
 % Niterations = 50;
 % 

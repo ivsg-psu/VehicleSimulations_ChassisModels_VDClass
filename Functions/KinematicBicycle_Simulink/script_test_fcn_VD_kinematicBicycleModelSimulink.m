@@ -6,6 +6,10 @@
 % 2026_01_31 by Sean Brennan, sbrennan@psu.edu
 % - In script_test_fcn_VD_kinematicBicycleModelSimulink
 %   % * Wrote the code originally, using breakDataIntoLaps as starter
+%
+% 2026_09_03 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_VD_kinematicBicycleModelSimulink
+%   % * Updated the function inputs for consistency between functions
 
 % TO-DO:
 %
@@ -51,16 +55,17 @@ timeInterval = [startTime endTime];  % Units are [sec]
 steering_amplitude_degrees = 20; % 2 degrees of steering amplitude for input sinewave
 Period = 3; % Units are seconds. A typical lane change is about 3 to 4 seconds based on experimental highway measurements
 simulationTimes = (startTime:deltaT:endTime)';
-steeringAndTimeInputs = [simulationTimes steering_amplitude_degrees*pi/180*sin((2*pi/Period)*simulationTimes)]; % [times steering angles]
+inputsVsTime = [simulationTimes steering_amplitude_degrees*pi/180*sin((2*pi/Period)*simulationTimes)]; % [times steering angles]
 
 % Set up parameters
-U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
-L = 2.5; % wheelbase in meters
+clear parameters
+parameters.U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
+parameters.L = 2.5; % wheelbase in meters
 
 % Call the function
 [stateTrajectory, t, steeringUsed] = ...
 fcn_VD_kinematicBicycleModelSimulink(initialStates, deltaT, ...
-timeInterval, steeringAndTimeInputs, U, L, (figNum));
+timeInterval, inputsVsTime, parameters, (figNum));
 
 sgtitle(titleString, 'Interpreter','none');
 
@@ -138,16 +143,17 @@ timeInterval = [startTime endTime];  % Units are [sec]
 steering_amplitude_degrees = 20; % 2 degrees of steering amplitude for input sinewave
 Period = 3; % Units are seconds. A typical lane change is about 3 to 4 seconds based on experimental highway measurements
 simulationTimes = (startTime:deltaT:endTime)';
-steeringAndTimeInputs = [simulationTimes steering_amplitude_degrees*pi/180*sin((2*pi/Period)*simulationTimes)]; % [times steering angles]
+inputsVsTime = [simulationTimes steering_amplitude_degrees*pi/180*sin((2*pi/Period)*simulationTimes)]; % [times steering angles]
 
 % Set up parameters
-U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
-L = 2.5; % wheelbase in meters
+clear parameters
+parameters.U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
+parameters.L = 2.5; % wheelbase in meters
 
 % Call the function
 [stateTrajectory, t, steeringUsed] = ...
 fcn_VD_kinematicBicycleModelSimulink(initialStates, deltaT, ...
-timeInterval, steeringAndTimeInputs, U, L, ([]));
+timeInterval, inputsVsTime, parameters, ([]));
 
 % sgtitle(titleString, 'Interpreter','none');
 
@@ -188,16 +194,17 @@ timeInterval = [startTime endTime];  % Units are [sec]
 steering_amplitude_degrees = 20; % 2 degrees of steering amplitude for input sinewave
 Period = 3; % Units are seconds. A typical lane change is about 3 to 4 seconds based on experimental highway measurements
 simulationTimes = (startTime:deltaT:endTime)';
-steeringAndTimeInputs = [simulationTimes steering_amplitude_degrees*pi/180*sin((2*pi/Period)*simulationTimes)]; % [times steering angles]
+inputsVsTime = [simulationTimes steering_amplitude_degrees*pi/180*sin((2*pi/Period)*simulationTimes)]; % [times steering angles]
 
 % Set up parameters
-U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
-L = 2.5; % wheelbase in meters
+clear parameters
+parameters.U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
+parameters.L = 2.5; % wheelbase in meters
 
 % Call the function
 [stateTrajectory, t, steeringUsed] = ...
 fcn_VD_kinematicBicycleModelSimulink(initialStates, deltaT, ...
-timeInterval, steeringAndTimeInputs, U, L, (-1));
+timeInterval, inputsVsTime, parameters, (-1));
 
 % sgtitle(titleString, 'Interpreter','none');
 
@@ -239,11 +246,12 @@ timeInterval = [startTime endTime];  % Units are [sec]
 steering_amplitude_degrees = 20; % 2 degrees of steering amplitude for input sinewave
 Period = 3; % Units are seconds. A typical lane change is about 3 to 4 seconds based on experimental highway measurements
 simulationTimes = (startTime:deltaT:endTime)';
-steeringAndTimeInputs = [simulationTimes steering_amplitude_degrees*pi/180*sin((2*pi/Period)*simulationTimes)]; % [times steering angles]
+inputsVsTime = [simulationTimes steering_amplitude_degrees*pi/180*sin((2*pi/Period)*simulationTimes)]; % [times steering angles]
 
 % Set up parameters
-U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
-L = 2.5; % wheelbase in meters
+clear parameters
+parameters.U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
+parameters.L = 2.5; % wheelbase in meters
 
 Niterations = 5;
 
@@ -253,7 +261,7 @@ for ith_test = 1:Niterations
 	% Call the function
 	[stateTrajectory, t, steeringUsed] = ...
 		fcn_VD_kinematicBicycleModelSimulink(initialStates, deltaT, ...
-		timeInterval, steeringAndTimeInputs, U, L, ([]));
+		timeInterval, inputsVsTime, parameters, ([]));
 end
 slow_method = toc;
 
@@ -263,7 +271,7 @@ for ith_test = 1:Niterations
 	% Call the function
 	[stateTrajectory, t, steeringUsed] = ...
 		fcn_VD_kinematicBicycleModelSimulink(initialStates, deltaT, ...
-		timeInterval, steeringAndTimeInputs, U, L, (-1));
+		timeInterval, inputsVsTime, parameters, (-1));
 end
 fast_method = toc;
 

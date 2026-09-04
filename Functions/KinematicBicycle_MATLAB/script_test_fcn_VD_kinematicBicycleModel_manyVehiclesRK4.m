@@ -5,8 +5,13 @@
 % REVISION HISTORY:
 %
 % 2026_01_26 by Sean Brennan, sbrennan@psu.edu
-% - First write of function, using fcn_VD_bicycle2dofModel as starter
-
+% - In script_test_fcn_VD_kinematicBicycleModel_manyVehiclesRK4
+%  % * First write of function, 
+%  % * Using fcn_VD_bicycle2dofModel as starter
+%
+% 2026_09_03 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_VD_kinematicBicycleModel_manyVehiclesRK4
+%   % * Updated the function inputs for consistency between functions
 
 % TO-DO:
 % - 2026_01_26 by Sean Brennan, sbrennan@psu.edu
@@ -44,8 +49,10 @@ simulationTimes = (startTime:deltaT:endTime)';
 steeringAndTimeInputs = [simulationTimes steering_amplitude_degrees*pi/180*sin((2*pi/Period)*simulationTimes)]; % [times steering angles]
 
 % Set up parameters
-U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
-L = 2.5; % wheelbase in meters
+clear parameters
+parameters.U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
+parameters.L = 2.5; % wheelbase in meters
+
 
 %% Fill in the vehicle parameters. 
 % Use a structure array so we can have several vehicles
@@ -96,7 +103,7 @@ for ith_vehicle = 1:N_vehicles
 	% Call the function
 	[stateTrajectory, t, steeringUsed] = ...
 		fcn_VD_kinematicBicycleModelRK4(initialStates, deltaT, ...
-		timeInterval, steeringAndTimeInputs, U, L, (-1));
+		timeInterval, steeringAndTimeInputs, parameters, (-1));
 
 	% Fill in the results to save
 	all_t(:,ith_vehicle)   = t;

@@ -1,4 +1,4 @@
-function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicBicycleModelRK4(initialStates, deltaT, timeInterval, steeringAndTimeInputs, U, L, varargin)
+function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicBicycleModelRK4(initialStates, deltaT, timeInterval, inputsVsTime, parameters, varargin)
 
 %% fcn_VD_kinematicBicycleModelRK4
 %   Simulates the bicycle kinematic model using Runga Kutta 4th-order
@@ -7,7 +7,7 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicBicycleModelRK4(in
 %
 %      [stateTrajectory, t, steeringUsed] =
 %      fcn_VD_kinematicBicycleModelRK4(initialStates, deltaT,
-%      timeInterval, steeringAndTimeInputs, U, L, (figNum))
+%      timeInterval, inputsVsTime, parameters, (figNum))
 %
 % INPUTS:
 %
@@ -26,7 +26,7 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicBicycleModelRK4(in
 %
 %      timeInterval: a 1x2 vector denoting [startTime endTime] in seconds
 %
-%      steeringAndTimeInputs: a Mx2 vector denoting 
+%      inputsVsTime: a Mx2 vector denoting 
 %      [steeringTime steeringValues] 
 %      in units of [sec rad] respectively. This is interpolated using
 %      linear interpolation at the sampling times. For times outside the
@@ -81,6 +81,10 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicBicycleModelRK4(in
 %   % * Improved header comments
 %   % * Fixed input checking to use DebugTools
 %   % * Set plot handle DisplayName for RK4 MATLAB plot.
+%
+% 2026_09_03 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_kinematicBicycleModelRK4
+%   % * Changed input arguments for consistency
 
 % TO-DO:
 % - 2026_01_26 by Sean Brennan, sbrennan@psu.edu
@@ -91,7 +95,7 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicBicycleModelRK4(in
 % Check if flag_max_speed set. This occurs if the figNum variable input
 % argument (varargin) is given a number of -1, which is not a valid figure
 % number.
-MAX_NARGIN = 7; % The largest Number of argument inputs to the function
+MAX_NARGIN = 6; % The largest Number of argument inputs to the function
 flag_max_speed = 0; % The default. This runs code with all error checking
 if (nargin==MAX_NARGIN && isequal(varargin{end},-1))
     flag_do_debug = 0; % Flag to plot the results for debugging
@@ -145,50 +149,15 @@ if 0==flag_max_speed
         % Validate that the timeInterval input has 2 columns, 1 row
         fcn_DebugTools_checkInputsToFunctions(timeInterval, '2column_of_numbers',[1 1]);
 
-        % Validate that the steeringAndTimeInputs input has 2 columns, 2+
+        % Validate that the inputsVsTime input has 2 columns, 2+
 		% rows
-        fcn_DebugTools_checkInputsToFunctions(steeringAndTimeInputs, '2column_of_numbers',[2 3]);
+        fcn_DebugTools_checkInputsToFunctions(inputsVsTime, '2column_of_numbers',[2 3]);
 
-		% Check the U input to be sure it has 1 col, 1 row, positive
-        fcn_DebugTools_checkInputsToFunctions(U, 'positive_1column_of_numbers',[1 1]);
+		% Check the parameters input is a structure
+        assert(isstruct(parameters));
 
-        % Check the L input to be sure it has 1 col, 1 row, positive
-        fcn_DebugTools_checkInputsToFunctions(L, 'positive_1column_of_numbers',[1 1]);
     end
 end
-
-
-% 
-%   Set the start values
-% [flag_start_is_a_point_type, start_zone_definition] = fcn_Laps_checkZoneType(start_zone_definition, 'start_definition', -1);
-% 
-% 
-%   The following area checks for variable argument inputs (varargin)
-% 
-%   Does the user want to specify the end_definition?
-%   Set defaults first:
-% end_zone_definition = start_zone_definition; % Default case
-% flag_end_is_a_point_type = flag_start_is_a_point_type; % Inheret the start case
-%   Check for user input
-% if 3 <= nargin
-%     temp = varargin{1};
-%     if ~isempty(temp)
-%         % Set the end values
-%         [flag_end_is_a_point_type, end_zone_definition] = fcn_Laps_checkZoneType(temp, 'end_definition', -1);
-%     end
-% end
-% 
-%   Does the user want to specify excursion_definition?
-% flag_use_excursion_definition = 0; % Default case
-% flag_excursion_is_a_point_type = 1; % Default case
-% if 4 <= nargin
-%     temp = varargin{2};
-%     if ~isempty(temp)
-%         % Set the excursion values
-%         [flag_excursion_is_a_point_type, excursion_definition] = fcn_Laps_checkZoneType(temp, 'excursion_definition',-1);
-%         flag_use_excursion_definition = 1;
-%     end
-% end
 
 % Does user want to show the plots?
 flag_do_plots = 0; % Default is to NOT show plots
@@ -216,11 +185,14 @@ startTime = timeInterval(1);
 endTime = timeInterval(2);
 simulationTimes = (startTime:deltaT:endTime)';
 N_timeSteps = length(simulationTimes); % This is the number of time steps we should have
+U = parameters.U;
+L = parameters.L;
+
 
 % Initialize variables
 stateTrajectory = nan(N_timeSteps,3);
 t = nan(N_timeSteps,1);
-steeringUsed = interp1(steeringAndTimeInputs(:,1), steeringAndTimeInputs(:,2), simulationTimes,'linear',0);
+steeringUsed = interp1(inputsVsTime(:,1), inputsVsTime(:,2), simulationTimes,'linear',0);
 
 
 % Set initial conditions

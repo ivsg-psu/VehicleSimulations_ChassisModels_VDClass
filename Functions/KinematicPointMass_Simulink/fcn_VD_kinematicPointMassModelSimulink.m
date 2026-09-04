@@ -1,4 +1,4 @@
-function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelSimulink(initialStates, deltaT, timeInterval, steeringAndTimeInputs, U, varargin)
+function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelSimulink(initialStates, deltaT, timeInterval, inputsVsTime, parameters, varargin)
 
 %% fcn_VD_kinematicPointMassModelSimulink
 %   Simulates the point-mass kinematic model using Simulink
@@ -7,7 +7,7 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelSimu
 %
 %      [stateTrajectory, t, steeringUsed] =
 %      fcn_VD_kinematicPointMassModelSimulink(initialStates, deltaT,
-%      timeInterval, steeringAndTimeInputs, U, (figNum))
+%      timeInterval, inputsVsTime, parameters, (figNum))
 %
 % INPUTS:
 %
@@ -26,14 +26,16 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelSimu
 %
 %      timeInterval: a 1x2 vector denoting [startTime endTime] in seconds
 %
-%      steeringAndTimeInputs: a Mx2 vector denoting 
+%      inputsVsTime: a Mx2 vector denoting 
 %      [steeringTime steeringValues] 
 %      in units of [sec rad] respectively. This is interpolated using
 %      linear interpolation at the sampling times. For times outside the
 %      given interval, zero values are used.
 %
-%      U: A 1x1 positive numeric value representing the longitudinal
-%      velocity, in [m/s]
+%      parameters: a structure containing subfields of the following:
+%
+%          parameters.U: A 1x1 positive numeric value representing the
+%          longitudinal velocity, in [m/s]
 %
 %      (OPTIONAL INPUTS)
 %
@@ -92,7 +94,11 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelSimu
 %
 % 2026_09_03 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_VD_kinematicPointMassModelSimulink
-%   % * Added explicit variable inport into model to prevent scope errors
+%   % * Added explicit variable import into model to prevent scope errors
+%
+% 2026_09_03 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_kinematicPointMassModelSimulink
+%   % * Changed input arguments for consistency
 
 
 % TO-DO:
@@ -158,48 +164,15 @@ if 0==flag_max_speed
         % Validate that the timeInterval input has 2 columns, 1 row
         fcn_DebugTools_checkInputsToFunctions(timeInterval, '2column_of_numbers',[1 1]);
 
-        % Validate that the steeringAndTimeInputs input has 2 columns, 2+
+        % Validate that the inputsVsTime input has 2 columns, 2+
 		% rows
-        fcn_DebugTools_checkInputsToFunctions(steeringAndTimeInputs, '2column_of_numbers',[2 3]);
+        fcn_DebugTools_checkInputsToFunctions(inputsVsTime, '2column_of_numbers',[2 3]);
 
-		% Check the U input to be sure it has 1 col, 1 row, positive
-        fcn_DebugTools_checkInputsToFunctions(U, 'positive_1column_of_numbers',[1 1]);
+		% Check the parameters input is a structure
+        assert(isstruct(parameters));
 
     end
 end
-
-
-% 
-%   Set the start values
-% [flag_start_is_a_point_type, start_zone_definition] = fcn_Laps_checkZoneType(start_zone_definition, 'start_definition', -1);
-% 
-% 
-%   The following area checks for variable argument inputs (varargin)
-% 
-%   Does the user want to specify the end_definition?
-%   Set defaults first:
-% end_zone_definition = start_zone_definition; % Default case
-% flag_end_is_a_point_type = flag_start_is_a_point_type; % Inheret the start case
-%   Check for user input
-% if 3 <= nargin
-%     temp = varargin{1};
-%     if ~isempty(temp)
-%         % Set the end values
-%         [flag_end_is_a_point_type, end_zone_definition] = fcn_Laps_checkZoneType(temp, 'end_definition', -1);
-%     end
-% end
-% 
-%   Does the user want to specify excursion_definition?
-% flag_use_excursion_definition = 0; % Default case
-% flag_excursion_is_a_point_type = 1; % Default case
-% if 4 <= nargin
-%     temp = varargin{2};
-%     if ~isempty(temp)
-%         % Set the excursion values
-%         [flag_excursion_is_a_point_type, excursion_definition] = fcn_Laps_checkZoneType(temp, 'excursion_definition',-1);
-%         flag_use_excursion_definition = 1;
-%     end
-% end
 
 % Does user want to show the plots?
 flag_do_plots = 0; % Default is to NOT show plots
@@ -290,8 +263,8 @@ modelWithParameters = modelWithParameters.setVariable('initialStates', initialSt
 modelWithParameters = modelWithParameters.setVariable('startTime', startTime);              % makes startTime available to model
 modelWithParameters = modelWithParameters.setVariable('endTime', endTime);                  % makes endTime available to model
 modelWithParameters = modelWithParameters.setVariable('deltaT', deltaT);                    % makes deltaT available to model
-modelWithParameters = modelWithParameters.setVariable('steeringAndTimeInputs', steeringAndTimeInputs);        % makes steeringAndTimeInputs available to model
-modelWithParameters = modelWithParameters.setVariable('U', U);            % makes U available to model
+modelWithParameters = modelWithParameters.setVariable('inputsVsTime', inputsVsTime);        % makes inputsVsTime available to model
+modelWithParameters = modelWithParameters.setVariable('parameters', parameters);            % makes parameters available to model
 
 % Run the simulation in SIMULINK
 simout = sim(modelWithParameters);

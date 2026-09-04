@@ -5,10 +5,16 @@
 % REVISION HISTORY:
 %
 % 2026_01_27 by Sean Brennan, sbrennan@psu.edu
-% - First write of function
+% - In script_compare_kinematicPointMass_MATvsSIM
+%   % * First write of function
 %
 % 2026_02_01 by Sean Brennan, sbrennan@psu.edu
-% - Cleaned up script to use same formats
+% - In script_compare_kinematicPointMass_MATvsSIM
+%   % * Cleaned up script to use same formats
+%
+% 2026_09_03 by Sean Brennan, sbrennan@psu.edu
+% - In script_compare_kinematicPointMass_MATvsSIM
+%   % * Changed input naming to match general form (parameters, inputs)
 
 
 % TO-DO:
@@ -17,21 +23,6 @@
 
 %% Prepare the workspace
 close all; % close all the plots
-
-% script_test_fcn_VD_kinematicPointMassModelRK4.m
-% tests fcn_VD_kinematicPointMassModelRK4.m
-
-% REVISION HISTORY:
-%
-% 2026_01_31 by Sean Brennan, sbrennan@psu.edu
-% - In script_test_fcn_VD_kinematicPointMassModelRK4
-%   % * Wrote the code originally, using breakDataIntoLaps as starter
-
-% TO-DO:
-%
-% 2026_01_31 by Sean Brennan, sbrennan@psu.edu
-% - (fill in items here)
-
 
 %% Set up the workspace
 close all
@@ -74,18 +65,18 @@ simulationTimes = (startTime:deltaT:endTime)';
 steeringAndTimeInputs = [simulationTimes steering_amplitude_degrees*sin((2*pi/Period)*simulationTimes)]; % [times steering angles]
 
 % Set up parameters
-U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
-
+clear parameters
+parameters.U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
 
 % Call the MATLAB RK4 function
 [stateTrajectoryMATLAB, tMATLAB, steeringUsedMATLAB] = ...
 fcn_VD_kinematicPointMassModelRK4(initialStates, deltaT, ...
-timeInterval, steeringAndTimeInputs, U, (-1));
+timeInterval, steeringAndTimeInputs, parameters, (-1));
 
 % Call the Simulink runing RK4 solver
 [stateTrajectorySimulink, tSimulink, steeringUsedSimulink] = ...
 fcn_VD_kinematicPointMassModelSimulink(initialStates, deltaT, ...
-timeInterval, steeringAndTimeInputs, U, (-1));
+timeInterval, steeringAndTimeInputs, parameters, (-1));
 sgtitle(titleString, 'Interpreter','none');
 
 % The XY Plots
@@ -191,12 +182,13 @@ fprintf(1,'Figure: 8XXXXXX: FAST mode cases\n');
 % steeringAndTimeInputs = [simulationTimes steering_amplitude_degrees*sin((2*pi/Period)*simulationTimes)]; % [times steering angles]
 % 
 % % Set up parameters
-% U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
+% clear parameters
+% parameters.U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
 % 
 % % Call the function
 % [stateTrajectory, t, steeringUsed] = ...
 % fcn_VD_kinematicPointMassModelRK4(initialStates, deltaT, ...
-% timeInterval, steeringAndTimeInputs, U, ([]));
+% timeInterval, steeringAndTimeInputs, parameters, ([]));
 % 
 % % sgtitle(titleString, 'Interpreter','none');
 % 
@@ -240,12 +232,13 @@ fprintf(1,'Figure: 8XXXXXX: FAST mode cases\n');
 % steeringAndTimeInputs = [simulationTimes steering_amplitude_degrees*sin((2*pi/Period)*simulationTimes)]; % [times steering angles]
 % 
 % % Set up parameters
-% U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
+% clear parameters
+% parameters.U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
 % 
 % % Call the function
 % [stateTrajectory, t, steeringUsed] = ...
 % fcn_VD_kinematicPointMassModelRK4(initialStates, deltaT, ...
-% timeInterval, steeringAndTimeInputs, U, (-1));
+% timeInterval, steeringAndTimeInputs, parameters, (-1));
 % 
 % % sgtitle(titleString, 'Interpreter','none');
 % 
@@ -290,7 +283,8 @@ fprintf(1,'Figure: 8XXXXXX: FAST mode cases\n');
 % steeringAndTimeInputs = [simulationTimes steering_amplitude_degrees*sin((2*pi/Period)*simulationTimes)]; % [times steering angles]
 % 
 % % Set up parameters
-% U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
+% clear parameters
+% parameters.U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
 % 
 % Niterations = 50;
 % 
@@ -300,7 +294,7 @@ fprintf(1,'Figure: 8XXXXXX: FAST mode cases\n');
 % 	% Call the function
 % 	[stateTrajectory, t, steeringUsed] = ...
 % 		fcn_VD_kinematicPointMassModelRK4(initialStates, deltaT, ...
-% 		timeInterval, steeringAndTimeInputs, U, ([]));
+% 		timeInterval, steeringAndTimeInputs, parameters, ([]));
 % end
 % slow_method = toc;
 % 
@@ -310,7 +304,7 @@ fprintf(1,'Figure: 8XXXXXX: FAST mode cases\n');
 % 	% Call the function
 % 	[stateTrajectory, t, steeringUsed] = ...
 % 		fcn_VD_kinematicPointMassModelRK4(initialStates, deltaT, ...
-% 		timeInterval, steeringAndTimeInputs, U, (-1));
+% 		timeInterval, steeringAndTimeInputs, parameters, (-1));
 % end
 % fast_method = toc;
 % 

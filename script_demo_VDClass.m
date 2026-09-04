@@ -93,22 +93,43 @@
 % - In script_test_fcn_VD_FirstOrderEngineModelRK4
 %   % * Wrote the code originally, 
 %   % * Using breakDataIntoLaps as starter
-
-% TO-DO:
+%
 % 2026_09_03 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_VD_kinematicPointMassModelSimulink
+% - In script_test_fcn_VD_kinematicPointMassModelSimulink
+%   % * Updated the function inputs for consistency between functions
 %   % * Change input naming to match general form (parameters, inputs)
 %   %   % given by fcn_VD_FirstOrderEngineModelRK4
-% - In fcn_VD_kinematicBicycleModelSimulink
+% - In fcn_VD_kinematicPointMassModelSimulink
+%   % * Changed input arguments for consistency
 %   % * Change input naming to match general form (parameters, inputs)
 %   %   % given by fcn_VD_FirstOrderEngineModelRK4
 % - In fcn_VD_kinematicPointMassModelRK4
+%   % * Changed input arguments for consistency
 %   % * Change input naming to match general form (parameters, inputs)
 %   %   % given by fcn_VD_FirstOrderEngineModelRK4
+% - In script_test_fcn_VD_kinematicPointMassModelRK4
+%   % * Updated the function inputs for consistency between functions
+% - In script_compare_kinematicPointMass_MATvsSIM
+%   % * Changed input naming to match general form (parameters, inputs)
+% - In fcn_VD_kinematicBicycleModelSimulink
+%   % * Added explicit variable inport into model to prevent scope errors
+% - In script_test_fcn_VD_kinematicBicycleModelSimulink
+%   % * Updated the function inputs for consistency between functions
+% - In fcn_VD_kinematicBicycleModelRK4
+%   % * Changed input arguments for consistency
+% - In script_test_fcn_VD_kinematicBicycleModelRK4
+%   % * Updated the function inputs for consistency between functions
+% - In script_test_fcn_VD_kinematicBicycleModel_manyVehiclesRK4
+%   % * Updated the function inputs for consistency between functions
+%   % * Changed input naming to match general form (parameters, inputs)
+
+% TO-DO:
+% 2026_09_03 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_VD_kinematicBicycleModelRK4
 %   % * Change input naming to match general form (parameters, inputs)
 %   %   % given by fcn_VD_FirstOrderEngineModelRK4
 % - Fix comparison scripts for above changes
+%
 
 
 %% Make sure we are running out of root directory

@@ -1,4 +1,4 @@
-function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelRK4(initialStates, deltaT, timeInterval, steeringAndTimeInputs, U, varargin)
+function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelRK4(initialStates, deltaT, timeInterval, inputsVsTime, parameters, varargin)
 
 %% fcn_VD_kinematicPointMassModelRK4
 %   Simulates the point-mass kinematic model using Runga Kutta 4th-order
@@ -7,7 +7,7 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelRK4(
 %
 %      [stateTrajectory, t, steeringUsed] =
 %      fcn_VD_kinematicPointMassModelRK4(initialStates, deltaT,
-%      timeInterval, steeringAndTimeInputs, U, (figNum))
+%      timeInterval, inputsVsTime, U, (figNum))
 %
 % INPUTS:
 %
@@ -26,14 +26,16 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelRK4(
 %
 %      timeInterval: a 1x2 vector denoting [startTime endTime] in seconds
 %
-%      steeringAndTimeInputs: a Mx2 vector denoting 
+%      inputsVsTime: a Mx2 vector denoting 
 %      [steeringTime steeringValues] 
 %      in units of [sec rad] respectively. This is interpolated using
 %      linear interpolation at the sampling times. For times outside the
 %      given interval, zero values are used.
 %
-%      U: A 1x1 positive numeric value representing the longitudinal
-%      velocity, in [m/s]
+%      parameters: a structure containing subfields of the following:
+%
+%          parameters.U: A 1x1 positive numeric value representing the
+%          longitudinal velocity, in [m/s]
 %
 %      (OPTIONAL INPUTS)
 %
@@ -79,6 +81,11 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelRK4(
 %   % * Improved header comments
 %   % * Fixed input checking to use DebugTools
 %   % * Set plot handle DisplayName for RK4 MATLAB plot.
+%
+% 2026_09_03 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_kinematicPointMassModelRK4
+%   % * Changed input arguments for consistency
+
 
 % TO-DO:
 % - 2026_01_26 by Sean Brennan, sbrennan@psu.edu
@@ -143,48 +150,15 @@ if 0==flag_max_speed
         % Validate that the timeInterval input has 2 columns, 1 row
         fcn_DebugTools_checkInputsToFunctions(timeInterval, '2column_of_numbers',[1 1]);
 
-        % Validate that the steeringAndTimeInputs input has 2 columns, 2+
+        % Validate that the inputsVsTime input has 2 columns, 2+
 		% rows
-        fcn_DebugTools_checkInputsToFunctions(steeringAndTimeInputs, '2column_of_numbers',[2 3]);
+        fcn_DebugTools_checkInputsToFunctions(inputsVsTime, '2column_of_numbers',[2 3]);
 
-		% Check the U input to be sure it has 1 col, 1 row, positive
-        fcn_DebugTools_checkInputsToFunctions(U, 'positive_1column_of_numbers',[1 1]);
+		% Check the parameters input is a structure
+        assert(isstruct(parameters));
 
     end
 end
-
-
-% 
-%   Set the start values
-% [flag_start_is_a_point_type, start_zone_definition] = fcn_Laps_checkZoneType(start_zone_definition, 'start_definition', -1);
-% 
-% 
-%   The following area checks for variable argument inputs (varargin)
-% 
-%   Does the user want to specify the end_definition?
-%   Set defaults first:
-% end_zone_definition = start_zone_definition; % Default case
-% flag_end_is_a_point_type = flag_start_is_a_point_type; % Inheret the start case
-%   Check for user input
-% if 3 <= nargin
-%     temp = varargin{1};
-%     if ~isempty(temp)
-%         % Set the end values
-%         [flag_end_is_a_point_type, end_zone_definition] = fcn_Laps_checkZoneType(temp, 'end_definition', -1);
-%     end
-% end
-% 
-%   Does the user want to specify excursion_definition?
-% flag_use_excursion_definition = 0; % Default case
-% flag_excursion_is_a_point_type = 1; % Default case
-% if 4 <= nargin
-%     temp = varargin{2};
-%     if ~isempty(temp)
-%         % Set the excursion values
-%         [flag_excursion_is_a_point_type, excursion_definition] = fcn_Laps_checkZoneType(temp, 'excursion_definition',-1);
-%         flag_use_excursion_definition = 1;
-%     end
-% end
 
 % Does user want to show the plots?
 flag_do_plots = 0; % Default is to NOT show plots
@@ -216,12 +190,11 @@ N_timeSteps = length(simulationTimes); % This is the number of time steps we sho
 % Initialize variables
 stateTrajectory = nan(N_timeSteps,3);
 t = nan(N_timeSteps,1);
-steeringUsed = interp1(steeringAndTimeInputs(:,1), steeringAndTimeInputs(:,2), simulationTimes,'linear',0);
-
+steeringUsed = interp1(inputsVsTime(:,1), inputsVsTime(:,2), simulationTimes,'linear',0);
+U = parameters.U;
 
 % Set initial conditions
 currentStates = initialStates;
-
 
 for ith_time = 1:N_timeSteps
 	thisTime       = simulationTimes(ith_time);
