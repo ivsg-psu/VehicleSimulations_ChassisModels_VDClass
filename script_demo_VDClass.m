@@ -125,10 +125,7 @@
 
 % TO-DO:
 % 2026_09_03 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_VD_kinematicBicycleModelRK4
-%   % * Change input naming to match general form (parameters, inputs)
-%   %   % given by fcn_VD_FirstOrderEngineModelRK4
-% - Fix comparison scripts for above changes
+% - Add items here
 %
 
 
