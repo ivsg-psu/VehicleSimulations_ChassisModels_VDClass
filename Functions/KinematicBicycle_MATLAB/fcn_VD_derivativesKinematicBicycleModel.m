@@ -1,15 +1,15 @@
-function dydt = fcn_VD_derivativesKinematicBicycleModel( y, inputFrontRoadWheelAngleRadians, U, L, varargin)
+function dXdt = fcn_VD_derivativesKinematicBicycleModel( X, inputFrontRoadWheelAngleRadians, U, L, varargin)
 
 %% fcn_VD_derivativesKinematicBicycleModel
-%   Fill in the state derivatives for the bicycle kinematic model
+%   Fill in the pose derivatives for the bicycle kinematic model
 %
 % FORMAT:
 %
-%      dydt = fcn_VD_derivativesKinematicBicycleModel( y, inputFrontRoadWheelAngleRadians, U, L, (figNum))
+%      dXdt = fcn_VD_derivativesKinematicBicycleModel( X, inputFrontRoadWheelAngleRadians, U, L, (figNum))
 %
 % INPUTS:
 %
-%      y: A 3x1 vector of velocities and global pose in the form of 
+%      X: A 3x1 vector of global pose in the form of 
 %         [X; Y; Phi], which stand for:
 % 
 %         X: Global X position in meters
@@ -34,7 +34,7 @@ function dydt = fcn_VD_derivativesKinematicBicycleModel( y, inputFrontRoadWheelA
 %
 % OUTPUTS:
 %
-%   dydt: A 3x1 vector of linear velocities and rotational velocities
+%   dXdt: A 3x1 vector of linear velocities and rotational velocities
 %
 % DEPENDENCIES:
 %
@@ -118,7 +118,7 @@ if 0==flag_max_speed
         narginchk(MAX_NARGIN-1,MAX_NARGIN);
 
         % Check the y input to be sure it has 1 column, 3 rows
-        fcn_DebugTools_checkInputsToFunctions(y, '1column_of_numbers',[3 3]);
+        fcn_DebugTools_checkInputsToFunctions(X, '1column_of_numbers',[3 3]);
 
         % Check the inputFrontRoadWheelAngleRadians input to be sure it has 1 column and 1 row
         fcn_DebugTools_checkInputsToFunctions(inputFrontRoadWheelAngleRadians, '1column_of_numbers',[1 1]);
@@ -185,21 +185,21 @@ end
 %  |_|  |_|\__,_|_|_| |_|
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-X = y(1);
-Y = y(2);
-yaw = y(3); % Yaw angle of the vehicle
+X = X(1);
+Y = X(2);
+yaw = X(3); % Yaw angle of the vehicle
 
 %%%%
-%  Newtonian Dynamics of CG
+%  Kinematics of CG
 DvelDt = [U*cos(yaw); U*sin(yaw)];
 
 %%%%
-%  Pose dynamics
-DposeDt = (U/L)*tan(inputFrontRoadWheelAngleRadians);
+%  Pose kinematics from steering
+DyawDt = (U/L)*tan(inputFrontRoadWheelAngleRadians);
 
 %%%%
 %  Output
-dydt = [DvelDt; DposeDt];
+dXdt = [DvelDt; DyawDt];
 
 %% Plot the results (for debugging)?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -236,7 +236,7 @@ if flag_do_plots
 
 	% Plot the rotation. this is done by putting a small, grey vector at
 	% the end that points in the direction and magnitude of the rotation.
-	rotationAngle = DposeDt;
+	rotationAngle = DyawDt;
 	changeVector = [DvelDt(1) DvelDt(2)];
 	newChange = changeVector*[cos(rotationAngle) sin(rotationAngle); -sin(rotationAngle) cos(rotationAngle)];
 	rotationStartPoint = [X Y]+changeVector;

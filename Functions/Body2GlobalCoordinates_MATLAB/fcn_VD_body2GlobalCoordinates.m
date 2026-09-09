@@ -1,11 +1,11 @@
-function dXdt = fcn_VD_derivativesKinematicPointMassModel( X, inputOmega, U, varargin)
+function dXdt = fcn_VD_body2GlobalCoordinates( X, xdot, varargin)
 
-%% fcn_VD_derivativesKinematicPointMassModel
-%   Fill in the pose derivatives for the point-mass kinematic model
+%% fcn_VD_body2GlobalCoordinates
+%   This function calculates velocites in global coordinates.
 %
 % FORMAT:
 %
-%      dXdt = fcn_VD_derivativesKinematicPointMassModel( X, inputOmega, U, (figNum))
+%      dXdt = fcn_VD_body2GlobalCoordinates( X, xdot, (figNum))
 %
 % INPUTS:
 %
@@ -19,9 +19,14 @@ function dXdt = fcn_VD_derivativesKinematicPointMassModel( X, inputOmega, U, var
 %         phi: Global yaw angle in radians, measured positive from X axis
 %         to Y axis
 %
-%      inputOmega: the rate of change of the yaw angle of the vehicle (input: rad/sec)
+%      xdot: a 3x1 vector of the body-fixed velocities in the form of
+%         [U; V; r], which stand for:
 %
-%      U: Longitudinal velocity [m/s]
+%         U: Longitudinal velocity [m/s]
+%
+%         V: Lateral velocity [m/s]
+%
+%         r: yawrate [rad/s]
 %
 %      (OPTIONAL INPUTS)
 %
@@ -31,7 +36,7 @@ function dXdt = fcn_VD_derivativesKinematicPointMassModel( X, inputOmega, U, var
 %
 % OUTPUTS:
 %
-%   dXdt: A 3x1 vector of linear velocities and rotational velocities
+%   dXdt: A 3x1 vector of velocities in global coordinates
 %
 % DEPENDENCIES:
 %
@@ -244,4 +249,94 @@ end % Ends main function
 %
 % See: https://patorjk.com/software/taag/#p=display&f=Big&t=Functions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%§
-
+% 
+% function dXdt = fcn_VD_body2GlobalCoordinates(~, y, U, V, r)
+% %% fcn_VD_body2GlobalCoordinates
+% %   This function calculates velocites in global coordinates.
+% %
+% % FORMAT:
+% %
+% %   dXdt = fcn_VD_body2GlobalCoordinates(~, y, U, V, r)
+% %   dXdt ~ [Xdot; Ydot; Phidot]
+% %
+% % INPUTS:
+% %
+% %   y: A 3x1 vector of global pose [X; Y; Phi] OR [East; North; Phi]
+% %   U: Longitudinal velocity [m/s]
+% %   V: Lateral velocity [m/s]
+% %   r: Yaw rate [rad/s]
+% %
+% % OUTPUTS:
+% %
+% %   dXdt: A 3x1 vector of velocities in global coordinates
+% %
+% % This function was written on 2021/05/16 by Satya Prasad
+% % Questions or comments? szm888@psu.edu
+% %
+% 
+% flag_do_debug = 0; % Flag to plot the results for debugging
+% flag_check_inputs = 1; % Flag to perform input checking
+% 
+% if flag_do_debug
+%     st = dbstack; %#ok<*UNRCH>
+%     fprintf(1, 'STARTING function: %s, in file: %s\n', st(1).name, st(1).file);
+% end
+% 
+% %% Check input arguments
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %   _____                   _       
+% %  |_   _|                 | |      
+% %    | |  _ __  _ __  _   _| |_ ___ 
+% %    | | | '_ \| '_ \| | | | __/ __|
+% %   _| |_| | | | |_) | |_| | |_\__ \
+% %  |_____|_| |_| .__/ \__,_|\__|___/
+% %              | |                  
+% %              |_| 
+% % See: http://patorjk.com/software/taag/#p=display&f=Big&t=Inputs
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% if flag_check_inputs
+%     % Are there the right number of inputs?
+%     if 5 ~= nargin
+%         error('Incorrect number of input arguments.')
+%     end
+% 
+%     % Check the inputs
+%     fcn_VD_checkInputsToFunctions(y,'vector3');
+%     fcn_VD_checkInputsToFunctions(U,'non negative');
+%     fcn_VD_checkInputsToFunctions(V,'number');
+%     fcn_VD_checkInputsToFunctions(r,'number');
+% end
+% 
+% %% Calculate velocities in Global coordinates
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %   __  __       _       
+% %  |  \/  |     (_)      
+% %  | \  / | __ _ _ _ __  
+% %  | |\/| |/ _` | | '_ \ 
+% %  | |  | | (_| | | | | |
+% %  |_|  |_|\__,_|_|_| |_|
+% % 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% psi = y(3);
+% 
+% dXdt   = U*cos(psi)-V*sin(psi);
+% dYdt   = U*sin(psi)+V*cos(psi);
+% dPhidt = r;
+% dXdt   = [dXdt; dYdt; dPhidt];
+% 
+% %% Any debugging?
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %   _____       _                 
+% %  |  __ \     | |                
+% %  | |  | | ___| |__  _   _  __ _ 
+% %  | |  | |/ _ \ '_ \| | | |/ _` |
+% %  | |__| |  __/ |_) | |_| | (_| |
+% %  |_____/ \___|_.__/ \__,_|\__, |
+% %                            __/ |
+% %                           |___/ 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% if flag_do_debug
+%     fprintf(1, 'ENDING function: %s, in file: %s\n\n', st(1).name, st(1).file);
+% end
+% 
+% end
