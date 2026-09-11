@@ -207,7 +207,13 @@ for ith_time = 1:N_timeSteps
 		@(t,y) fcn_VD_body2GlobalCoordinatesDerivatives( X, xdot, -1), ...
 		currentStates', thisTime, deltaT, -1);
 
-	currentStates = y';
+    % Solve for equivalent rotation and translation matrices
+    deltaTranslation = X(1:2,1) - currentStates(1,1:2)';
+    deltaRotation = X(3)-currentStates(3);
+
+    currentStates = y';
+
+    
 end
 
 %% Plot the results (for debugging)?

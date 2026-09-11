@@ -3,13 +3,10 @@
 
 % REVISION HISTORY:
 %
-% 2026_01_31 by Sean Brennan, sbrennan@psu.edu
+% 2026_09_10 by Sean Brennan, sbrennan@psu.edu
 % - In script_test_fcn_VD_body2GlobalCoordinateRK4
 %   % * Wrote the code originally, using breakDataIntoLaps as starter
 %
-% 2026_09_03 by Sean Brennan, sbrennan@psu.edu
-% - In script_test_fcn_VD_body2GlobalCoordinateRK4
-%   % * Updated the function inputs for consistency between functions
 
 % TO-DO:
 %

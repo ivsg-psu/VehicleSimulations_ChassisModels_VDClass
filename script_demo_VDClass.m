@@ -130,6 +130,11 @@
 %   % * Changed number of input arguments
 % - In script_test_fcn_VD_body2GlobalCoordinatesDerivatives
 %   % * Wrote the code originally, 
+% - In fcn_VD_body2GlobalCoordinateRK4
+%   % * First write of fcn_VD_body2GlobalCoordinateRK4 function, using
+%   %   % fcn_VD_kinematicPointMassModel as starter
+% - In script_test_fcn_VD_body2GlobalCoordinateRK4
+%   % * Wrote the code originally, using breakDataIntoLaps as starter
 
 % TO-DO:
 % 2026_09_03 by Sean Brennan, sbrennan@psu.edu
