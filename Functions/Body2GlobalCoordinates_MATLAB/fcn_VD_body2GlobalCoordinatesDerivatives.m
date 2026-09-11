@@ -1,11 +1,11 @@
-function dXdt = fcn_VD_body2GlobalCoordinates( X, xdot, varargin)
+function dXdt = fcn_VD_body2GlobalCoordinatesDerivatives( X, xdot, varargin)
 
-%% fcn_VD_body2GlobalCoordinates
+%% fcn_VD_body2GlobalCoordinatesDerivatives
 %   This function calculates velocites in global coordinates.
 %
 % FORMAT:
 %
-%      dXdt = fcn_VD_body2GlobalCoordinates( X, xdot, (figNum))
+%      dXdt = fcn_VD_body2GlobalCoordinatesDerivatives( X, xdot, (figNum))
 %
 % INPUTS:
 %
@@ -52,17 +52,19 @@ function dXdt = fcn_VD_body2GlobalCoordinates( X, xdot, varargin)
 
 % REVISION HISTORY:
 %
-% As: fcn_VD_kinematicPointMassModel
+% As: fcn_VD_Body2GlobalCoordinates
+% 
+% 2021_05_16 by Satya Prasad, szm888@psu.edu
+% - In fcn_VD_Body2GlobalCoordinates
+%   % * First write of function
 %
-% 2026_01_26 by Sean Brennan, sbrennan@psu.edu
-% - First write of function, using fcn_VD_bicycle2dofModel as starter
+% As: fcn_VD_Body2GlobalCoordinates
 %
-% As: fcn_VD_derivativesKinematicPointMassModel
-%
-% 2026_01_31 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_VD_derivativesKinematicPointMassModel
-%   % * Renamed function to indicate that it is for derivatives only
-%   % * Improved header comments
+% 2026_09_10 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_body2GlobalCoordinatesDerivatives
+%   % * Renamed function to more "standard" form
+%   % * Created function from fcn_VD_Body2GlobalCoordinates in "old" folder
+%   % * Changed number of input arguments
 
 
 % TO-DO:
@@ -74,7 +76,7 @@ function dXdt = fcn_VD_body2GlobalCoordinates( X, xdot, varargin)
 % Check if flag_max_speed set. This occurs if the figNum variable input
 % argument (varargin) is given a number of -1, which is not a valid figure
 % number.
-MAX_NARGIN = 4; % The largest Number of argument inputs to the function
+MAX_NARGIN = 3; % The largest Number of argument inputs to the function
 flag_max_speed = 0; % The default. This runs code with all error checking
 if (nargin==MAX_NARGIN && isequal(varargin{end},-1))
     flag_do_debug = 0; % Flag to plot the results for debugging
@@ -119,50 +121,14 @@ if 0==flag_max_speed
         % Are there the right number of inputs?
         narginchk(MAX_NARGIN-1,MAX_NARGIN);
 
-        % Check the y input to be sure it has 1 column, 3 rows
+        % Check the X input to be sure it has 1 column, 3 rows
         fcn_DebugTools_checkInputsToFunctions(X, '1column_of_numbers',[3 3]);
 
-        % Check the inputOmega input to be sure it has 1 column and 1 row
-        fcn_DebugTools_checkInputsToFunctions(inputOmega, '1column_of_numbers',[1 1]);
-
-        % Check the U input to be sure it has 1 col, 1 row, positive
-        fcn_DebugTools_checkInputsToFunctions(U, 'positive_1column_of_numbers',[1 1]);
+        % Check the xdot input to be sure it has 1 column, 3 rows
+        fcn_DebugTools_checkInputsToFunctions(xdot, '1column_of_numbers',[3 3]);
 
     end
 end
-
-
-% 
-%   Set the start values
-% [flag_start_is_a_point_type, start_zone_definition] = fcn_Laps_checkZoneType(start_zone_definition, 'start_definition', -1);
-% 
-% 
-%   The following area checks for variable argument inputs (varargin)
-% 
-%   Does the user want to specify the end_definition?
-%   Set defaults first:
-% end_zone_definition = start_zone_definition; % Default case
-% flag_end_is_a_point_type = flag_start_is_a_point_type; % Inheret the start case
-%   Check for user input
-% if 3 <= nargin
-%     temp = varargin{1};
-%     if ~isempty(temp)
-%         % Set the end values
-%         [flag_end_is_a_point_type, end_zone_definition] = fcn_Laps_checkZoneType(temp, 'end_definition', -1);
-%     end
-% end
-% 
-%   Does the user want to specify excursion_definition?
-% flag_use_excursion_definition = 0; % Default case
-% flag_excursion_is_a_point_type = 1; % Default case
-% if 4 <= nargin
-%     temp = varargin{2};
-%     if ~isempty(temp)
-%         % Set the excursion values
-%         [flag_excursion_is_a_point_type, excursion_definition] = fcn_Laps_checkZoneType(temp, 'excursion_definition',-1);
-%         flag_use_excursion_definition = 1;
-%     end
-% end
 
 % Does user want to show the plots?
 flag_do_plots = 0; % Default is to NOT show plots
@@ -185,18 +151,22 @@ end
 %  |_|  |_|\__,_|_|_| |_|
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-X = X(1);
-Y = X(2);
-theta = X(3); % Yaw angle of the vehicle
 
-%% Newtonian Dynamics of CG
-DvelDt = [U*cos(theta); U*sin(theta)];
+% Fill in variables
+psi = X(3);
 
-%% Pose dynamics
-DyawDt = inputOmega;
+U = xdot(1);
+V = xdot(2);
+r = xdot(3);
 
-%% Output
-dXdt = [DvelDt; DyawDt];
+% Planar rotation
+dXdt   = U*cos(psi)-V*sin(psi);
+dYdt   = U*sin(psi)+V*cos(psi);
+dPhidt = r;
+
+% Fill in derivative vector output
+dXdt   = [dXdt; dYdt; dPhidt];
+
 
 %% Plot the results (for debugging)?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -214,18 +184,18 @@ if flag_do_plots
     % plot the derivative outputs as a vector
     figure(figNum);
 
-	quiver(X,Y,DvelDt(1), DvelDt(2), 0);
+	quiver(X(1),X(2),dXdt(1), dXdt(2), 0);
 	hold on;
 	axis equal;
 	axis padded;
 
 	% Plot the rotation. this is done by putting a small, grey vector at
 	% the end that points in the direction and magnitude of the rotation.
-	rotationAngle = inputOmega;
-	changeVector = [DvelDt(1) DvelDt(2)];
+	rotationAngle = dPhidt*0.01; % Have to guess a time step
+	changeVector = [dXdt(1) dXdt(2)];
 	newChange = changeVector*[cos(rotationAngle) sin(rotationAngle); -sin(rotationAngle) cos(rotationAngle)];
-	rotationStartPoint = [X Y]+changeVector;
-	rotationEndPoint = [X Y]+newChange;
+	rotationStartPoint = [X(1),X(2)]+changeVector;
+	rotationEndPoint = [X(1),X(2)]+newChange;
 	differenceVector = rotationEndPoint - rotationStartPoint;
 	quiver(rotationStartPoint(1),rotationStartPoint(2), differenceVector(1), differenceVector(2),0,'Color',0.8*[1 1 1]);
 
@@ -249,94 +219,3 @@ end % Ends main function
 %
 % See: https://patorjk.com/software/taag/#p=display&f=Big&t=Functions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%§
-% 
-% function dXdt = fcn_VD_body2GlobalCoordinates(~, y, U, V, r)
-% %% fcn_VD_body2GlobalCoordinates
-% %   This function calculates velocites in global coordinates.
-% %
-% % FORMAT:
-% %
-% %   dXdt = fcn_VD_body2GlobalCoordinates(~, y, U, V, r)
-% %   dXdt ~ [Xdot; Ydot; Phidot]
-% %
-% % INPUTS:
-% %
-% %   y: A 3x1 vector of global pose [X; Y; Phi] OR [East; North; Phi]
-% %   U: Longitudinal velocity [m/s]
-% %   V: Lateral velocity [m/s]
-% %   r: Yaw rate [rad/s]
-% %
-% % OUTPUTS:
-% %
-% %   dXdt: A 3x1 vector of velocities in global coordinates
-% %
-% % This function was written on 2021/05/16 by Satya Prasad
-% % Questions or comments? szm888@psu.edu
-% %
-% 
-% flag_do_debug = 0; % Flag to plot the results for debugging
-% flag_check_inputs = 1; % Flag to perform input checking
-% 
-% if flag_do_debug
-%     st = dbstack; %#ok<*UNRCH>
-%     fprintf(1, 'STARTING function: %s, in file: %s\n', st(1).name, st(1).file);
-% end
-% 
-% %% Check input arguments
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %   _____                   _       
-% %  |_   _|                 | |      
-% %    | |  _ __  _ __  _   _| |_ ___ 
-% %    | | | '_ \| '_ \| | | | __/ __|
-% %   _| |_| | | | |_) | |_| | |_\__ \
-% %  |_____|_| |_| .__/ \__,_|\__|___/
-% %              | |                  
-% %              |_| 
-% % See: http://patorjk.com/software/taag/#p=display&f=Big&t=Inputs
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% if flag_check_inputs
-%     % Are there the right number of inputs?
-%     if 5 ~= nargin
-%         error('Incorrect number of input arguments.')
-%     end
-% 
-%     % Check the inputs
-%     fcn_VD_checkInputsToFunctions(y,'vector3');
-%     fcn_VD_checkInputsToFunctions(U,'non negative');
-%     fcn_VD_checkInputsToFunctions(V,'number');
-%     fcn_VD_checkInputsToFunctions(r,'number');
-% end
-% 
-% %% Calculate velocities in Global coordinates
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %   __  __       _       
-% %  |  \/  |     (_)      
-% %  | \  / | __ _ _ _ __  
-% %  | |\/| |/ _` | | '_ \ 
-% %  | |  | | (_| | | | | |
-% %  |_|  |_|\__,_|_|_| |_|
-% % 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% psi = y(3);
-% 
-% dXdt   = U*cos(psi)-V*sin(psi);
-% dYdt   = U*sin(psi)+V*cos(psi);
-% dPhidt = r;
-% dXdt   = [dXdt; dYdt; dPhidt];
-% 
-% %% Any debugging?
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %   _____       _                 
-% %  |  __ \     | |                
-% %  | |  | | ___| |__  _   _  __ _ 
-% %  | |  | |/ _ \ '_ \| | | |/ _` |
-% %  | |__| |  __/ |_) | |_| | (_| |
-% %  |_____/ \___|_.__/ \__,_|\__, |
-% %                            __/ |
-% %                           |___/ 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% if flag_do_debug
-%     fprintf(1, 'ENDING function: %s, in file: %s\n\n', st(1).name, st(1).file);
-% end
-% 
-% end

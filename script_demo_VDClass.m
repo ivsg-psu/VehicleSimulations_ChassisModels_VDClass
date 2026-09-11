@@ -122,6 +122,14 @@
 % - In script_test_fcn_VD_kinematicBicycleModel_manyVehiclesRK4
 %   % * Updated the function inputs for consistency between functions
 %   % * Changed input naming to match general form (parameters, inputs)
+%
+% 2026_09_10 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_body2GlobalCoordinatesDerivatives
+%   % * Renamed function to more "standard" form
+%   % * Created function from fcn_VD_Body2GlobalCoordinates in "old" folder
+%   % * Changed number of input arguments
+% - In script_test_fcn_VD_body2GlobalCoordinatesDerivatives
+%   % * Wrote the code originally, 
 
 % TO-DO:
 % 2026_09_03 by Sean Brennan, sbrennan@psu.edu
