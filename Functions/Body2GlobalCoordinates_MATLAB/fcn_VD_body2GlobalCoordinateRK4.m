@@ -211,6 +211,9 @@ for ith_time = 1:N_timeSteps
     deltaTranslation = X(1:2,1) - currentStates(1,1:2)';
     deltaRotation = X(3)-currentStates(3);
 
+    
+    newPoint = Tmatrix*currentStates;
+
     currentStates = y';
 
     
