@@ -1,18 +1,20 @@
-function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelRK4(...
-    initialStates, deltaT, timeInterval, inputsVsTime, parameters, varargin)
+function transformationMatrices = ...
+    fcn_VD_convertTrajectoryToRelativeTransform(stateTrajectory, varargin)
 
-%% fcn_VD_kinematicPointMassModelRK4
-%   Simulates the point-mass kinematic model using Runga Kutta 4th-order
+%% fcn_VD_convertTrajectoryToRelativeTransform
+%   Calculates the sequence of homogenous transformation matrices that map
+%   a state trajectory from an initial condition to the resulting
+%   trajectory. The first row of the stateTrajectory input is treated as
+%   the initial condition.
 %
 % FORMAT:
 %
-%      [stateTrajectory, t, steeringUsed] =
-%      fcn_VD_kinematicPointMassModelRK4(initialStates, deltaT,
-%      timeInterval, inputsVsTime, parameters, (figNum))
+%      transformationMatrices = ...
+%      fcn_VD_convertTrajectoryToRelativeTransform(stateTrajectory, (figNum))
 %
 % INPUTS:
 %
-%      initialStates: A 1x3 vector of inital global pose in form of
+%      stateTrajectory: A Nx3 vector of global poses in form of
 %         [X Y Phi], which stand for:
 % 
 %         X: Global X position in meters
@@ -22,22 +24,6 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelRK4(
 %         phi: Global yaw angle in radians, measured positive from X axis
 %         to Y axis
 %
-%      deltaT: a 1x1 positive number denoting the time step to use, in
-%      seconds
-%
-%      timeInterval: a 1x2 vector denoting [startTime endTime] in seconds
-%
-%      inputsVsTime: a Mx2 vector denoting 
-%      [steeringTime steeringValues] 
-%      in units of [sec rad] respectively. This is interpolated using
-%      linear interpolation at the sampling times. For times outside the
-%      given interval, zero values are used.
-%
-%      parameters: a structure containing subfields of the following:
-%
-%          parameters.U: A 1x1 positive numeric value representing the
-%          longitudinal velocity, in [m/s]
-%
 %      (OPTIONAL INPUTS)
 %
 %      figNum: a FID number to print results. If set to -1, skips any
@@ -46,53 +32,33 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelRK4(
 %
 % OUTPUTS:
 %
-%      stateTrajectory: An Nx3 vector of the state trajectory, with the
-%      columns as [X Y Phi] in units of [m],[m],[rad]
-%
-%      t: An Nx1 vector of the simulation times, in seconds
-%
-%      steeringUsed: An Nx1 vector of the steering values used in the sim,
-%      in units of [rad]
+%      transformationMatrices: An Nx1 cell array of 4x4 transformation
+%      matrices in homogenous coordinates
 %
 % DEPENDENCIES:
 %
 %      fcn_DebugTools_checkInputsToFunctions
-%      fcn_VD_kinematicPointMassModel
 %
 % EXAMPLES:
 %
-%     See the script: script_test_fcn_VD_kinematicPointMassModelRK4
+%     See the script: script_test_fcn_VD_convertTrajectoryToRelativeTransform
 %     for a full test suite.
 %
-% This function was written on 2026_01_26 
+% This function was written on 2026_09_16 
 % by Sean Brennan. Questions or comments? sbrennan@psu.edu
 
 % REVISION HISTORY:
 %
-% As: fcn_VD_kinematicPointMassModel
-%
-% 2026_01_26 by Sean Brennan, sbrennan@psu.edu
-% - First write of fcn_VD_kinematicPointMassModelRK4 function
-%
-% As: fcn_VD_kinematicPointMassModelRK4
-%
-% 2026_01_31 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_VD_kinematicPointMassModelRK4
-%   % * Renamed function to indicate that it is for derivatives only
-%   % * Improved header comments
-%   % * Fixed input checking to use DebugTools
-%   % * Set plot handle DisplayName for RK4 MATLAB plot.
-%
-% 2026_09_03 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_VD_kinematicPointMassModelRK4
-%   % * Changed input arguments for consistency
+% As: fcn_VD_convertTrajectoryToRelativeTransform
 %
 % 2026_09_16 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_VD_kinematicPointMassModelRK4
-%   % * Typo fixes in header
+% - In fcn_VD_convertTrajectoryToRelativeTransform
+%   % * First write of function
+%   % * Used fcn_VD_forwardReachabilityTreeRK4 as starter
+
 
 % TO-DO:
-% - 2026_01_26 by Sean Brennan, sbrennan@psu.edu
+% - 2026_09_16 by Sean Brennan, sbrennan@psu.edu
 %   % (add items here)
 
 %% Debugging and Input checks
@@ -100,7 +66,7 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelRK4(
 % Check if flag_max_speed set. This occurs if the figNum variable input
 % argument (varargin) is given a number of -1, which is not a valid figure
 % number.
-MAX_NARGIN = 6; % The largest Number of argument inputs to the function
+MAX_NARGIN = 2; % The largest Number of argument inputs to the function
 flag_max_speed = 0; % The default. This runs code with all error checking
 if (nargin==MAX_NARGIN && isequal(varargin{end},-1))
     flag_do_debug = 0; % Flag to plot the results for debugging
@@ -145,21 +111,8 @@ if 0==flag_max_speed
         % Are there the right number of inputs?
         narginchk(MAX_NARGIN-1,MAX_NARGIN);
 
-        % Validate that the initialStates input has 3 column, 1 row
-        fcn_DebugTools_checkInputsToFunctions(initialStates, '3column_of_numbers',[1 1]);
-
-        % Validate that the deltaT input has 1 column, 1 row
-        fcn_DebugTools_checkInputsToFunctions(deltaT, '1column_of_numbers',[1 1]);
-
-        % Validate that the timeInterval input has 2 columns, 1 row
-        fcn_DebugTools_checkInputsToFunctions(timeInterval, '2column_of_numbers',[1 1]);
-
-        % Validate that the inputsVsTime input has 2 columns, 2+
-		% rows
-        fcn_DebugTools_checkInputsToFunctions(inputsVsTime, '2column_of_numbers',[2 3]);
-
-		% Check the parameters input is a structure
-        assert(isstruct(parameters));
+        % Validate that the stateTrajectory input has 3 columns, 2+ row
+        fcn_DebugTools_checkInputsToFunctions(stateTrajectory, '3column_of_numbers',[2 3]);
 
     end
 end
@@ -175,7 +128,7 @@ if (0==flag_max_speed) && (MAX_NARGIN == nargin)
 end
 
 
-%% Implements Bicycle Model
+%% Implements Transform calculations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   __  __       _       
 %  |  \/  |     (_)      
@@ -185,38 +138,26 @@ end
 %  |_|  |_|\__,_|_|_| |_|
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% RK4 in MATLAB Script
-startTime = timeInterval(1);
-endTime = timeInterval(2);
-simulationTimes = (startTime:deltaT:endTime)';
-N_timeSteps = length(simulationTimes); % This is the number of time steps we should have
 
-% Initialize variables
-stateTrajectory = nan(N_timeSteps,3);
-t = nan(N_timeSteps,1);
-steeringUsed = interp1(inputsVsTime(:,1), inputsVsTime(:,2), simulationTimes,'linear',0);
-U = parameters.U;
+% Calculate the initial states
+initialStates = stateTrajectory(1,:);
 
-% Set initial conditions
-currentStates = initialStates;
+% How many time steps are involved?
+N_trajectorySteps = length(stateTrajectory(:,1));
 
-for ith_time = 1:N_timeSteps
-	thisTime       = simulationTimes(ith_time);
+% Initialize the output cell array
+transformationMatrices = cell(N_trajectorySteps,1);
 
-	% Fill in the results to save
-	t(ith_time,1)  = thisTime; % Update time
-	stateTrajectory(ith_time,:)   = currentStates;
+% Loop through all the entries
+for ith_step = 1:N_trajectorySteps
+    deltaX = stateTrajectory(ith_step,1) - initialStates(1,1);
+    deltaY = stateTrajectory(ith_step,2) - initialStates(1,2);
+    deltaYaw = stateTrajectory(ith_step,3) - initialStates(1,3);
+    rotations = [0 0 deltaYaw]; % radians 
+    translations = [ deltaX deltaY 0]; % 1 2 3]; % radians
+    transformationMatrix = fcn_VD_createTransformMatrix( rotations, translations, (-1));
 
-
-	% Use Runga-Kutta to predict next position
-	y = currentStates';
-	inputOmega = steeringUsed(ith_time,1);
-	[~, y] = fcn_VD_RungeKutta(...
-		@(t,y) fcn_VD_derivativesKinematicPointMassModel(y,inputOmega, U, -1), ...
-		currentStates', thisTime, deltaT, -1);
-
-	currentStates = y';
-
+    transformationMatrices{ith_step,1} = transformationMatrix;
 end
 
 %% Plot the results (for debugging)?
@@ -231,10 +172,24 @@ end
 %                           |___/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if flag_do_plots
+
+    % Convert the transformationMatrices
+    stackedMatrix = fcn_DebugTools_stackCellArrayIntoMatrix(transformationMatrices, (-1));
+    stackedMatrixNoNans = stackedMatrix(~isnan(stackedMatrix(:,1)),:);
+
+    % Fill in copies of initial position
+    initialStatesHomogenous = [initialStates 1];
+    
+    % Calculate predicted positions
+    predictedPositionsAllPoints = stackedMatrixNoNans*initialStatesHomogenous';
+    predictedPositions_homogenousForm = (reshape(predictedPositionsAllPoints,4,[]))';
+    predictedPositions = predictedPositions_homogenousForm(:,1:3);
     
     % plot the outputs
     h_plot = fcn_VD_plotTrajectory(stateTrajectory(:,1:2),(figNum));
-	set(h_plot,'DisplayName','XY Trajectory (MATLAB RK4)')
+	set(h_plot,'DisplayName','Original Input','LineWidth',5)
+    h_plot = fcn_VD_plotTrajectory(predictedPositions(:,1:2),(figNum));
+	set(h_plot,'DisplayName','Transformation','LineWidth',3)
 end
 
 if flag_do_debug

@@ -152,6 +152,24 @@
 %   % * First write of function, 
 %   % * using fcn_LiDARPoseEstimation_FitTransformationSVD as starter
 %   % * See https://github.com/ivsg-psu/Publications_Journals_2025_JAVS_Cao_ExtrinsicCalibration
+%
+% 2026_09_16 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_kinematicPointMassModelRK4
+%   % * Typo fixes in header
+% - In script_test_fcn_VD_forwardReachabilityTreeRK4
+%   % * Wrote the code originally, 
+%   % * Using script_test_fcn_VD_kinematicPointMassModelRK4 as starter
+% - In fcn_VD_forwardReachabilityTreeRK4
+%   % * First write of function
+%   % * Used fcn_VD_kinematicPointMassModelRK4 as starter
+% - In fcn_VD_derivativesKinematicBicycleModel
+%   % * Typo fix where variable X used twice in different contexts
+% - In script_test_fcn_VD_convertTrajectoryToRelativeTransform
+%   % * Wrote the code originally, 
+%   % * Using script_test_fcn_VD_kinematicBicycleModelRK4 as starter
+% - In fcn_VD_convertTrajectoryToRelativeTransform
+%   % * First write of function
+%   % * Used fcn_VD_forwardReachabilityTreeRK4 as starter
 
 % TO-DO:
 % 2026_09_03 by Sean Brennan, sbrennan@psu.edu

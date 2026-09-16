@@ -61,7 +61,10 @@ function dXdt = fcn_VD_derivativesKinematicBicycleModel( X, inputFrontRoadWheelA
 % - In fcn_VD_derivativesKinematicBicycleModel
 %   % * Renamed function to indicate that it is for derivatives only
 %   % * Improved header comments
-
+%
+% 2026_09_16 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_derivativesKinematicBicycleModel
+%   % * Typo fix where variable X used twice in different contexts
 
 % TO-DO:
 % - 2026_01_26 by Sean Brennan, sbrennan@psu.edu
@@ -185,8 +188,8 @@ end
 %  |_|  |_|\__,_|_|_| |_|
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-X = X(1);
-Y = X(2);
+% globalX = X(1);
+% globalY = X(2);
 yaw = X(3); % Yaw angle of the vehicle
 
 %%%%

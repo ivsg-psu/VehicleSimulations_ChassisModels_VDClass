@@ -1,14 +1,19 @@
-function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelRK4(...
-    initialStates, deltaT, timeInterval, inputsVsTime, parameters, varargin)
+function [stateTrajectories, times, steeringAnglesUsed] = ...
+    fcn_VD_forwardReachabilityTreeRK4(...
+    initialStates, ...
+    deltaT, timeInterval, steeringInterval, vehicleParameters, ...
+    modelIDToUse, varargin)
 
-%% fcn_VD_kinematicPointMassModelRK4
-%   Simulates the point-mass kinematic model using Runga Kutta 4th-order
+%% fcn_VD_forwardReachabilityTreeRK4
+%   Calculates the forward reachability tree of a vehicle using Runga Kutta
+%   4th-order numerical solvers
 %
 % FORMAT:
 %
-%      [stateTrajectory, t, steeringUsed] =
-%      fcn_VD_kinematicPointMassModelRK4(initialStates, deltaT,
-%      timeInterval, inputsVsTime, parameters, (figNum))
+%      [stateTrajectories, times, steeringAnglesUsed] =
+%      fcn_VD_forwardReachabilityTreeRK4(initialStates, ...
+%      deltaT, timeInterval, steeringInterval, vehicleParameters, ...
+%      modelIDToUse, (figNum))
 %
 % INPUTS:
 %
@@ -27,16 +32,24 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelRK4(
 %
 %      timeInterval: a 1x2 vector denoting [startTime endTime] in seconds
 %
-%      inputsVsTime: a Mx2 vector denoting 
-%      [steeringTime steeringValues] 
-%      in units of [sec rad] respectively. This is interpolated using
-%      linear interpolation at the sampling times. For times outside the
-%      given interval, zero values are used.
+%      steeringInterval: an Mx1 vector denoting each steering angle to
+%      evaluate in radians
 %
-%      parameters: a structure containing subfields of the following:
 %
-%          parameters.U: A 1x1 positive numeric value representing the
-%          longitudinal velocity, in [m/s]
+%      vehicleParameters: a structure containing subfields of the following:
+%
+%          vehicleParameters.U: A 1x1 positive numeric value representing
+%          the longitudinal velocity, in [m/s]
+%
+%      modelIDToUse: an 1x1 integer to indicate which model to use, from
+%      one of the following:
+%
+%          0:  the kinematic point mass model is used by calling
+%              fcn_VD_kinematicPointMassModelRK4
+%
+%          1:  the kinematic bicycle model is used by calling
+%              fcn_VD_kinematicBicycleModelRK4
+
 %
 %      (OPTIONAL INPUTS)
 %
@@ -46,53 +59,41 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelRK4(
 %
 % OUTPUTS:
 %
-%      stateTrajectory: An Nx3 vector of the state trajectory, with the
-%      columns as [X Y Phi] in units of [m],[m],[rad]
+%      stateTrajectories: An Nx3 vector of the state trajectories, with the
+%      columns as [X Y Phi] in units of [m],[m],[rad]. If more than one
+%      steering input is given, each trajectory is separated by NaN values.
 %
-%      t: An Nx1 vector of the simulation times, in seconds
+%      times: An Nx1 vector of the simulation times, in seconds, with each
+%      trajectory separated by NaN values
 %
-%      steeringUsed: An Nx1 vector of the steering values used in the sim,
-%      in units of [rad]
+%      steeringAnglesUsed: An Nx1 vector of the steering values used in the
+%      sim, in units of [rad], with each trajectory separated by NaN values
 %
 % DEPENDENCIES:
 %
 %      fcn_DebugTools_checkInputsToFunctions
-%      fcn_VD_kinematicPointMassModel
+%      fcn_VD_kinematicPointMassModelRK4
 %
 % EXAMPLES:
 %
-%     See the script: script_test_fcn_VD_kinematicPointMassModelRK4
+%     See the script: script_test_fcn_VD_forwardReachabilityTreeRK4
 %     for a full test suite.
 %
-% This function was written on 2026_01_26 
+% This function was written on 2026_09_16 
 % by Sean Brennan. Questions or comments? sbrennan@psu.edu
 
 % REVISION HISTORY:
 %
-% As: fcn_VD_kinematicPointMassModel
-%
-% 2026_01_26 by Sean Brennan, sbrennan@psu.edu
-% - First write of fcn_VD_kinematicPointMassModelRK4 function
-%
-% As: fcn_VD_kinematicPointMassModelRK4
-%
-% 2026_01_31 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_VD_kinematicPointMassModelRK4
-%   % * Renamed function to indicate that it is for derivatives only
-%   % * Improved header comments
-%   % * Fixed input checking to use DebugTools
-%   % * Set plot handle DisplayName for RK4 MATLAB plot.
-%
-% 2026_09_03 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_VD_kinematicPointMassModelRK4
-%   % * Changed input arguments for consistency
+% As: fcn_VD_forwardReachabilityTreeRK4
 %
 % 2026_09_16 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_VD_kinematicPointMassModelRK4
-%   % * Typo fixes in header
+% - In fcn_VD_forwardReachabilityTreeRK4
+%   % * First write of function
+%   % * Used fcn_VD_kinematicPointMassModelRK4 as starter
+
 
 % TO-DO:
-% - 2026_01_26 by Sean Brennan, sbrennan@psu.edu
+% - 2026_09_16 by Sean Brennan, sbrennan@psu.edu
 %   % (add items here)
 
 %% Debugging and Input checks
@@ -100,7 +101,7 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicPointMassModelRK4(
 % Check if flag_max_speed set. This occurs if the figNum variable input
 % argument (varargin) is given a number of -1, which is not a valid figure
 % number.
-MAX_NARGIN = 6; % The largest Number of argument inputs to the function
+MAX_NARGIN = 7; % The largest Number of argument inputs to the function
 flag_max_speed = 0; % The default. This runs code with all error checking
 if (nargin==MAX_NARGIN && isequal(varargin{end},-1))
     flag_do_debug = 0; % Flag to plot the results for debugging
@@ -154,12 +155,14 @@ if 0==flag_max_speed
         % Validate that the timeInterval input has 2 columns, 1 row
         fcn_DebugTools_checkInputsToFunctions(timeInterval, '2column_of_numbers',[1 1]);
 
-        % Validate that the inputsVsTime input has 2 columns, 2+
-		% rows
-        fcn_DebugTools_checkInputsToFunctions(inputsVsTime, '2column_of_numbers',[2 3]);
+        % Validate that the steeringInterval input has 1 columns, 1+ rows
+        fcn_DebugTools_checkInputsToFunctions(steeringInterval, '1column_of_numbers',[1 2]);
 
 		% Check the parameters input is a structure
-        assert(isstruct(parameters));
+        assert(isstruct(vehicleParameters));
+
+        % Validate that the modelIDToUse input has 1 column, 1 row of ints
+        fcn_DebugTools_checkInputsToFunctions(modelIDToUse, '1column_of_integers',[1 1]);
 
     end
 end
@@ -191,32 +194,61 @@ endTime = timeInterval(2);
 simulationTimes = (startTime:deltaT:endTime)';
 N_timeSteps = length(simulationTimes); % This is the number of time steps we should have
 
-% Initialize variables
-stateTrajectory = nan(N_timeSteps,3);
-t = nan(N_timeSteps,1);
-steeringUsed = interp1(inputsVsTime(:,1), inputsVsTime(:,2), simulationTimes,'linear',0);
-U = parameters.U;
+if ~isequal(steeringInterval(1),steeringInterval(end))
+    N_steeringInputs = length(steeringInterval);
+else
+    N_steeringInputs = 1;
+end
 
-% Set initial conditions
-currentStates = initialStates;
+% Fill names
+switch modelIDToUse
+    case 0
+        simName = 'Kinematic Point Mass RK4';
+    case 1
+        simName = 'Kinematic Bicycle RK4';
+    otherwise
+        error('Unrecognized modelIDToUse input found. Function received entry of %.0d . Expecting values between 0 and 1.',modelIDToUse);
+end
 
-for ith_time = 1:N_timeSteps
-	thisTime       = simulationTimes(ith_time);
+% Preallocate the output arrays
+totalNumberOfNaNGapsRequired = N_steeringInputs-1;
+stateTrajectories = nan(N_timeSteps*N_steeringInputs+totalNumberOfNaNGapsRequired,3);
+times = nan(N_timeSteps*N_steeringInputs+totalNumberOfNaNGapsRequired,1);
+steeringAnglesUsed = nan(N_timeSteps*N_steeringInputs+totalNumberOfNaNGapsRequired,1);
 
-	% Fill in the results to save
-	t(ith_time,1)  = thisTime; % Update time
-	stateTrajectory(ith_time,:)   = currentStates;
+% Loop through steering inputs
+offsetNaNEntries = 0; % How many NaN gaps have been inserted so far?
+
+for ith_steeringInput = 1:N_steeringInputs
+    thisRowOffset = N_timeSteps*(ith_steeringInput-1)+offsetNaNEntries;
+    thisSteeringInput = steeringInterval(ith_steeringInput);
+
+    % Initialize inputs for this situation
+    inputsVsTime = [simulationTimes thisSteeringInput*ones(N_timeSteps,1)]; % [times steeringAngles]
 
 
-	% Use Runga-Kutta to predict next position
-	y = currentStates';
-	inputOmega = steeringUsed(ith_time,1);
-	[~, y] = fcn_VD_RungeKutta(...
-		@(t,y) fcn_VD_derivativesKinematicPointMassModel(y,inputOmega, U, -1), ...
-		currentStates', thisTime, deltaT, -1);
+    switch modelIDToUse
+        case 0
+            [thisSteeringStateTrajectories, thisSteeringTimes, thisSteeringAnglesUsed] = ...
+                fcn_VD_kinematicPointMassModelRK4(initialStates, deltaT, ...
+                timeInterval, inputsVsTime, vehicleParameters, (-1));
+        case 1
+            [thisSteeringStateTrajectories, thisSteeringTimes, thisSteeringAnglesUsed] = ...
+                fcn_VD_kinematicBicycleModelRK4(initialStates, deltaT, ...
+                timeInterval, inputsVsTime, vehicleParameters, (-1));
+        otherwise
+            error('Unrecognized modelIDToUse input found. Function received entry of %.0d . Expecting values between 0 and 1.',modelIDToUse);
+    end
 
-	currentStates = y';
 
+    % Save results
+    rowRangeToFill = (thisRowOffset+1):(thisRowOffset+N_timeSteps);
+    stateTrajectories(rowRangeToFill,:) = thisSteeringStateTrajectories;
+    times(rowRangeToFill,:) = thisSteeringTimes;
+    steeringAnglesUsed(rowRangeToFill,:) = thisSteeringAnglesUsed;
+
+    % Increment the count of offsetNaNEntries?
+    offsetNaNEntries = offsetNaNEntries+1;
 end
 
 %% Plot the results (for debugging)?
@@ -233,8 +265,8 @@ end
 if flag_do_plots
     
     % plot the outputs
-    h_plot = fcn_VD_plotTrajectory(stateTrajectory(:,1:2),(figNum));
-	set(h_plot,'DisplayName','XY Trajectory (MATLAB RK4)')
+    h_plot = fcn_VD_plotTrajectory(stateTrajectories(:,1:2),(figNum));
+	set(h_plot,'DisplayName',simName)
 end
 
 if flag_do_debug
