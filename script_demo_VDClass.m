@@ -135,6 +135,23 @@
 %   %   % fcn_VD_kinematicPointMassModel as starter
 % - In script_test_fcn_VD_body2GlobalCoordinateRK4
 %   % * Wrote the code originally, using breakDataIntoLaps as starter
+%
+% 2026_09_14 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_VD_createTransformMatrix
+%   % * Wrote the code originally, 
+%   % * Using breakDataIntoLaps as starter
+% - In fcn_VD_createTransformMatrix
+%   % * First write of function, 
+%   % * using fcn_VD_derivativesKinematicPointMassModel as starter
+%
+% 2026_09_15 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_VD_fitTransformationSVD
+%   % * Wrote the code originally, 
+%   % * Using fcn_VD_createTransformMatrix as starter
+% - In fcn_VD_fitTransformationSVD
+%   % * First write of function, 
+%   % * using fcn_LiDARPoseEstimation_FitTransformationSVD as starter
+%   % * See https://github.com/ivsg-psu/Publications_Journals_2025_JAVS_Cao_ExtrinsicCalibration
 
 % TO-DO:
 % 2026_09_03 by Sean Brennan, sbrennan@psu.edu

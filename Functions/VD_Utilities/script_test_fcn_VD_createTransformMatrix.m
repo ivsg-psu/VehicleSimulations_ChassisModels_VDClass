@@ -3,8 +3,10 @@
 
 % REVISION HISTORY:
 %
-% 2026_01_31 by Sean Brennan, sbrennan@psu.edu
-% - wrote the code originally, using breakDataIntoLaps as starter
+% 2026_09_14 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_VD_createTransformMatrix
+%   % * Wrote the code originally, 
+%   % * Using breakDataIntoLaps as starter
 
 % TO-DO:
 %

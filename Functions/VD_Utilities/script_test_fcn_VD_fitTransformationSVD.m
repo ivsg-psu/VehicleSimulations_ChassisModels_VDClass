@@ -4,7 +4,9 @@
 % REVISION HISTORY:
 %
 % 2026_09_15 by Sean Brennan, sbrennan@psu.edu
-% - wrote the code originally, using fcn_VD_createTransformMatrix as starter
+% - In script_test_fcn_VD_fitTransformationSVD
+%   % * Wrote the code originally, 
+%   % * Using fcn_VD_createTransformMatrix as starter
 
 % TO-DO:
 %
@@ -69,6 +71,11 @@ assert(isequal(round(transformationMatrixTrue,4),round(transformationMatrix,4)))
 
 % Make sure plot opened up
 assert(isequal(get(gcf,'Number'),figNum));
+
+fprintf('\nTrue matrix prior to fitting:\n');
+disp(transformationMatrixTrue);
+fprintf('\nFitted matrix:\n');
+disp(transformationMatrix);
 
 
 %% Test cases start here. These are very simple, usually trivial
