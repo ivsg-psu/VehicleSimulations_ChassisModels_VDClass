@@ -1,29 +1,24 @@
-function dXdt = fcn_VD_derivativesKinematicPointMassModel( X, inputOmega, U, varargin)
+function transformationMatrix = fcn_VD_fitTransformationSVD( sourcePoints, targetPoints, varargin)
 
-%% fcn_VD_derivativesKinematicPointMassModel
-%   Fill in the pose derivatives for the point-mass kinematic model
+%% fcn_VD_fitTransformationSVD 
+% computes the best-fitting rigid transformation between two point sets using SVDx
 %
 % FORMAT:
 %
-%      dXdt = fcn_VD_derivativesKinematicPointMassModel( X, inputOmega, U, (figNum))
+%      transformationMatrix = fcn_VD_fitTransformationSVD(inputPoints, targetPoints, (weightingArray), (figNum))
 %
 % INPUTS:
 %
-%      X: A 3x1 vector of global pose in the form of 
-%         [X; Y; Phi], which stand for:
-% 
-%         X: Global X position in meters
+%      sourcePoints: Nx3 array Source point cloud coordinates in LiDAR
+%      frame.
 %
-%         Y: Global Y position in meters
-%
-%         phi: Global yaw angle in radians, measured positive from X axis
-%         to Y axis
-%
-%      inputOmega: the rate of change of the yaw angle of the vehicle (input: rad/sec)
-%
-%      U: Longitudinal velocity [m/s]
+%      targetPoints: Nx3 array Corresponding reference point coordinates
+%      (e.g., in GPS or ENU frame).
 %
 %      (OPTIONAL INPUTS)
+%
+%      weightingArray: Nx1 array Weighting coefficients for each point pair. If
+%      empty, uniform weights assumed.
 %
 %      figNum: a FID number to print results. If set to -1, skips any
 %      input checking or debugging, no prints will be generated, and sets
@@ -31,7 +26,8 @@ function dXdt = fcn_VD_derivativesKinematicPointMassModel( X, inputOmega, U, var
 %
 % OUTPUTS:
 %
-%   dXdt: A 3x1 vector of linear velocities and rotational velocities
+%   transformationMatrix: A 4x4 homogenous transformation matrix from
+%   inputPoints to targetPoints
 %
 % DEPENDENCIES:
 %
@@ -39,29 +35,25 @@ function dXdt = fcn_VD_derivativesKinematicPointMassModel( X, inputOmega, U, var
 %
 % EXAMPLES:
 %
-%     See the script: script_test_fcn_VD_derivativesKinematicPointMassModel
+%     See the script: script_test_fcn_VD_fitTransformationSVD
 %     for a full test suite.
 %
-% This function was written on 2026_01_26 
+% This function was written on 2026_09_15 
 % by Sean Brennan. Questions or comments? sbrennan@psu.edu
+% Function transcribed from Xinyu Cao, xfc5113@psu.edu, created 2024-01-24
 
 % REVISION HISTORY:
 %
-% As: fcn_VD_kinematicPointMassModel
+% As: fcn_VD_fitTransformationSVD
 %
-% 2026_01_26 by Sean Brennan, sbrennan@psu.edu
-% - First write of function, using fcn_VD_bicycle2dofModel as starter
-%
-% As: fcn_VD_derivativesKinematicPointMassModel
-%
-% 2026_01_31 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_VD_derivativesKinematicPointMassModel
-%   % * Renamed function to indicate that it is for derivatives only
-%   % * Improved header comments
-
+% 2026_09_15 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_fitTransformationSVD
+%   % * First write of function, 
+%   % * using fcn_LiDARPoseEstimation_FitTransformationSVD as starter
+%   % * See https://github.com/ivsg-psu/Publications_Journals_2025_JAVS_Cao_ExtrinsicCalibration
 
 % TO-DO:
-% - 2026_01_26 by Sean Brennan, sbrennan@psu.edu
+% - 2026_09_15 by Sean Brennan, sbrennan@psu.edu
 %   % (add items here)
 
 %% Debugging and Input checks
@@ -87,7 +79,6 @@ else
     end
 end
 
-% flag_do_debug = 1;
 
 if flag_do_debug % If debugging is on, print on entry/exit to the function
     st = dbstack; %#ok<*UNRCH>
@@ -112,52 +103,25 @@ end
 if 0==flag_max_speed
     if flag_check_inputs
         % Are there the right number of inputs?
-        narginchk(MAX_NARGIN-1,MAX_NARGIN);
+        narginchk(MAX_NARGIN-2,MAX_NARGIN);
 
-        % Check the y input to be sure it has 1 column, 3 rows
-        fcn_DebugTools_checkInputsToFunctions(X, '1column_of_numbers',[3 3]);
-
-        % Check the inputOmega input to be sure it has 1 column and 1 row
-        fcn_DebugTools_checkInputsToFunctions(inputOmega, '1column_of_numbers',[1 1]);
-
-        % Check the U input to be sure it has 1 col, 1 row, positive
-        fcn_DebugTools_checkInputsToFunctions(U, 'positive_1column_of_numbers',[1 1]);
+        % Check the inputPoints input
+        fcn_DebugTools_checkInputsToFunctions(...
+            sourcePoints, '3column_of_numbers');
+        fcn_DebugTools_checkInputsToFunctions(...
+            targetPoints, '3column_of_numbers');
 
     end
 end
 
-
-% 
-%   Set the start values
-% [flag_start_is_a_point_type, start_zone_definition] = fcn_Laps_checkZoneType(start_zone_definition, 'start_definition', -1);
-% 
-% 
-%   The following area checks for variable argument inputs (varargin)
-% 
-%   Does the user want to specify the end_definition?
-%   Set defaults first:
-% end_zone_definition = start_zone_definition; % Default case
-% flag_end_is_a_point_type = flag_start_is_a_point_type; % Inheret the start case
-%   Check for user input
-% if 3 <= nargin
-%     temp = varargin{1};
-%     if ~isempty(temp)
-%         % Set the end values
-%         [flag_end_is_a_point_type, end_zone_definition] = fcn_Laps_checkZoneType(temp, 'end_definition', -1);
-%     end
-% end
-% 
-%   Does the user want to specify excursion_definition?
-% flag_use_excursion_definition = 0; % Default case
-% flag_excursion_is_a_point_type = 1; % Default case
-% if 4 <= nargin
-%     temp = varargin{2};
-%     if ~isempty(temp)
-%         % Set the excursion values
-%         [flag_excursion_is_a_point_type, excursion_definition] = fcn_Laps_checkZoneType(temp, 'excursion_definition',-1);
-%         flag_use_excursion_definition = 1;
-%     end
-% end
+% Does user want to specify the weightingArray?
+weightingArray = ones(size(sourcePoints, 1), 1);
+if 3 <= nargin
+    temp = varargin{1};
+    if ~isempty(temp)
+        weightingArray = temp;
+    end
+end
 
 % Does user want to show the plots?
 flag_do_plots = 0; % Default is to NOT show plots
@@ -170,7 +134,7 @@ if (0==flag_max_speed) && (MAX_NARGIN == nargin)
 end
 
 
-%% Implements Bicycle Model
+%% SVD transformation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   __  __       _       
 %  |  \/  |     (_)      
@@ -180,18 +144,34 @@ end
 %  |_|  |_|\__,_|_|_| |_|
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% xvalue = X(1);
-% yvalue = X(2);
-theta  = X(3); % Yaw angle of the vehicle
+% Compute the weighted centroids of both point sets
 
-%% Newtonian Dynamics of CG
-DvelDt = [U*cos(theta); U*sin(theta)];
+source_center  = sum(weightingArray .* sourcePoints, 1) / sum(weightingArray);
+target_center = sum(weightingArray .* targetPoints, 1) / sum(weightingArray);
 
-%% Pose dynamics
-DyawDt = inputOmega;
+% Center coordinates
+source_centered  = sourcePoints - source_center;
+target_centered = targetPoints - target_center;
+W_diag = diag(weightingArray);
+% Compute weighted cross-covariance
+H = source_centered' * W_diag * target_centered;
 
-%% Output
-dXdt = [DvelDt; DyawDt];
+% SVD for optimal rotation
+[U, ~, V] = svd(H);
+R_rotation = V * U';
+
+% Ensure proper right-handed rotation
+if det(R_rotation) < 0
+    F = eye(3);
+    F(3,3) = -1;
+    R_rotation = V * F * U';
+end
+
+% Translation vector
+translation_vector = target_center' - R_rotation * source_center';
+
+% Construct transformation
+transformationMatrix = tform(se3(R_rotation, translation_vector'));
 
 %% Plot the results (for debugging)?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -205,25 +185,10 @@ dXdt = [DvelDt; DyawDt];
 %                           |___/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if flag_do_plots
-    
-    % plot the derivative outputs as a vector
-    figure(figNum);
 
-	quiver(X,Y,DvelDt(1), DvelDt(2), 0);
-	hold on;
-	axis equal;
-	axis padded;
-
-	% Plot the rotation. this is done by putting a small, grey vector at
-	% the end that points in the direction and magnitude of the rotation.
-	rotationAngle = inputOmega;
-	changeVector = [DvelDt(1) DvelDt(2)];
-	newChange = changeVector*[cos(rotationAngle) sin(rotationAngle); -sin(rotationAngle) cos(rotationAngle)];
-	rotationStartPoint = [X Y]+changeVector;
-	rotationEndPoint = [X Y]+newChange;
-	differenceVector = rotationEndPoint - rotationStartPoint;
-	quiver(rotationStartPoint(1),rotationStartPoint(2), differenceVector(1), differenceVector(2),0,'Color',0.8*[1 1 1]);
-
+	fprintf('Rotation Matrix:\n'); disp(R_rotation);
+	fprintf('Translation Vector:\n'); disp(translation_vector');
+	fprintf('Homogeneous Transformation:\n'); disp(transformationMatrix);
 
 end
 

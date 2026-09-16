@@ -211,7 +211,18 @@ for ith_time = 1:N_timeSteps
 		@(t,y) fcn_VD_derivativesKinematicPointMassModel(y,inputOmega, U, -1), ...
 		currentStates', thisTime, deltaT, -1);
 
+	deltaX = y(1) - currentStates(1);
+	deltaY = y(2) - currentStates(2);
+	deltaYaw = y(3) - currentStates(3);
+	
 	currentStates = y';
+
+	% Calculate the transform matrix
+
+	rotations = [0 0 deltaYaw]; % radians <-- work
+	translations = [ deltaX deltaY 0]; % 1 2 3]; % radians
+	transformationMatrix = fcn_VD_createTransformMatrix( rotations, translations, (-1));
+
 end
 
 %% Plot the results (for debugging)?

@@ -1,14 +1,14 @@
-% script_test_fcn_VD_createTransformMatrix.m
-% tests fcn_VD_createTransformMatrix.m
+% script_test_fcn_VD_fitTransformationSVD.m
+% tests fcn_VD_fitTransformationSVD.m
 
 % REVISION HISTORY:
 %
-% 2026_01_31 by Sean Brennan, sbrennan@psu.edu
-% - wrote the code originally, using breakDataIntoLaps as starter
+% 2026_09_15 by Sean Brennan, sbrennan@psu.edu
+% - wrote the code originally, using fcn_VD_createTransformMatrix as starter
 
 % TO-DO:
 %
-% 2026_01_31 by Sean Brennan, sbrennan@psu.edu
+% 2026_09_15 by Sean Brennan, sbrennan@psu.edu
 % - (fill in items here)
 
 
@@ -39,17 +39,21 @@ titleString = sprintf('DEMO case: basic call');
 fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
 figure(figNum); clf;
 
-% Set the input arguments
-% rotations = [15 0 0]*pi/180; % radians <-- works
-% rotations = [0 15 0]*pi/180; % radians <-- works
-% rotations = [0 0 15]*pi/180; % radians <-- works
-% translations = [ 0 0 0]; % 1 2 3]; % radians
-
 rotations = [10 15 20]*pi/180; % radians <-- work
 translations = [ 1 2 3]; % 1 2 3]; % radians
 
+% Call the function to fill the transformation
+transformationMatrixTrue = fcn_VD_createTransformMatrix( rotations, translations, (-1));
+
+sourcePoints = rand(5,3);
+
+homogenous_sourcePoints = [sourcePoints ones(length(sourcePoints(:,1)),1)];
+rotated_sourcePoints = (transformationMatrixTrue*homogenous_sourcePoints')';
+
+weightingArray = [];
+
 % Call the function
-transformationMatrix = fcn_VD_createTransformMatrix( rotations, translations, (figNum));
+transformationMatrix = fcn_VD_fitTransformationSVD( sourcePoints, rotated_sourcePoints(:,1:3), (weightingArray), (figNum));
 
 sgtitle(titleString, 'Interpreter','none');
 
@@ -61,7 +65,7 @@ assert(size(transformationMatrix,1)==4);
 assert(size(transformationMatrix,2)==4); 
 
 % Check variable values
-% Too hard to test
+assert(isequal(round(transformationMatrixTrue,4),round(transformationMatrix,4)));
 
 % Make sure plot opened up
 assert(isequal(get(gcf,'Number'),figNum));
@@ -113,8 +117,18 @@ figure(figNum); close(figNum);
 rotations = [10 15 20]*pi/180; % radians <-- work
 translations = [ 1 2 3]; % 1 2 3]; % radians
 
+% Call the function to fill the transformation
+transformationMatrixTrue = fcn_VD_createTransformMatrix( rotations, translations, (-1));
+
+sourcePoints = rand(5,3);
+
+homogenous_sourcePoints = [sourcePoints ones(length(sourcePoints(:,1)),1)];
+rotated_sourcePoints = (transformationMatrixTrue*homogenous_sourcePoints')';
+
+weightingArray = [];
+
 % Call the function
-transformationMatrix = fcn_VD_createTransformMatrix( rotations, translations, ([]));
+transformationMatrix = fcn_VD_fitTransformationSVD( sourcePoints, rotated_sourcePoints(:,1:3), (weightingArray), ([]));
 
 sgtitle(titleString, 'Interpreter','none');
 
@@ -126,7 +140,7 @@ assert(size(transformationMatrix,1)==4);
 assert(size(transformationMatrix,2)==4); 
 
 % Check variable values
-% Too hard to test
+assert(isequal(round(transformationMatrixTrue,4),round(transformationMatrix,4)));
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
@@ -141,8 +155,18 @@ figure(figNum); close(figNum);
 rotations = [10 15 20]*pi/180; % radians <-- work
 translations = [ 1 2 3]; % 1 2 3]; % radians
 
+% Call the function to fill the transformation
+transformationMatrixTrue = fcn_VD_createTransformMatrix( rotations, translations, (-1));
+
+sourcePoints = rand(5,3);
+
+homogenous_sourcePoints = [sourcePoints ones(length(sourcePoints(:,1)),1)];
+rotated_sourcePoints = (transformationMatrixTrue*homogenous_sourcePoints')';
+
+weightingArray = [];
+
 % Call the function
-transformationMatrix = fcn_VD_createTransformMatrix( rotations, translations, (-1));
+transformationMatrix = fcn_VD_fitTransformationSVD( sourcePoints, rotated_sourcePoints(:,1:3), (weightingArray), (-1));
 
 sgtitle(titleString, 'Interpreter','none');
 
@@ -154,7 +178,7 @@ assert(size(transformationMatrix,1)==4);
 assert(size(transformationMatrix,2)==4); 
 
 % Check variable values
-% Too hard to test
+assert(isequal(round(transformationMatrixTrue,4),round(transformationMatrix,4)));
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
@@ -170,7 +194,15 @@ close(figNum);
 rotations = [10 15 20]*pi/180; % radians <-- work
 translations = [ 1 2 3]; % 1 2 3]; % radians
 
+% Call the function to fill the transformation
+transformationMatrixTrue = fcn_VD_createTransformMatrix( rotations, translations, (-1));
 
+sourcePoints = rand(5,3);
+
+homogenous_sourcePoints = [sourcePoints ones(length(sourcePoints(:,1)),1)];
+rotated_sourcePoints = (transformationMatrixTrue*homogenous_sourcePoints')';
+
+weightingArray = [];
 
 Niterations = 500;
 
@@ -178,7 +210,7 @@ Niterations = 500;
 tic;
 for ith_test = 1:Niterations
 	% Call the function
-	transformationMatrix = fcn_VD_createTransformMatrix( rotations, translations, ([]));
+	transformationMatrix = fcn_VD_fitTransformationSVD( sourcePoints, rotated_sourcePoints(:,1:3), (weightingArray), ([]));
 end
 slow_method = toc;
 
@@ -186,7 +218,7 @@ slow_method = toc;
 tic;
 for ith_test = 1:Niterations
 	% Call the function
-	transformationMatrix = fcn_VD_createTransformMatrix( rotations, translations, (-1));
+	transformationMatrix = fcn_VD_fitTransformationSVD( sourcePoints, rotated_sourcePoints(:,1:3), (weightingArray), (-1));
 end
 fast_method = toc;
 

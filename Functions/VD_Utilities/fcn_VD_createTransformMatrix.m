@@ -158,7 +158,7 @@ Rx = [
 Ry = [
     cosP 0 sinP;
     0    1    0;
-    sinP 0 cosP;
+    -sinP 0 cosP;
     ];
 
 Rz = [
@@ -166,7 +166,7 @@ Rz = [
     sinY  cosY 0;
     0     0    1;
     ];
-Rotations = Rx*Ry*Rz;
+Rotations = Rz*Ry*Rx;
 
 transformationMatrix = [...
     Rotations translations';
@@ -176,7 +176,7 @@ transformationMatrix = [...
 % For debugging
 % Check that this is correct?
 if 1==1
-    Ttemp = se3([yaw, pitch, roll],"eul",'ZYX',translations);
+    Ttemp = tform(se3([yaw, pitch, roll],"eul",'ZYX',translations));
 
     assert(isequal(round(transformationMatrix,4),round(Ttemp,4)));
 
@@ -258,6 +258,7 @@ if flag_do_plots
         0, 1, 0; % Points in +Y direction
         0, 0, 1  % Points in +Z direction
         ];
+	endPointsOfVectors = face_centers+vectors;
 
     % Plot the unit vectors using quiver3
     % 'AutoScale', 'off' ensures the vectors keep their literal unit length of 1
@@ -272,7 +273,34 @@ if flag_do_plots
     title('Unit Cube with Positive-Facing Normal Vectors');
     axis equal;
     view(3); % Set to default 3D view orientation
-    hold off;
+
+
+	% Add the rotation
+	vertices = [X(:) Y(:) Z(:) ones(length(X(:)),1)];
+	rotated_vertices = (transformationMatrix*vertices')';
+
+	homogenous_edges = [edges ones(length(edges(:,1)),1)];
+	rotated_edges = (transformationMatrix*homogenous_edges')';
+
+	homogenous_face_centers = [face_centers ones(length(face_centers(:,1)),1)];
+	rotated_face_centers = (transformationMatrix*homogenous_face_centers')';
+
+	homogenous_endPointsOfVectors = [endPointsOfVectors ones(length(endPointsOfVectors(:,1)),1)];
+	rotated_endPointsOfVectors = (transformationMatrix*homogenous_endPointsOfVectors')';
+	rotated_vectors = rotated_endPointsOfVectors - rotated_face_centers;
+
+	% Plot the cube vertices as points
+    scatter3(rotated_vertices(:,1), rotated_vertices(:,2), rotated_vertices(:,3), 60, 'filled', 'MarkerFaceColor', 'g');
+
+	for i = 1:2:size(edges, 1)
+		plot3(rotated_edges(i:i+1, 1), rotated_edges(i:i+1, 2), rotated_edges(i:i+1, 3), '-', 'LineWidth', 1,'Color',0.3*[1 1 1]);
+	end
+
+    % Plot the unit vectors using quiver3
+    % 'AutoScale', 'off' ensures the vectors keep their literal unit length of 1
+    quiver3(rotated_face_centers(:,1), rotated_face_centers(:,2), rotated_face_centers(:,3), ...
+        rotated_vectors(:,1), rotated_vectors(:,2), rotated_vectors(:,3), ...
+        0, 'Color', 'g', 'LineWidth', 2, 'MaxHeadSize', 0.5);
 
 end
 
