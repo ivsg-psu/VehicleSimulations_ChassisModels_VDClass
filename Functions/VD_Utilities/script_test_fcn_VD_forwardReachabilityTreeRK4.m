@@ -84,14 +84,63 @@ assert(size(steeringAnglesUsed,2)==1);
 % Make sure plot opened up
 assert(isequal(get(gcf,'Number'),figNum));
 
-%% DEMO case: basic call
+%% DEMO case: basic call with kinematic bicycle model
 figNum = 10002;
-titleString = sprintf('DEMO case: basic call with kinematic bicycle model');
+titleString = 'DEMO case: basic call with kinematic bicycle model';
 fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
 figure(figNum); clf;
 
 % Set the simulation time/state arguments
 initialStates = [0 0 0]; % [X Y phi] in [m],[m],[rad]
+deltaT = 0.01; % Units are [sec]
+startTime = 0;
+endTime = 1;
+timeInterval = [startTime endTime];  % Units are [sec]
+steeringInterval = ((0:2:25)')*pi/180;  % Units are [rad]
+
+% Set up parameters
+clear vehicleParameters
+vehicleParameters.U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
+vehicleParameters.L = 2.5; % wheelbase in meters
+
+modelIDToUse = 1; % Kinematic bicycle model
+
+% Call the function
+[stateTrajectories, times, steeringAnglesUsed] = ...
+    fcn_VD_forwardReachabilityTreeRK4(...
+    initialStates, ...
+    deltaT, timeInterval, steeringInterval, vehicleParameters, ...
+    modelIDToUse, (figNum));
+
+sgtitle(titleString, 'Interpreter','none');
+
+% Check variable types
+assert(isnumeric(stateTrajectories));
+assert(isnumeric(times));
+assert(isnumeric(steeringAnglesUsed));
+
+% Check variable sizes
+assert(size(stateTrajectories,1)>=1); 
+assert(size(stateTrajectories,2)==3); 
+assert(size(times,1)==size(stateTrajectories,1)); 
+assert(size(times,2)==1); 
+assert(size(steeringAnglesUsed,1)==size(stateTrajectories,1)); 
+assert(size(steeringAnglesUsed,2)==1); 
+
+% Check variable values
+% (too complex to check)
+
+% Make sure plot opened up
+assert(isequal(get(gcf,'Number'),figNum));
+
+%% DEMO case: basic call with kinematic bicycle model at 45 degrees
+figNum = 10003;
+titleString = 'DEMO case: basic call with kinematic bicycle model at 45 degrees';
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+figure(figNum); clf;
+
+% Set the simulation time/state arguments
+initialStates = [0 0 45*pi/180]; % [X Y phi] in [m],[m],[rad]
 deltaT = 0.01; % Units are [sec]
 startTime = 0;
 endTime = 1;

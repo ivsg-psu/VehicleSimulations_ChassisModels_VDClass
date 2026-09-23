@@ -1,7 +1,7 @@
 function transformationMatrices = ...
-    fcn_VD_convertTrajectoryToRelativeTransform(stateTrajectory, varargin)
+    fcn_VD_rotateReachabilityTree(stateTrajectory, varargin)
 
-%% fcn_VD_convertTrajectoryToRelativeTransform
+%% fcn_VD_rotateReachabilityTree
 %   Calculates the sequence of homogenous transformation matrices that map
 %   a state trajectory from an initial condition to the resulting
 %   trajectory. The first row of the stateTrajectory input is treated as
@@ -10,7 +10,7 @@ function transformationMatrices = ...
 % FORMAT:
 %
 %      transformationMatrices = ...
-%      fcn_VD_convertTrajectoryToRelativeTransform(stateTrajectory, (figNum))
+%      fcn_VD_rotateReachabilityTree(stateTrajectory, (figNum))
 %
 % INPUTS:
 %
@@ -42,7 +42,7 @@ function transformationMatrices = ...
 %
 % EXAMPLES:
 %
-%     See the script: script_test_fcn_VD_convertTrajectoryToRelativeTransform
+%     See the script: script_test_fcn_VD_rotateReachabilityTree
 %     for a full test suite.
 %
 % This function was written on 2026_09_16 
@@ -50,10 +50,10 @@ function transformationMatrices = ...
 
 % REVISION HISTORY:
 %
-% As: fcn_VD_convertTrajectoryToRelativeTransform
+% As: fcn_VD_rotateReachabilityTree
 %
 % 2026_09_16 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_VD_convertTrajectoryToRelativeTransform
+% - In fcn_VD_rotateReachabilityTree
 %   % * First write of function
 %   % * Used fcn_VD_forwardReachabilityTreeRK4 as starter
 

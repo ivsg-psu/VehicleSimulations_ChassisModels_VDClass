@@ -1,4 +1,22 @@
 function dydt = fcn_VD_Body2GlobalCoordinates(~, y, U, V, r)
+
+MATLABFLAG_VD_WARN_BODY2GLOBALCOORDINATES = getenv("MATLABFLAG_VD_WARN_BODY2GLOBALCOORDINATES");
+flagShowWarning = 0;
+if isempty(MATLABFLAG_VD_WARN_BODY2GLOBALCOORDINATES) 
+   flagShowWarning = 1;
+else
+    if strcmp('1',MATLABFLAG_VD_WARN_BODY2GLOBALCOORDINATES)
+        flagShowWarning = 1;
+    end
+end
+
+if 1==1 % flagShowWarning
+    warning('on','backtrace');
+    warning(['fcn_VD_Body2GlobalCoordinates is being deprecated. ' ...
+        'Use fcn_VD_body2GlobalCoordinatesDerivatives instead.']);
+    setenv('MATLABFLAG_VD_WARN_BODY2GLOBALCOORDINATES','0');
+end
+
 %% fcn_VD_Body2GlobalCoordinates
 %   This function calculates velocites in global coordinates.
 %
