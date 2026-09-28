@@ -63,8 +63,8 @@ inputsVsTime = [simulationTimes torque_amplitude_Nm*stepTorqueInput]; % [times t
 
 % Set up parameters
 clear parameters
-parameters.J = 2;  % J is the rotational inertia of the vehicle, in kg-m^2
-parameters.B = 2.5; % B is the rotational viscous drag, in (N-m)/(rad/sec)
+parameters.J = 1;  % J is the rotational inertia of the vehicle, in kg-m^2
+parameters.B = 10; % B is the rotational viscous drag, in (N-m)/(rad/sec)
 
 % Call the function
 [stateTrajectory, t, inputHistory] = ...

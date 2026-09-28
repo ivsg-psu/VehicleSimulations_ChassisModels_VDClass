@@ -170,6 +170,8 @@
 % - In fcn_VD_convertTrajectoryToRelativeTransform
 %   % * First write of function
 %   % * Used fcn_VD_forwardReachabilityTreeRK4 as starter
+%
+% (new release)
 
 % TO-DO:
 % 2026_09_03 by Sean Brennan, sbrennan@psu.edu
