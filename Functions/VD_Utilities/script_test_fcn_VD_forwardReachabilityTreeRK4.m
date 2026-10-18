@@ -48,7 +48,7 @@ deltaT = 0.01; % Units are [sec]
 startTime = 0;
 endTime = 4.5;
 timeInterval = [startTime endTime];  % Units are [sec]
-steeringInterval = ((0:2:25)')*pi/180;  % Units are [rad]
+steeringInterval = ((-28:2:28)')*pi/180;  % Units are [rad]
 
 % Set up parameters
 clear vehicleParameters
