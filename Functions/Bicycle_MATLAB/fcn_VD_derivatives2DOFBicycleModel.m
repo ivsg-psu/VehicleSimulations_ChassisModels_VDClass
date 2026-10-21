@@ -1,11 +1,11 @@
-function dXdt = fcn_VD_derivativesKinematicBicycleModel( X, inputFrontRoadWheelAngleRadians, U, L, varargin)
+function dXdt = fcn_VD_derivatives2DOFBicycleModel( X, inputFrontRoadWheelAngleRadians, U, L, varargin)
 
-%% fcn_VD_derivativesKinematicBicycleModel
+%% fcn_VD_derivatives2DOFBicycleModel
 %   Fill in the pose derivatives for the bicycle kinematic model
 %
 % FORMAT:
 %
-%      dXdt = fcn_VD_derivativesKinematicBicycleModel( X, inputFrontRoadWheelAngleRadians, U, L, (figNum))
+%      dXdt = fcn_VD_derivatives2DOFBicycleModel( X, inputFrontRoadWheelAngleRadians, U, L, (figNum))
 %
 % INPUTS:
 %
@@ -42,32 +42,24 @@ function dXdt = fcn_VD_derivativesKinematicBicycleModel( X, inputFrontRoadWheelA
 %
 % EXAMPLES:
 %
-%     See the script: script_test_fcn_VD_derivativesKinematicBicycleModel
+%     See the script: script_test_fcn_VD_derivatives2DOFBicycleModel
 %     for a full test suite.
 %
-% This function was written on 2026_01_26 
+% This function was written on 2026_10_21 
 % by Sean Brennan. Questions or comments? sbrennan@psu.edu
 
 % REVISION HISTORY:
 %
 % As: fcn_VD_kinematicBicycleModel
 %
-% 2026_01_26 by Sean Brennan, sbrennan@psu.edu
-% - First write of function, using fcn_VD_bicycle2dofModel as starter
-%
-% As: fcn_VD_derivativesKinematicBicycleModel
-%
-% 2026_01_31 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_VD_derivativesKinematicBicycleModel
-%   % * Renamed function to indicate that it is for derivatives only
-%   % * Improved header comments
-%
-% 2026_09_16 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_VD_derivativesKinematicBicycleModel
-%   % * Typo fix where variable X used twice in different contexts
+% 2026_10_21 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_derivatives2DOFBicycleModel
+%   % * First write of function, 
+%   % * Using fcn_VD_kinematicBicycleModel as starter
+
 
 % TO-DO:
-% - 2026_01_26 by Sean Brennan, sbrennan@psu.edu
+% - 2026_10_21 by Sean Brennan, sbrennan@psu.edu
 %   % (add items here)
 
 %% Debugging and Input checks

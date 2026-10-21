@@ -1,13 +1,13 @@
-function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicBicycleModelRK4(initialStates, deltaT, timeInterval, inputsVsTime, parameters, varargin)
+function [stateTrajectory, t, steeringUsed] = fcn_VD_2DOFBicycleModelRK4(initialStates, deltaT, timeInterval, inputsVsTime, vehicleParameters, varargin)
 
-%% fcn_VD_kinematicBicycleModelRK4
+%% fcn_VD_2DOFBicycleModelRK4
 %   Simulates the bicycle kinematic model using Runga Kutta 4th-order
 %
 % FORMAT:
 %
 %      [stateTrajectory, t, steeringUsed] =
-%      fcn_VD_kinematicBicycleModelRK4(initialStates, deltaT,
-%      timeInterval, inputsVsTime, parameters, (figNum))
+%      fcn_VD_2DOFBicycleModelRK4(initialStates, deltaT,
+%      timeInterval, inputsVsTime, vehicleParameters, (figNum))
 %
 % INPUTS:
 %
@@ -32,11 +32,16 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicBicycleModelRK4(in
 %      linear interpolation at the sampling times. For times outside the
 %      given interval, zero values are used.
 %
-%      U: A 1x1 positive numeric value representing the longitudinal
-%      velocity, in [m/s]
-%
-%      L: wheelbase [m]
-%
+%      vehicleParameters: a structure with the following subfields
+%          % Example below is approximately a Ford Taurus
+%            vehicleParameters(1).U          = 20;     % x-axis velocity, in m/s
+%            vehicleParameters(1).m          = 1031.9; % mass in kg
+%            vehicleParameters(1).Iz         = 1850;   % z-axis rotational inertia in kg-m^2
+%            vehicleParameters(1).a          = 0.9271; % distance from front axle to CG, in meters
+%            vehicleParameters(1).b          = 1.5621; % distance from rear axle to CG, in meters
+%            vehicleParameters(1).Caf        = 77500;  % Cornering stiffness of front axle, N/rad;
+%            vehicleParameters(1).Car	     = 116250; % Cornering stiffness of rear axle, N/rad;
+%            
 %      (OPTIONAL INPUTS)
 %
 %      figNum: a FID number to print results. If set to -1, skips any
@@ -56,38 +61,27 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicBicycleModelRK4(in
 % DEPENDENCIES:
 %
 %      fcn_DebugTools_checkInputsToFunctions
-%      fcn_VD_kinematicBicycleModel
+%      fcn_VD_derivatives2DOFBicycleModel
 %
 % EXAMPLES:
 %
-%     See the script: script_test_fcn_VD_kinematicBicycleModelRK4
+%     See the script: script_test_fcn_VD_2DOFBicycleModelRK4
 %     for a full test suite.
 %
-% This function was written on 2026_01_26 
+% This function was written on 2026_10_20 
 % by Sean Brennan. Questions or comments? sbrennan@psu.edu
 
 % REVISION HISTORY:
+% 
+% As: fcn_VD_2DOFBicycleModelRK4
 %
-% As: fcn_VD_kinematicBicycleModel
-%
-% 2026_01_26 by Sean Brennan, sbrennan@psu.edu
-% - First write of fcn_VD_kinematicBicycleModelRK4 function
-%
-% As: fcn_VD_kinematicBicycleModelRK4
-%
-% 2026_01_31 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_VD_kinematicBicycleModelRK4
-%   % * Renamed function to indicate that it is for derivatives only
-%   % * Improved header comments
-%   % * Fixed input checking to use DebugTools
-%   % * Set plot handle DisplayName for RK4 MATLAB plot.
-%
-% 2026_09_03 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_VD_kinematicBicycleModelRK4
-%   % * Changed input arguments for consistency
+% 2026_10_20 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_2DOFBicycleModelRK4
+%   % * Used fcn_VD_kinematicBicycleModelRK4 as starter
+%   % * Copied material over from fcn_VD_bicycle2dofModel
 
 % TO-DO:
-% - 2026_01_26 by Sean Brennan, sbrennan@psu.edu
+% - 2026_10_20 by Sean Brennan, sbrennan@psu.edu
 %   % (add items here)
 
 %% Debugging and Input checks
@@ -153,8 +147,8 @@ if 0==flag_max_speed
 		% rows
         fcn_DebugTools_checkInputsToFunctions(inputsVsTime, '2column_of_numbers',[2 3]);
 
-		% Check the parameters input is a structure
-        assert(isstruct(parameters));
+		% Check the vehicleParameters input is a structure
+        assert(isstruct(vehicleParameters));
 
     end
 end
@@ -185,36 +179,58 @@ startTime = timeInterval(1);
 endTime = timeInterval(2);
 simulationTimes = (startTime:deltaT:endTime)';
 N_timeSteps = length(simulationTimes); % This is the number of time steps we should have
-U = parameters.U;
-L = parameters.L;
+
+% The number of vehicles is the length of the structure array
+N_vehicles = length(vehicleParameters);
 
 
-% Initialize variables
-stateTrajectory = nan(N_timeSteps,3);
-t = nan(N_timeSteps,1);
-steeringUsed = interp1(inputsVsTime(:,1), inputsVsTime(:,2), simulationTimes,'linear',0);
+%% Do simulations
+% This section runs the codes to predict core behavior within SIMULINK and MATLAB,
+% looping through each vehicle.
+% For this simulation set, the core behavior is
+% V: lateral speed
+% r: rotational rate of vehicle around z-axis
 
+if N_vehicles>1
+	stateTrajectory = cell(N_vehicles,1);
+else
+	stateTrajectory = nan(N_timeSteps,3);
+end
 
-% Set initial conditions
-currentStates = initialStates;
+% Loop through all the vehicles, simulating the trajectory of each within
+% the for loop
+for ith_vehicle = 1:N_vehicles
+    % Print to the console which vehicle we are working on
+    fprintf(1,'Working on vehicle: %d\n', ith_vehicle);
 
+	% Initialize variables
+	thisVehicleParameters = parameters(ith_vehicle);
+	thisStateTrajectory   = nan(N_timeSteps,3);
+	thisT = nan(N_timeSteps,1);
+	thisSteeringUsed = interp1(inputsVsTime(:,1), inputsVsTime(:,2), simulationTimes,'linear',0);
 
-for ith_time = 1:N_timeSteps
-	thisTime       = simulationTimes(ith_time);
+    %% RK4 in MATLAB Script
+    % Fill in the parameters needed by the simulation for it to run
 
-	% Fill in the results to save
-	t(ith_time,1)  = thisTime; % Update time
-	stateTrajectory(ith_time,:)   = currentStates;
+    % Set initial conditions
+    currentStates = initialStates;
 
+    for ith_time = 1:N_timeSteps
+		thisTime       = simulationTimes(ith_time);
 
-	% Use Runga-Kutta to predict next position
-	y = currentStates';
-	inputFrontRoadWheelAngleRadians = steeringUsed(ith_time,1);
-	[~, y] = fcn_VD_RungeKutta(...
-		@(t,y) fcn_VD_derivativesKinematicBicycleModel(y,inputFrontRoadWheelAngleRadians, U, L, -1), ...
-		currentStates', thisTime, deltaT, -1);
+		% Fill in the results to save
+		t(ith_time,1)  = thisTime; % Update time
+		thisStateTrajectory(ith_time,:)   = currentStates;
 
-	currentStates = y';
+		% Use Runga-Kutta to predict next position
+		y = currentStates';
+		steering_amplitude_degrees = thisSteeringUsed(ith_time,1);
+        [~, y] = fcn_VD_RungeKutta(...
+                @(t,y) fcn_VD_derivatives2DOFBicycleModel(y, steering_amplitude_degrees, thisVehicleParameters), ...
+                currentStates', thisTime, deltaT, -1);
+       
+		currentStates = y';
+    end
 end
 
 %% Plot the results (for debugging)?
@@ -231,8 +247,59 @@ end
 if flag_do_plots
     
     % plot the outputs
-    h_plot = fcn_VD_plotTrajectory(stateTrajectory(:,1:2),(figNum));
+	h_plot = fcn_VD_plotTrajectory(stateTrajectory(:,1:2),(figNum));
 	set(h_plot,'DisplayName','XY Trajectory (MATLAB RK4)')
+
+	% % Start the plotting. Both the plots for each situation should agree with
+	% % each other (otherwise the equations are not consistent)
+	%
+	% index_to_label = (2==t);
+	% % Loop through each of the vehicles
+	% for ith_vehicle=1:N_vehicles
+	%     % Plot the yaw rate
+	%     h1 = figure(99);
+	%     hold on;
+	%     set(h1,'Name','Yawrate')
+	%     plot(t(:,ith_vehicle),all_r(:,ith_vehicle),'b');
+	%     grid on;
+	%     text(2, all_r(index_to_label,ith_vehicle), ['vehicle' num2str(ith_vehicle)]);
+	%     xlabel('Time (sec)');
+	%     ylabel('Yawrate (rad/sec)');
+	%     title('Yawrate');
+	%
+	%     % Plot the lateral velocity
+	%     h2 = figure(88);
+	%     hold on;
+	%     set(h2,'Name','LatVel')
+	%     plot(t(:,ith_vehicle),all_V(:,ith_vehicle),'b');
+	%     grid on;
+	%     text(2, all_V(index_to_label,ith_vehicle), ['vehicle' num2str(ith_vehicle)]);
+	%     xlabel('Time (sec)');
+	%     ylabel('Lateral Velocity (m/sec)');
+	%     title('Lateral Velocity');
+	%
+	%     % The XY Plots
+	%     h3 = figure(77);
+	%     hold on;
+	%     set(h2,'Name','XYposition')
+	%     plot(all_X(:,ith_vehicle),all_Y(:,ith_vehicle),'b');
+	%     grid on;
+	%     text(all_X(index_to_label,ith_vehicle), all_Y(index_to_label,ith_vehicle), ...
+	%         ['vehicle' num2str(ith_vehicle)]);
+	%     xlabel('X position [m]');
+	%     ylabel('Y position [m]');
+	%     title('Position');
+	% end
+	%
+	% % The Steering Input
+	% h4 = figure(66);
+	% hold on;
+	% set(h4,'Name','Steering Input')
+	% plot(t(:,ith_vehicle),df,'b');
+	% grid on;
+	% xlabel('Time (sec)');
+	% ylabel('Steering input (rad)');
+	% title('Steering Input');
 end
 
 if flag_do_debug
@@ -252,4 +319,5 @@ end % Ends main function
 %
 % See: https://patorjk.com/software/taag/#p=display&f=Big&t=Functions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%§
+
 

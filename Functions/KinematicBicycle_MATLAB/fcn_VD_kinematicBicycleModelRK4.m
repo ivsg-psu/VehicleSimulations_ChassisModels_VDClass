@@ -32,10 +32,12 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicBicycleModelRK4(in
 %      linear interpolation at the sampling times. For times outside the
 %      given interval, zero values are used.
 %
-%      U: A 1x1 positive numeric value representing the longitudinal
-%      velocity, in [m/s]
+%      parameters: a structure with the following subfields
 %
-%      L: wheelbase [m]
+%          parameters.U: A 1x1 positive numeric value representing the
+%          longitudinal velocity, in [m/s]
+%
+%          parameters.L: wheelbase [m]
 %
 %      (OPTIONAL INPUTS)
 %
@@ -56,7 +58,7 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicBicycleModelRK4(in
 % DEPENDENCIES:
 %
 %      fcn_DebugTools_checkInputsToFunctions
-%      fcn_VD_kinematicBicycleModel
+%      fcn_VD_derivativesKinematicBicycleModel
 %
 % EXAMPLES:
 %
@@ -71,7 +73,8 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicBicycleModelRK4(in
 % As: fcn_VD_kinematicBicycleModel
 %
 % 2026_01_26 by Sean Brennan, sbrennan@psu.edu
-% - First write of fcn_VD_kinematicBicycleModelRK4 function
+% - In fcn_VD_kinematicBicycleModelRK4
+%   % * First write of fcn_VD_kinematicBicycleModelRK4 function
 %
 % As: fcn_VD_kinematicBicycleModelRK4
 %
@@ -85,6 +88,10 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_kinematicBicycleModelRK4(in
 % 2026_09_03 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_VD_kinematicBicycleModelRK4
 %   % * Changed input arguments for consistency
+%
+% 2026_10_20 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_kinematicBicycleModelRK4
+%   % * Fixed header errors where inputs were incorrect
 
 % TO-DO:
 % - 2026_01_26 by Sean Brennan, sbrennan@psu.edu
@@ -185,9 +192,10 @@ startTime = timeInterval(1);
 endTime = timeInterval(2);
 simulationTimes = (startTime:deltaT:endTime)';
 N_timeSteps = length(simulationTimes); % This is the number of time steps we should have
+
+% Fill in parameters
 U = parameters.U;
 L = parameters.L;
-
 
 % Initialize variables
 stateTrajectory = nan(N_timeSteps,3);

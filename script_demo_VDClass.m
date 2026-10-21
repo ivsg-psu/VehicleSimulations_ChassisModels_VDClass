@@ -172,6 +172,20 @@
 %   % * Used fcn_VD_forwardReachabilityTreeRK4 as starter
 %
 % (new release)
+%
+% 2026_10_21 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_VD_derivatives2DOFBicycleModel
+%   % * Wrote the code originally, 
+%   % * Used script_test_fcn_VD_derivativesKinematicBicycleModel as starter
+% - In fcn_VD_derivatives2DOFBicycleModel
+%   % * First write of function, 
+%   % * Using fcn_VD_kinematicBicycleModel as starter
+% - In script_test_fcn_VD_2DOFBicycleModelRK4
+%   % * Used script_test_fcn_VD_kinematicBicycleModelRK4 as starter
+%   % * Copied material over from script_test_fcn_VD_bicycle2dofModel
+% - In fcn_VD_2DOFBicycleModelRK4
+%   % * Used fcn_VD_kinematicBicycleModelRK4 as starter
+%   % * Copied material over from fcn_VD_bicycle2dofModel
 
 % TO-DO:
 % 2026_09_03 by Sean Brennan, sbrennan@psu.edu

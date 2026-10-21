@@ -4,7 +4,13 @@
 % REVISION HISTORY:
 %
 % 2026_01_31 by Sean Brennan, sbrennan@psu.edu
-% - wrote the code originally, using breakDataIntoLaps as starter
+% - In script_test_fcn_VD_derivativesKinematicBicycleModel
+%   % * Wrote the code originally, using breakDataIntoLaps as starter
+%
+% 2026_10_21 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_VD_derivativesKinematicBicycleModel
+%   % * Updated comments
+
 
 % TO-DO:
 %

@@ -1,4 +1,4 @@
-function dXdt = fcn_VD_body2GlobalCoordinatesDerivatives( X, xdot, varargin)
+function dXdt = fcn_VD_body2GlobalCoordinatesDerivatives(X, xdot, varargin)
 
 %% fcn_VD_body2GlobalCoordinatesDerivatives
 %   This function calculates velocites in global coordinates.
