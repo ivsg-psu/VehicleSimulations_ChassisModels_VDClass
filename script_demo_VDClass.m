@@ -186,6 +186,15 @@
 % - In fcn_VD_2DOFBicycleModelRK4
 %   % * Used fcn_VD_kinematicBicycleModelRK4 as starter
 %   % * Copied material over from fcn_VD_bicycle2dofModel
+%
+% 2026_10_22 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_VD_wheelVelocitiesBicycleModel
+%   % * First write of script
+%   % * Used script_test_fcn_VD_2DOFBicycleModelRK4 as starter
+% - In fcn_VD_2DOFBicycleModelRK4
+%   % * Used script_test_fcn_VD_2DOFBicycleModelRK4 as starter
+%   % * Copied material over from fcn_VD_stWheelVelocity
+
 
 % TO-DO:
 % 2026_09_03 by Sean Brennan, sbrennan@psu.edu

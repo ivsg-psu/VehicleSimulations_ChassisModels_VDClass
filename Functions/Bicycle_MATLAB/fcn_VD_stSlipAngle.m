@@ -1,5 +1,6 @@
 function slip_angles = fcn_VD_stSlipAngle(U, V, r, steering_angle, vehicle)
 %% fcn_VD_stSlipAngle
+%
 %   This function computes slip-angles for front and rear wheels. It
 %   uses a single-track/bicycle model.
 %
@@ -12,8 +13,11 @@ function slip_angles = fcn_VD_stSlipAngle(U, V, r, steering_angle, vehicle)
 % INPUTS:
 %
 %   U: Longitudinal velocity [m/s]
+%
 %   V: Lateral velocity [m/s]
+%
 %   r: Yaw rate [rad/s]
+%
 %   steering_angle: A 2x1 vector of steering angles [rad] [Front; Rear]
 %   vehicle: MATLAB structure containing vehicle properties
 %

@@ -1,11 +1,11 @@
-function dXdt = fcn_VD_derivatives2DOFBicycleModel( X, inputFrontRoadWheelAngleRadians, U, L, varargin)
+function dXdt = fcn_VD_derivatives2DOFBicycleModel( X, inputFrontRoadWheelAngleRadians, vehicleParameters, varargin)
 
 %% fcn_VD_derivatives2DOFBicycleModel
-%   Fill in the pose derivatives for the bicycle kinematic model
+%   Fill in the pose derivatives for the bicycle 2DOF dynamic model
 %
 % FORMAT:
 %
-%      dXdt = fcn_VD_derivatives2DOFBicycleModel( X, inputFrontRoadWheelAngleRadians, U, L, (figNum))
+%      dXdt = fcn_VD_derivatives2DOFBicycleModel( X, inputFrontRoadWheelAngleRadians, vehicleParameters, (figNum))
 %
 % INPUTS:
 %
@@ -22,9 +22,15 @@ function dXdt = fcn_VD_derivatives2DOFBicycleModel( X, inputFrontRoadWheelAngleR
 %      inputFrontRoadWheelAngleRadians: the angle of the front wheel of the
 %      vehicle relative to the ground (input: rad)
 %
-%      U: Longitudinal velocity [m/s]
-%
-%      L: wheelbase [m]
+%      vehicleParameters: a structure with the following subfields
+%          % Example below is approximately a Ford Taurus
+%            vehicleParameters(1).U          = 20;     % x-axis velocity, in m/s
+%            vehicleParameters(1).m          = 1031.9; % mass in kg
+%            vehicleParameters(1).Iz         = 1850;   % z-axis rotational inertia in kg-m^2
+%            vehicleParameters(1).a          = 0.9271; % distance from front axle to CG, in meters
+%            vehicleParameters(1).b          = 1.5621; % distance from rear axle to CG, in meters
+%            vehicleParameters(1).Caf        = 77500;  % Cornering stiffness of front axle, N/rad;
+%            vehicleParameters(1).Car	     = 116250; % Cornering stiffness of rear axle, N/rad;
 %
 %      (OPTIONAL INPUTS)
 %
@@ -67,7 +73,7 @@ function dXdt = fcn_VD_derivatives2DOFBicycleModel( X, inputFrontRoadWheelAngleR
 % Check if flag_max_speed set. This occurs if the figNum variable input
 % argument (varargin) is given a number of -1, which is not a valid figure
 % number.
-MAX_NARGIN = 5; % The largest Number of argument inputs to the function
+MAX_NARGIN = 4; % The largest Number of argument inputs to the function
 flag_max_speed = 0; % The default. This runs code with all error checking
 if (nargin==MAX_NARGIN && isequal(varargin{end},-1))
     flag_do_debug = 0; % Flag to plot the results for debugging
@@ -118,11 +124,8 @@ if 0==flag_max_speed
         % Check the inputFrontRoadWheelAngleRadians input to be sure it has 1 column and 1 row
         fcn_DebugTools_checkInputsToFunctions(inputFrontRoadWheelAngleRadians, '1column_of_numbers',[1 1]);
 
-        % Check the U input to be sure it has 1 col, 1 row, positive
-        fcn_DebugTools_checkInputsToFunctions(U, 'positive_1column_of_numbers',[1 1]);
-
-        % Check the L input to be sure it has 1 col, 1 row, positive
-        fcn_DebugTools_checkInputsToFunctions(L, 'positive_1column_of_numbers',[1 1]);
+		% Check the vehicleParameters input is a structure
+        assert(isstruct(vehicleParameters));
     end
 end
 
@@ -180,21 +183,32 @@ end
 %  |_|  |_|\__,_|_|_| |_|
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% globalX = X(1);
-% globalY = X(2);
-yaw = X(3); % Yaw angle of the vehicle
 
-%%%%
-%  Kinematics of CG
-DvelDt = [U*cos(yaw); U*sin(yaw)];
+%% Pull out the states
+V = X(1); % lateral velocity [m/s]
+r = X(2); % yaw rate [rad/s]
+pose = X(3:5); % pose of the vehicle
 
-%%%%
-%  Pose kinematics from steering
-DyawDt = (U/L)*tan(inputFrontRoadWheelAngleRadians);
 
-%%%%
-%  Output
-dXdt = [DvelDt; DyawDt];
+%% Inputs
+steeringAnglesRadians = [inputFrontRoadWheelAngleRadians; 0];
+
+%% Slips
+slipAnglesInRadians = fcn_VD_slipAnglesBicycleModel(U, V, r, steeringAnglesRadians, vehicleParameters, (-1));
+
+%% Tire Forces
+URHERE
+lateralForces = fcn_VD_stTireForceLinear(slipAnglesInRadians, vehicleParameters);
+
+%% Newtonian Dynamics
+DvelDt = fcn_VD_stLateralDynamics(t, [V; r], U, lateralForces, vehicleParameters);
+
+%% Body2Global Coordinates
+DposeDt = fcn_VD_Body2GlobalCoordinates(t, pose, U, V, r);
+
+%% Output
+dXdt = [DvelDt; DposeDt];
+
 
 %% Plot the results (for debugging)?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
