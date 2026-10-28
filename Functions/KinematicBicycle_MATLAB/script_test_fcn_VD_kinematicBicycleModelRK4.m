@@ -58,14 +58,14 @@ simulationTimes = (startTime:deltaT:endTime)';
 inputsVsTime = [simulationTimes steering_amplitude_degrees*pi/180*sin((2*pi/Period)*simulationTimes)]; % [times steering angles]
 
 % Set up parameters
-clear parameters
-parameters.U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
-parameters.L = 2.5; % wheelbase in meters
+clear vehicleParameters
+vehicleParameters.U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
+vehicleParameters.L = 2.5; % wheelbase in meters
 
 % Call the function
 [stateTrajectory, t, steeringUsed] = ...
 fcn_VD_kinematicBicycleModelRK4(initialStates, deltaT, ...
-timeInterval, inputsVsTime, parameters, (figNum));
+timeInterval, inputsVsTime, vehicleParameters, (figNum));
 
 sgtitle(titleString, 'Interpreter','none');
 
@@ -146,14 +146,14 @@ simulationTimes = (startTime:deltaT:endTime)';
 inputsVsTime = [simulationTimes steering_amplitude_degrees*pi/180*sin((2*pi/Period)*simulationTimes)]; % [times steering angles]
 
 % Set up parameters
-clear parameters
-parameters.U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
-parameters.L = 2.5; % wheelbase in meters
+clear vehicleParameters
+vehicleParameters.U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
+vehicleParameters.L = 2.5; % wheelbase in meters
 
 % Call the function
 [stateTrajectory, t, steeringUsed] = ...
 fcn_VD_kinematicBicycleModelRK4(initialStates, deltaT, ...
-timeInterval, inputsVsTime, parameters, ([]));
+timeInterval, inputsVsTime, vehicleParameters, ([]));
 
 % sgtitle(titleString, 'Interpreter','none');
 
@@ -197,14 +197,14 @@ simulationTimes = (startTime:deltaT:endTime)';
 inputsVsTime = [simulationTimes steering_amplitude_degrees*pi/180*sin((2*pi/Period)*simulationTimes)]; % [times steering angles]
 
 % Set up parameters
-clear parameters
-parameters.U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
-parameters.L = 2.5; % wheelbase in meters
+clear vehicleParameters
+vehicleParameters.U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
+vehicleParameters.L = 2.5; % wheelbase in meters
 
 % Call the function
 [stateTrajectory, t, steeringUsed] = ...
 fcn_VD_kinematicBicycleModelRK4(initialStates, deltaT, ...
-timeInterval, inputsVsTime, parameters, (-1));
+timeInterval, inputsVsTime, vehicleParameters, (-1));
 
 % sgtitle(titleString, 'Interpreter','none');
 
@@ -249,9 +249,9 @@ simulationTimes = (startTime:deltaT:endTime)';
 inputsVsTime = [simulationTimes steering_amplitude_degrees*pi/180*sin((2*pi/Period)*simulationTimes)]; % [times steering angles]
 
 % Set up parameters
-clear parameters
-parameters.U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
-parameters.L = 2.5; % wheelbase in meters
+clear vehicleParameters
+vehicleParameters.U = 20;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
+vehicleParameters.L = 2.5; % wheelbase in meters
 
 Niterations = 50;
 
@@ -261,7 +261,7 @@ for ith_test = 1:Niterations
 	% Call the function
 	[stateTrajectory, t, steeringUsed] = ...
 		fcn_VD_kinematicBicycleModelRK4(initialStates, deltaT, ...
-		timeInterval, inputsVsTime, parameters, ([]));
+		timeInterval, inputsVsTime, vehicleParameters, ([]));
 end
 slow_method = toc;
 
@@ -271,7 +271,7 @@ for ith_test = 1:Niterations
 	% Call the function
 	[stateTrajectory, t, steeringUsed] = ...
 		fcn_VD_kinematicBicycleModelRK4(initialStates, deltaT, ...
-		timeInterval, inputsVsTime, parameters, (-1));
+		timeInterval, inputsVsTime, vehicleParameters, (-1));
 end
 fast_method = toc;
 

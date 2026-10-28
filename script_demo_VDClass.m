@@ -194,7 +194,13 @@
 % - In fcn_VD_2DOFBicycleModelRK4
 %   % * Used script_test_fcn_VD_2DOFBicycleModelRK4 as starter
 %   % * Copied material over from fcn_VD_stWheelVelocity
-
+%
+% 2026_10_28 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_VD_parkingPlotSolution
+%   % * First write of script
+%   % * Used script_test_fcn_VD_plotStickFigure2DOFBicycleModel as starter
+% - In fcn_VD_parkingPlotSolution
+%   % * Used fcn_VD_plotStickFigure2DOFBicycleModel as starter
 
 % TO-DO:
 % 2026_09_03 by Sean Brennan, sbrennan@psu.edu
