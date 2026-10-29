@@ -35,7 +35,7 @@ close all
 close all;
 
 %% DEMO case: simulating a 2013 Prius
-figNum = 10001;
+figNum = 10999;
 figure(figNum); clf;
 
 
@@ -71,7 +71,7 @@ modelIDToUse = 1; % Kinematic bicycle model
 
 sgtitle('Calculating the maneuver tree', 'Interpreter','none');
 
-%% Plot the locations of 90-degrees
+%%%% Plot the locations of 90-degrees
 all90DegreeXYPoints = nan(length(steeringInterval),2);
 for ith_steering = 1:length(steeringInterval)
 	thisSteering = steeringInterval(ith_steering); % This is in radians
@@ -82,7 +82,7 @@ plot(all90DegreeXYPoints(:,1),all90DegreeXYPoints(:,2),'-o','DisplayName','Locat
 
 sgtitle('Showing the parking points', 'Interpreter','none');
 
-%% Plot the 20-degree solution
+%%%% Highlight the 20-degree solution
 % Uses fcn_VD_kinematicBicycleModelRK4
 
 % Set up inputs
@@ -112,188 +112,13 @@ fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, standardParkingTurnPat
 
 sgtitle('Highlighting the 20-degree turn', 'Interpreter','none');
 
-%% Plot ONLY the 20-degree solution
-figNum = 10002;
 
-% Set up inputs
-steering_amplitude_degrees = 20; % 2 degrees of steering amplitude for input sinewave
-steering_amplitude_radians = steering_amplitude_degrees*pi/180;
-predictedTurnRadius = vehicleParameters.L/tan(steering_amplitude_radians);
+%% Step 1 - Generate a standard parking turn path
 
-
-% Set the simulation time/state arguments
-initialStates = [0 0 0]; % [X Y phi] in [m],[m],[rad]
-deltaT = 0.01; % Units are [sec]
-startTime = 0;
-arcLength = 90*pi/180*predictedTurnRadius;
-endTime = arcLength/vehicleParameters.U;
-timeInterval = [startTime endTime];  % Units are [sec]
-
-simulationTimes = (startTime:deltaT:endTime)';
-inputsVsTime = [simulationTimes steering_amplitude_radians*ones(length(simulationTimes(:,1)),1)]; % [times steering angles]
-
-% Call the function to just plot it up to 90 degrees
-fcn_VD_kinematicBicycleModelRK4(initialStates, deltaT, ...
-	timeInterval, inputsVsTime, vehicleParameters, (figNum));
-
-sgtitle('Only the 20-degree turn', 'Interpreter','none');
-
-
-%% Plot approach and exit
-approachPath = [-10 0; 0 0];
-exitPath = [predictedTurnRadius predictedTurnRadius; predictedTurnRadius predictedTurnRadius+10];
-plot(approachPath(:,1),approachPath(:,2),'-','Color',[0 1 0],'LineWidth',5,'DisplayName','Approach Path')
-plot(exitPath(:,1),exitPath(:,2),'-','Color',0.7*[0 1 0],'LineWidth',5,'DisplayName','Exit Path')
-
-if 1==0
-	fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, standardParkingTurnPath(1,:)', [steeringUsed(1,1); 0], true, (figNum));
-	fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, standardParkingTurnPath(end,:)', [steeringUsed(end,1); 0], true, (figNum));
-end
-
-sgtitle('All extensions of the 20-degree turn', 'Interpreter','none');
-
-
-%% Plot tangent
-tangentIndex = find(standardParkingTurnPath(:,3)>(40*pi/180),1); % Find first location greater than 40 degrees
-tangentStates = standardParkingTurnPath(tangentIndex,:);
-angleRad = tangentStates(1,3);
-rotation = [cos(angleRad) sin(angleRad); -sin(angleRad) cos(angleRad)];
-tangentPath = [0 0; 20 0]*rotation + [tangentStates(1,1)*ones(2,1) tangentStates(1,2)*ones(2,1)] ;
-
-plot(tangentPath(:,1),tangentPath(:,2),'-','Color',0.7*[1 1 0],'LineWidth',5,'DisplayName','Tangent Path')
-
-sgtitle('All extensions of the 20-degree turn, with tangent shown', 'Interpreter','none');
-
-
-%% Plot Vehicle "given"
-givenPath = [0 0; 3 0]*rotation + [tangentStates(1,1)*ones(2,1) tangentStates(1,2)*ones(2,1)];
-
-givenPosition = [givenPath(end,:)'; angleRad];
-fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, givenPosition, [0; 0], true, (figNum));
-
-sgtitle('Given', 'Interpreter','none');
-
-
-%% Plot Vehicle "given"
-givenPath = [0 0; 3 0]*rotation + [tangentStates(1,1)*ones(2,1) tangentStates(1,2)*ones(2,1)];
-
-givenPosition = [givenPath(end,:)'; angleRad];
-fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, givenPosition, [0; 0], true, (figNum));
-
-sgtitle('Given', 'Interpreter','none');
-
-%% Example case
-figNum = 10003;
-figure(figNum);clf;
-
-if 1==0
-	startingPointInxy = [0 0 0];
-	goalPointInxy     = [12 7 40*pi/180];
-
-	offset = [4 6];
-	angleRad = 30*pi/180;
-	rotation = [cos(angleRad) sin(angleRad); -sin(angleRad) cos(angleRad)];
-	newPoints = [startingPointInxy(:,1:2); goalPointInxy(:,1:2)]*rotation + [offset(1,1)*ones(2,1) offset(1,2)*ones(2,1)] ;
-
-	startingPointInXYphi = [newPoints(1,:) angleRad]; %#ok<NASGU>
-	goalPointInXYphi = [newPoints(2,:) angleRad+goalPointInxy(1,3)]; %#ok<NASGU>
-
-end
-
-goalPointInXYphi = [11 18 70*pi/180];
-startingPointInXYphi = [4 6 30*pi/180];
-
-% Plot scenario
-h_start = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, startingPointInXYphi', [0; 0], true, (figNum));
-set(h_start{1},'DisplayName','Start');
-
-h_end = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, goalPointInXYphi', [0; 0], true, (figNum));
-set(h_end{1},'DisplayName','Goal');
-
-legend('Interpreter','none');
-axis([0 20 5 25]);
-
-%% Step 1: Convert the problem into the vehicle's local xy coordinates
-figNum = 10004;
-figure(figNum);clf;
-
-angleRad = -1*startingPointInXYphi(1,3);
-rotation = [cos(angleRad) sin(angleRad); -sin(angleRad) cos(angleRad)];
-
-pointsToMoveXYphi = [startingPointInXYphi; goalPointInXYphi];
-pointsToMoveXY = pointsToMoveXYphi(:,1:2);
-movedInXY = pointsToMoveXY - ones(2,1)*startingPointInXYphi(1,1:2);
-
-movedRotatedInXY = movedInXY*rotation;
-movedStartingPointInXYphi = [movedRotatedInXY(1,:) startingPointInXYphi(1,3)+angleRad];
-movedGoalPointInXYphi = [movedRotatedInXY(2,:) goalPointInXYphi(1,3)+angleRad];
-
-% Plot scenario
-h_start = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, movedStartingPointInXYphi', [0; 0], true, (figNum));
-set(h_start{1},'DisplayName','Start');
-
-h_end = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, movedGoalPointInXYphi', [0; 0], true, (figNum));
-set(h_end{1},'DisplayName','Goal');
-
-legend('Interpreter','none');
-axis([-6 16 -6 12]);
-
-%% Step 2: Find the x-axis intercept of the given pose
-figNum = 10005;
-figure(figNum);clf;
-
-% Define a vector based on the goal point phi angle
-goalPhiInRadians = movedGoalPointInXYphi(1,3);
-unitGoalVector = [cos(goalPhiInRadians) sin(goalPhiInRadians)];
-goalSegment = [movedGoalPointInXYphi(1,1:2); movedGoalPointInXYphi(1,1:2)+unitGoalVector];
-
-xAxisSegment = [0 0; 1 0]; % Unit vector in x-axis direction
-
-% Use Path library to find where this segment intersects the x-axis
-% FORMAT:
-%      [distance, location, path_segment, t, u] = ...
-%         fcn_Path_findProjectionHitOntoPath(path,...
-%         sensor_vector_start,sensor_vector_end,...
-%         (flag_search_type),(figNum))
-flagSearchType = 4; % any intersection of the sensor and path lines
-[~, location, ~, tDistance, uDistance] = ...
-	fcn_Path_findProjectionHitOntoPath(xAxisSegment,goalSegment(1,:),goalSegment(2,:),...
-	flagSearchType,-1);
-
-fcn_INTERNAL_plotUandT(vehicleParameters, ...
-	movedStartingPointInXYphi, movedGoalPointInXYphi, ...
-	uDistance, tDistance, location, figNum);
-
-
-% % Plot scenario
-% h_start = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, movedStartingPointInXYphi', [0; 0], true, (figNum));
-% set(h_start{1},'DisplayName','Start');
-% 
-% h_end = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, movedGoalPointInXYphi', [0; 0], true, (figNum));
-% set(h_end{1},'DisplayName','Goal');
-% 
-% % Plot orientation projection onto X
-% quiver(movedGoalPointInXYphi(1,1),movedGoalPointInXYphi(1,2),unitGoalVector(1)*uDistance, unitGoalVector(2)*uDistance,0,'LineWidth',3,'ShowArrowHead','on','MaxHeadSize',0.3);
-% textLocation = [movedGoalPointInXYphi(1,1), movedGoalPointInXYphi(1,2)] + unitGoalVector*uDistance/2;
-% text(textLocation(1,1), textLocation(1,2),sprintf('u = %.2f meters',uDistance),'FontSize',20,'BackgroundColor',[1 1 1],'HorizontalAlignment','center');
-% 
-% % Plot x-axis distance
-% quiver(0,0,1*tDistance, 0*tDistance,0,'LineWidth',3,'ShowArrowHead','on','MaxHeadSize',0.3);
-% textLocation = [0, 0.5] + [1 0]*tDistance/2;
-% text(textLocation(1,1), textLocation(1,2),sprintf('t = %.2f meters',tDistance),'FontSize',20,'BackgroundColor',[1 1 1],'HorizontalAlignment','center');
-% 
-% % Plot hit
-% plot(location(1,1), location(1,2),'.','MarkerSize',50);
-
-
-
-%% Step 2.5 - Generate reference x-location curve per each angle
-figNum = 10006;
-figure(figNum);clf;
 
 dataFileName = fullfile(pwd,'Data','parkingData.mat');
-if 1==0 && exist(dataFileName,'file')
-	load(dataFileName,'standardParkingTurnPath','tDistancesEachAngle','uDistancesEachAngle');
+if 1==1 && exist(dataFileName,'file')
+	load(dataFileName,'standardParkingTurnPath','tDistancesEachAngle','uDistancesEachAngle'); 
 else
 
 
@@ -311,76 +136,61 @@ else
 	simulationTimes = (startTime:deltaT:endTime)';
 	inputsVsTime = [simulationTimes standard_parking_steering_amplitude_radians*ones(length(simulationTimes(:,1)),1)]; % [times steering angles]
 
-	% Call a function
+    % Call a function to generate a standard parking path
+    figNum = 100;
+    figure(figNum);clf;
 	[standardParkingTurnPath, ~, ~] = ...
 		fcn_VD_kinematicBicycleModelRK4(initialStates, deltaT, ...
 		timeInterval, inputsVsTime, vehicleParameters, (figNum));
 
-	% Call the function
+	% Call a function to convert the standard path into t- and u-distances
 	[tDistancesEachAngle, uDistancesEachAngle] = fcn_VD_parkingSolveUTFromStandardTurn(...
 		standardParkingTurnPath, (-1));
 
 	save(dataFileName,'standardParkingTurnPath','tDistancesEachAngle','uDistancesEachAngle');
 
 end
-subplot(1,3,1);
-% Call the function just to plot
-fcn_VD_kinematicBicycleModelRK4(initialStates, deltaT, ...
-	timeInterval, inputsVsTime, vehicleParameters, (figNum));
 
-h_start = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, standardParkingTurnPath(1,:)', [standard_parking_steering_amplitude_radians; 0], true, (figNum));
-set(h_start{1},'DisplayName','Start');
+%% Generate an example problem, keeping true solution
+figNum = 10000;
+figure(figNum);clf;
 
-h_end = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, standardParkingTurnPath(end,:)', [standard_parking_steering_amplitude_radians; 0], true, (figNum));
-set(h_end{1},'DisplayName','Goal');
+initialXYPhi = [4 6 30*pi/180];
+trueApproachPathDistance = 10;
+trueEndOfArcAngleInRadians = 40*pi/180;
+trueExitPathDistance = 7;
+anglesToPlotTangents = [0; 40*pi/180];
 
-subplot(1,3,2);
-plot(standardParkingTurnPath(:,3)*180/pi, tDistancesEachAngle,'.-');
-xlabel('Angle [deg]');
-ylabel('t-distances [m]');
-
-subplot(1,3,3);
-plot(standardParkingTurnPath(:,3)*180/pi, uDistancesEachAngle,'.-');
-hold on;
-plot(standardParkingTurnPath(:,3)*180/pi, -1*tDistancesEachAngle,'.-');
-xlabel('Angle [deg]');
-ylabel('u-distances [m]');
+[approachXYPsi, curveXYPsi, exitXYPsi] = fcn_VD_parkingPlotSolution(...
+	standardParkingTurnPath, initialXYPhi, ...
+	trueApproachPathDistance, trueEndOfArcAngleInRadians, trueExitPathDistance, ...
+	(anglesToPlotTangents), (figNum)); %#ok<ASGLU>
 
 
-sgtitle('Calculating x-axis projection intercepts (t) and distances (u) for the standard turn', 'Interpreter','none');
+startingPointInXYphi = approachXYPsi(1,:);
+goalPointInXYphi = exitXYPsi(end,:);
 
-%% Step 3: Make sure this is in the feasible range
+%% Step 1: Find the x-axis intercept of the given pose
+figNum = 10001;
+figure(figNum);clf;
 
-dataFileName = fullfile(pwd,'Data','parkingData.mat');
-if exist(dataFileName,'file')
-	load(dataFileName,'standardParkingTurnPath','tDistancesEachAngle','uDistancesEachAngle')
-else
-	error('Need to run a prior section to generate the data file');
-end
 
-% Define a vector based on the goal point phi angle
-goalPhiInRadians = movedGoalPointInXYphi(1,3);
-unitGoalVector = [cos(goalPhiInRadians) sin(goalPhiInRadians)];
-goalSegment = [movedGoalPointInXYphi(1,1:2); movedGoalPointInXYphi(1,1:2)+unitGoalVector];
+[tDistance, uDistance] = fcn_VD_parkingXYPhiToTU(startingPointInXYphi, goalPointInXYphi, (figNum));
 
-xAxisSegment = [0 0; 1 0]; % Unit vector in x-axis direction
+disp('Third set:')
+disp([tDistance uDistance]);
 
-% Use Path library to find where this segment intersects the x-axis
-% FORMAT:
-%      [distance, location, path_segment, t, u] = ...
-%         fcn_Path_findProjectionHitOntoPath(path,...
-%         sensor_vector_start,sensor_vector_end,...
-%         (flag_search_type),(figNum))
-flagSearchType = 4; % any intersection of the sensor and path lines
-[distance, location, ~, tDistance, uDistance] = ...
-	fcn_Path_findProjectionHitOntoPath(xAxisSegment,goalSegment(1,:),goalSegment(2,:),...
-	flagSearchType,-1);
+
+
+%% Step 2: Make sure this is in the feasible range
+
+changeInPhiInRadians = goalPointInXYphi(1,3) - startingPointInXYphi(1,3);
 
 % Look up t-value for this goalPhiInRadians value
-minimumTfeasible = interp1(standardParkingTurnPath(:,3),tDistancesEachAngle,goalPhiInRadians,'linear','extrap');
+minimumTfeasible = interp1(standardParkingTurnPath(:,3),tDistancesEachAngle,changeInPhiInRadians,'linear','extrap');
 
 % Look up U-value for this goalPhiInRadians value
-maximumUfeasible = interp1(standardParkingTurnPath(:,3),uDistancesEachAngle,goalPhiInRadians,'linear','extrap');
+maximumUfeasible = interp1(standardParkingTurnPath(:,3),uDistancesEachAngle,changeInPhiInRadians,'linear','extrap');
 
 if tDistance<minimumTfeasible
 	error('t-value is not feasible');
@@ -390,21 +200,26 @@ if uDistance>maximumUfeasible
 	error('u-value is not feasible');
 end
 
-%% Step 4: Calculate the "approach" distance, the "exit" distance, and the arc angle
+%% Step 3: Calculate the "approach" distance, the "exit" distance, and the arc angle
+figNum = 10003;
+figure(figNum);clf;
+
 approachPathDistance = tDistance-minimumTfeasible;
 exitPathDistance = maximumUfeasible-uDistance;
-endOfArcAngleInRadians = goalPhiInRadians;
+endOfArcAngleInRadians = changeInPhiInRadians;
 
 % Plot the results
 
-figNum = 10007;
-figure(figNum);clf;
-anglesToPlotTangents = [standardParkingStartPoint(1,3);standardParkingStartPoint(1,3)+endOfArcAngleInRadians];
+
+anglesToPlotTangents = [startingPointInXYphi(1,3); goalPointInXYphi(1,3)] - startingPointInXYphi(1,3);
 
 [approachXYPsi, curveXYPsi, exitXYPsi] = fcn_VD_parkingPlotSolution(...
 	standardParkingTurnPath, initialXYPhi, ...
 	approachPathDistance, endOfArcAngleInRadians, exitPathDistance, ...
 	(anglesToPlotTangents), (figNum));
+
+
+
 
 %% Functions follow
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

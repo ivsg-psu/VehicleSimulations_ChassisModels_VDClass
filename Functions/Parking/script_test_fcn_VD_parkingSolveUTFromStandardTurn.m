@@ -61,7 +61,6 @@ sgtitle(titleString, 'Interpreter','none');
 % Check variable types
 assert(isnumeric(tDistancesEachAngle));
 assert(isnumeric(uDistancesEachAngle));
-assert(isnumeric(exitXYPsi));
 
 % Check variable sizes
 Npoints = length(standardParkingTurnPath(:,1));
@@ -141,7 +140,6 @@ sgtitle(titleString, 'Interpreter','none');
 % Check variable types
 assert(isnumeric(tDistancesEachAngle));
 assert(isnumeric(uDistancesEachAngle));
-assert(isnumeric(exitXYPsi));
 
 % Check variable sizes
 Npoints = length(standardParkingTurnPath(:,1));
@@ -182,7 +180,6 @@ sgtitle(titleString, 'Interpreter','none');
 % Check variable types
 assert(isnumeric(tDistancesEachAngle));
 assert(isnumeric(uDistancesEachAngle));
-assert(isnumeric(exitXYPsi));
 
 % Check variable sizes
 Npoints = length(standardParkingTurnPath(:,1));
