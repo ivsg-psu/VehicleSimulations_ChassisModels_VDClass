@@ -17,7 +17,7 @@ function [tDistance, uDistance] = fcn_VD_parkingXYPhiToTU(...
 %      [m m rad]
 %
 %      finalXYPhi: a 1x3 vector denoting the [X, Y, yaw] positions of the
-%      initial condition of the vehicle, before the maneuver, in units of
+%      final condition of the vehicle, after the maneuver, in units of
 %      [m m rad]
 %
 %      (OPTIONAL INPUTS)

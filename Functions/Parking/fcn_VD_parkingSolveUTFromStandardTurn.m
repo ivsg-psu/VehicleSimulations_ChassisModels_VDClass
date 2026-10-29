@@ -31,15 +31,15 @@ function [tDistancesEachAngle, uDistancesEachAngle] = fcn_VD_parkingSolveUTFromS
 %
 % OUTPUTS:
 %
-%      tDistance: a Nx1 scalar of the distances where the  angle of each
-%      standardParkingTurnPath would intersect the local x-axis of the
-%      standardParkingTurnPath, as measured in the direction of
-%      the x-axis
+%      tDistancesEachAngle: a Nx1 scalar of the distances where the  angle
+%      of each standardParkingTurnPath would intersect the local x-axis of
+%      the standardParkingTurnPath, as measured in the direction of the
+%      x-axis
 %
-%      uDistance: a Nx1 scalar of the distances where the  angle of each
-%      standardParkingTurnPath would intersect the local x-axis of the
-%      standardParkingTurnPath, as measured in the direction of
-%      the sampled point
+%      uDistancesEachAngle: a Nx1 scalar of the distances where the  angle
+%      of each standardParkingTurnPath would intersect the local x-axis of
+%      the standardParkingTurnPath, as measured in the direction of the
+%      sampled point
 %
 % DEPENDENCIES:
 %

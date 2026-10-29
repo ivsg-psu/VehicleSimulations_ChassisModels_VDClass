@@ -157,15 +157,18 @@ figure(figNum);clf;
 
 initialXYPhi = [4 6 30*pi/180];
 trueApproachPathDistance = 10;
-trueEndOfArcAngleInRadians = 40*pi/180;
+trueChangeInArcAngleInRadians = 40*pi/180;
 trueExitPathDistance = 7;
 anglesToPlotTangents = [0; 40*pi/180];
 
-[approachXYPsi, curveXYPsi, exitXYPsi] = fcn_VD_parkingPlotSolution(...
+[approachXYPsi, curveXYPsi, exitXYPsi, hPlots] = fcn_VD_parkingPlotSolution(...
 	standardParkingTurnPath, initialXYPhi, ...
-	trueApproachPathDistance, trueEndOfArcAngleInRadians, trueExitPathDistance, ...
+	trueApproachPathDistance, trueChangeInArcAngleInRadians, trueExitPathDistance, ...
 	(anglesToPlotTangents), (figNum)); %#ok<ASGLU>
 
+for ith_plot = 1:3
+    set(hPlots{ith_plot,1},'LineWidth',10,'Color',[0 0 1]);
+end
 
 startingPointInXYphi = approachXYPsi(1,:);
 goalPointInXYphi = exitXYPsi(end,:);
@@ -176,21 +179,17 @@ figure(figNum);clf;
 
 
 [tDistance, uDistance] = fcn_VD_parkingXYPhiToTU(startingPointInXYphi, goalPointInXYphi, (figNum));
-
-disp('Third set:')
-disp([tDistance uDistance]);
-
+changeInArcAngleInRadians = goalPointInXYphi(1,3) - startingPointInXYphi(1,3);
 
 
 %% Step 2: Make sure this is in the feasible range
 
-changeInPhiInRadians = goalPointInXYphi(1,3) - startingPointInXYphi(1,3);
 
 % Look up t-value for this goalPhiInRadians value
-minimumTfeasible = interp1(standardParkingTurnPath(:,3),tDistancesEachAngle,changeInPhiInRadians,'linear','extrap');
+minimumTfeasible = interp1(standardParkingTurnPath(:,3),tDistancesEachAngle,changeInArcAngleInRadians,'linear','extrap');
 
 % Look up U-value for this goalPhiInRadians value
-maximumUfeasible = interp1(standardParkingTurnPath(:,3),uDistancesEachAngle,changeInPhiInRadians,'linear','extrap');
+maximumUfeasible = interp1(standardParkingTurnPath(:,3),uDistancesEachAngle,changeInArcAngleInRadians,'linear','extrap');
 
 if tDistance<minimumTfeasible
 	error('t-value is not feasible');
@@ -206,18 +205,20 @@ figure(figNum);clf;
 
 approachPathDistance = tDistance-minimumTfeasible;
 exitPathDistance = maximumUfeasible-uDistance;
-endOfArcAngleInRadians = changeInPhiInRadians;
+endOfArcAngleInRadians = changeInArcAngleInRadians;
 
 % Plot the results
-
-
 anglesToPlotTangents = [startingPointInXYphi(1,3); goalPointInXYphi(1,3)] - startingPointInXYphi(1,3);
-
 [approachXYPsi, curveXYPsi, exitXYPsi] = fcn_VD_parkingPlotSolution(...
 	standardParkingTurnPath, initialXYPhi, ...
 	approachPathDistance, endOfArcAngleInRadians, exitPathDistance, ...
 	(anglesToPlotTangents), (figNum));
 
+
+% Check the results
+assert(isequal(round(trueApproachPathDistance,4),round(approachPathDistance,4)));
+assert(isequal(round(trueChangeInArcAngleInRadians,4),round(changeInArcAngleInRadians,4)));
+assert(isequal(round(trueExitPathDistance,4),round(exitPathDistance,4)));
 
 
 

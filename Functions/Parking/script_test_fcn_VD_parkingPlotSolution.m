@@ -59,7 +59,7 @@ exitPathDistance = 5; % meters
 anglesToPlotTangents = []; % Default
 
 % Call the function
-[approachXYPsi, curveXYPsi, exitXYPsi] = fcn_VD_parkingPlotSolution(...
+[approachXYPsi, curveXYPsi, exitXYPsi, hPlots] = fcn_VD_parkingPlotSolution(...
 	standardParkingTurnPath, initialXYPhi, ...
 	approachPathDistance, endOfArcAngleInRadians, exitPathDistance, ...
 	(anglesToPlotTangents), (figNum));
@@ -71,6 +71,7 @@ sgtitle(titleString, 'Interpreter','none');
 assert(isnumeric(approachXYPsi));
 assert(isnumeric(curveXYPsi));
 assert(isnumeric(exitXYPsi));
+assert(iscell(hPlots));
 
 % Check variable sizes
 assert(size(approachXYPsi,1)==2);
@@ -110,7 +111,7 @@ exitPathDistance = 5; % meters
 anglesToPlotTangents = []; % Default
 
 % Call the function
-[approachXYPsi, curveXYPsi, exitXYPsi] = fcn_VD_parkingPlotSolution(...
+[approachXYPsi, curveXYPsi, exitXYPsi, hPlots] = fcn_VD_parkingPlotSolution(...
 	standardParkingTurnPath, initialXYPhi, ...
 	approachPathDistance, endOfArcAngleInRadians, exitPathDistance, ...
 	(anglesToPlotTangents), (figNum));
@@ -122,6 +123,7 @@ sgtitle(titleString, 'Interpreter','none');
 assert(isnumeric(approachXYPsi));
 assert(isnumeric(curveXYPsi));
 assert(isnumeric(exitXYPsi));
+assert(iscell(hPlots));
 
 % Check variable sizes
 assert(size(approachXYPsi,1)==2);
@@ -159,7 +161,7 @@ exitPathDistance = 5; % meters
 anglesToPlotTangents = [0; 40*pi/180; endOfArcAngleInRadians];
 
 % Call the function
-[approachXYPsi, curveXYPsi, exitXYPsi] = fcn_VD_parkingPlotSolution(...
+[approachXYPsi, curveXYPsi, exitXYPsi, hPlots] = fcn_VD_parkingPlotSolution(...
 	standardParkingTurnPath, initialXYPhi, ...
 	approachPathDistance, endOfArcAngleInRadians, exitPathDistance, ...
 	(anglesToPlotTangents), (figNum));
@@ -171,6 +173,7 @@ sgtitle(titleString, 'Interpreter','none');
 assert(isnumeric(approachXYPsi));
 assert(isnumeric(curveXYPsi));
 assert(isnumeric(exitXYPsi));
+assert(iscell(hPlots));
 
 % Check variable sizes
 assert(size(approachXYPsi,1)==2);
@@ -246,7 +249,7 @@ exitPathDistance = 5; % meters
 anglesToPlotTangents = []; % Default
 
 % Call the function
-[approachXYPsi, curveXYPsi, exitXYPsi] = fcn_VD_parkingPlotSolution(...
+[approachXYPsi, curveXYPsi, exitXYPsi, hPlots] = fcn_VD_parkingPlotSolution(...
 	standardParkingTurnPath, initialXYPhi, ...
 	approachPathDistance, endOfArcAngleInRadians, exitPathDistance, ...
 	(anglesToPlotTangents), ([]));
@@ -258,6 +261,7 @@ sgtitle(titleString, 'Interpreter','none');
 assert(isnumeric(approachXYPsi));
 assert(isnumeric(curveXYPsi));
 assert(isnumeric(exitXYPsi));
+assert(iscell(hPlots));
 
 % Check variable sizes
 assert(size(approachXYPsi,1)==2);
@@ -296,7 +300,7 @@ exitPathDistance = 5; % meters
 anglesToPlotTangents = []; % Default
 
 % Call the function
-[approachXYPsi, curveXYPsi, exitXYPsi] = fcn_VD_parkingPlotSolution(...
+[approachXYPsi, curveXYPsi, exitXYPsi, hPlots] = fcn_VD_parkingPlotSolution(...
 	standardParkingTurnPath, initialXYPhi, ...
 	approachPathDistance, endOfArcAngleInRadians, exitPathDistance, ...
 	(anglesToPlotTangents), (-1));
@@ -308,6 +312,7 @@ sgtitle(titleString, 'Interpreter','none');
 assert(isnumeric(approachXYPsi));
 assert(isnumeric(curveXYPsi));
 assert(isnumeric(exitXYPsi));
+assert(iscell(hPlots));
 
 % Check variable sizes
 assert(size(approachXYPsi,1)==2);
@@ -354,7 +359,7 @@ Niterations = 50;
 tic;
 for ith_test = 1:Niterations
 	% Call the function
-	[approachXYPsi, curveXYPsi, exitXYPsi] = fcn_VD_parkingPlotSolution(...
+	[approachXYPsi, curveXYPsi, exitXYPsi, hPlots] = fcn_VD_parkingPlotSolution(...
 		standardParkingTurnPath, initialXYPhi, ...
 		approachPathDistance, endOfArcAngleInRadians, exitPathDistance, ...
 		(anglesToPlotTangents), ([]));
@@ -365,7 +370,7 @@ slow_method = toc;
 tic;
 for ith_test = 1:Niterations
 	% Call the function
-	[approachXYPsi, curveXYPsi, exitXYPsi] = fcn_VD_parkingPlotSolution(...
+	[approachXYPsi, curveXYPsi, exitXYPsi, hPlots] = fcn_VD_parkingPlotSolution(...
 		standardParkingTurnPath, initialXYPhi, ...
 		approachPathDistance, endOfArcAngleInRadians, exitPathDistance, ...
 		(anglesToPlotTangents), (-1));

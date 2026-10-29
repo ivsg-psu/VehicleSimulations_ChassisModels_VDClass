@@ -1,4 +1,4 @@
-function [approachXYPsi, curveXYPsi, exitXYPsi] = fcn_VD_parkingPlotSolution(...
+function [approachXYPsi, curveXYPsi, exitXYPsi, hPlots] = fcn_VD_parkingPlotSolution(...
 	referenceTurnPathXYPhi, initialXYPhi, ...
 	approachPathDistance, endOfArcAngleInRadians, exitPathDistance, varargin)
 
@@ -29,7 +29,7 @@ function [approachXYPsi, curveXYPsi, exitXYPsi] = fcn_VD_parkingPlotSolution(...
 %      the vehicle must change
 %
 %      exitPathDistance: a 1x1 scalar denoting how far (or back) the
-%      vehicle must move after the turning maneuver, to complete the
+%      vehicle must move after the turning arc, to complete the
 %      parking
 %
 %      (OPTIONAL INPUTS)
@@ -52,6 +52,8 @@ function [approachXYPsi, curveXYPsi, exitXYPsi] = fcn_VD_parkingPlotSolution(...
 %
 %      exitXYPsi: an Nx3 vector of the [X, Y, yaw] positions
 %      of the exit path used for parking
+%
+%      hPlots: a cell array of the handles of each plotted dataset
 %
 % DEPENDENCIES:
 %
@@ -213,6 +215,8 @@ exitXYPsi = [curveXYPsi(end,:); exitPoint lastAngle];
 % lastSegment = [curveXYPsi(end,1:2); curveXYPsi(end,1:2)+exitVector];
 % plot(lastSegment(:,1),lastSegment(:,2),'-','Color',[0 0 0],'LineWidth',5,'DisplayName','Approach Path')
 
+hPlots = cell(3+length(anglesToPlotTangents),1);
+
 %% Plot the results (for debugging)?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   _____       _
@@ -233,9 +237,9 @@ if flag_do_plots
 	axis equal;
 
 	% Plot trajectories
-	plot(approachXYPsi(:,1),approachXYPsi(:,2),'-','Color',[0 1 0],'LineWidth',5,'DisplayName','Approach Path')
-	plot(curveXYPsi(:,1),curveXYPsi(:,2),'-','LineWidth',5,'DisplayName','Turn Path');
-	plot(exitXYPsi(:,1),exitXYPsi(:,2),'-','Color',0.7*[0 1 0],'LineWidth',5,'DisplayName','Exit Path')
+	hPlots{1,1} = plot(approachXYPsi(:,1),approachXYPsi(:,2),'-','Color',[0 1 0],'LineWidth',5,'DisplayName','Approach Path');
+	hPlots{2,1} = plot(curveXYPsi(:,1),curveXYPsi(:,2),'-','LineWidth',5,'DisplayName','Turn Path');
+	hPlots{3,1} = plot(exitXYPsi(:,1),exitXYPsi(:,2),'-','Color',0.7*[0 1 0],'LineWidth',5,'DisplayName','Exit Path');
 
 	% Plot tangents?
 	if ~isempty(anglesToPlotTangents)
@@ -249,7 +253,7 @@ if flag_do_plots
 
 			rotatedTangentPath = fcn_INTERNAL_XYrotateAndTranslate(tangentPath, initialXYPhi(1,3), initialXYPhi(1,1:2));
 
-			plot(rotatedTangentPath(:,1),rotatedTangentPath(:,2),'-','Color',0.7*[1 1 0],'LineWidth',1,'DisplayName',sprintf('Tangent Path, %.0f deg in local xy frame',thisAngle*180/pi));
+			hPlots{3+ith_angle,1} = plot(rotatedTangentPath(:,1),rotatedTangentPath(:,2),'-','Color',0.7*[1 1 0],'LineWidth',1,'DisplayName',sprintf('Tangent Path, %.0f deg in local xy frame',thisAngle*180/pi));
 
 		end
 	end

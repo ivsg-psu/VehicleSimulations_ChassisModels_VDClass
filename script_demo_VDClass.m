@@ -201,6 +201,13 @@
 %   % * Used script_test_fcn_VD_plotStickFigure2DOFBicycleModel as starter
 % - In fcn_VD_parkingPlotSolution
 %   % * Used fcn_VD_plotStickFigure2DOFBicycleModel as starter
+%
+% 2026_10_29 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_VD_parkingCalcEntryArcExitPaths
+%   % * First write of script
+%   % * Used script_test_fcn_VD_parking+XYPhiToTU as starter
+% - In fcn_VD_parkingCalcEntryArcExitPaths
+%   % * Used fcn_VD_parking+XYPhiToTU as starter
 
 % TO-DO:
 % 2026_09_03 by Sean Brennan, sbrennan@psu.edu
