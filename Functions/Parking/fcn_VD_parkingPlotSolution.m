@@ -74,6 +74,10 @@ function [approachXYPsi, curveXYPsi, exitXYPsi, hPlots] = fcn_VD_parkingPlotSolu
 % 2026_10_28 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_VD_parkingPlotSolution
 %   % * Used fcn_VD_plotStickFigure2DOFBicycleModel as starter
+%
+% 2026_10_30 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_parkingPlotSolution
+%   % * Modified to allow negative input angles
 
 % TO-DO:
 % - 2026_10_22 by Sean Brennan, sbrennan@psu.edu
@@ -173,21 +177,33 @@ end
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Check the reference path for reversed situation
+if endOfArcAngleInRadians>=0
+	signCorrectedReferenceTurnPathXYPhi = referenceTurnPathXYPhi;
+else
+	signCorrectedReferenceTurnPathXYPhi = [referenceTurnPathXYPhi(:,1) -1*referenceTurnPathXYPhi(:,2) -1*referenceTurnPathXYPhi(:,3)];
+end
+
+% Calculate the absolute turn angle
+absoluteAngleChange = abs(endOfArcAngleInRadians);
+
+
+
 % Find the location in the reference turn path where the angle matches the
 % end of arc angle
-endOfArcIndex = find(referenceTurnPathXYPhi(:,3)>endOfArcAngleInRadians,1);
+endOfArcIndex = find(abs(referenceTurnPathXYPhi(:,3))>absoluteAngleChange,1);
 if isempty(endOfArcIndex)
-	error('The reference path does not include angles up to: %.2f degrees. Must quit.',endOfArcAngleInRadians*180/pi);
+	error('The reference path does not include angles with magnitudes up to: %.2f degrees. Must quit.',absoluteAngleChange*180/pi);
 end
 endOfArcIndex = endOfArcIndex-1;
 
-curveXYPsiUnfixed = referenceTurnPathXYPhi(1:endOfArcIndex,:);
+curveXYPsiUnfixed = signCorrectedReferenceTurnPathXYPhi(1:endOfArcIndex,:);
 
 % Check to see if the end of the reference arc is EXACTLY equal to the
 % indexed value
-if referenceTurnPathXYPhi(endOfArcIndex,3)<endOfArcAngleInRadians
+if referenceTurnPathXYPhi(endOfArcIndex,3)<absoluteAngleChange
 	% Interpolate the last X value in arc
-	interpolatedPoint = fcn_INTERNAL_interpolateAtAngle(referenceTurnPathXYPhi,endOfArcAngleInRadians);
+	interpolatedPoint = fcn_INTERNAL_interpolateAtAngle(signCorrectedReferenceTurnPathXYPhi,endOfArcAngleInRadians);
 	curveXYPsiUnRotated = [curveXYPsiUnfixed; interpolatedPoint];
 else
 	curveXYPsiUnRotated = curveXYPsiUnfixed;
@@ -247,7 +263,7 @@ if flag_do_plots
 		rangeToPlot = max(max(allData(:,1:2))) - min(min(allData(:,1:2)));
 		for ith_angle = 1:length(anglesToPlotTangents)
 			thisAngle = anglesToPlotTangents(ith_angle);
-			interpolatedPoint = fcn_INTERNAL_interpolateAtAngle(referenceTurnPathXYPhi,thisAngle);
+			interpolatedPoint = fcn_INTERNAL_interpolateAtAngle(signCorrectedReferenceTurnPathXYPhi,thisAngle);
 			unitVector = [cos(thisAngle) sin(thisAngle)];
 			tangentPath = [unitVector*rangeToPlot; -unitVector*rangeToPlot] + repmat(interpolatedPoint(1,1:2),2,1);
 

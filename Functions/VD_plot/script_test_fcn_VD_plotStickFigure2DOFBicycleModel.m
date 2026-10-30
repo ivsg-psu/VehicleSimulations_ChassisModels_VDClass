@@ -9,6 +9,10 @@
 % - In script_test_fcn_VD_plotStickFigure2DOFBicycleModel
 %   % * First write of script
 %   % * Used script_test_fcn_VD_slipAngles+BicycleModel as starter
+%
+% 2026_10_30 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_VD_plotStickFigure2DOFBicycleModel
+%   % * Updated test script to test new inputs and formats
 
 % TO-DO:
 %
@@ -54,23 +58,31 @@ vehicleParameters(1).b          = 1.5621;  % Distance from rear axle to CG, in m
 X = 10;  % X is global position of vehicle CG in X, [m]
 Y = 5;   % Y is global position of vehicle CG in Y, [m]
 r = 40*pi/180; % Units are rad
-vehicleGlobalStates = [X; Y; r];
+vehicleGlobalStates = [X Y r];
 
 steeringAnglesInRadians = [25; 0]*pi/180; % Steering inputs, units are radians
 
 flagPlotFromRear = [];
 
 % Call the function
-h_fig = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, vehicleGlobalStates, steeringAnglesInRadians, (flagPlotFromRear), (figNum));
+[h_fig, xyPlottingPoints] = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, vehicleGlobalStates, steeringAnglesInRadians, (flagPlotFromRear), (figNum));
 
 sgtitle(titleString, 'Interpreter','none');
 
 % Check variable types
-assert(iscell(h_fig));
+assert(all(ishandle(h_fig)) | iscell(h_fig));
+assert(isnumeric(xyPlottingPoints));
 
 % Check variable sizes
-assert(size(h_fig,1)==3);
-assert(size(h_fig,2)==1);
+if ishandle(h_fig)
+	assert(size(h_fig,1)==1);
+	assert(size(h_fig,2)==1);
+else
+	assert(size(h_fig,1)==3);
+	assert(size(h_fig,2)==1);
+end
+assert(size(xyPlottingPoints,1)>=2);
+assert(size(xyPlottingPoints,2)==2);
 
 % Check variable values
 % (too complex to check)
@@ -96,23 +108,31 @@ vehicleParameters(1).b          = 1.5621;  % Distance from rear axle to CG, in m
 X = 10;  % X is global position of vehicle CG in X, [m]
 Y = 5;   % Y is global position of vehicle CG in Y, [m]
 r = 40*pi/180; % Units are rad
-vehicleGlobalStates = [X; Y; r];
+vehicleGlobalStates = [X Y r];
 
 steeringAnglesInRadians = [25; 0]*pi/180; % Steering inputs, units are radians
 
 flagPlotFromRear = [];
 
 % Call the function
-h_fig = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, vehicleGlobalStates, steeringAnglesInRadians, (flagPlotFromRear), ([]));
+[h_fig, xyPlottingPoints] = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, vehicleGlobalStates, steeringAnglesInRadians, (flagPlotFromRear), ([]));
 
 sgtitle(titleString, 'Interpreter','none');
 
 % Check variable types
-assert(iscell(h_fig));
+assert(all(ishandle(h_fig)) | iscell(h_fig));
+assert(isnumeric(xyPlottingPoints));
 
 % Check variable sizes
-assert(size(h_fig,1)==3);
-assert(size(h_fig,2)==1);
+if ishandle(h_fig)
+	assert(size(h_fig,1)==1);
+	assert(size(h_fig,2)==1);
+else
+	assert(size(h_fig,1)==3);
+	assert(size(h_fig,2)==1);
+end
+assert(size(xyPlottingPoints,1)>=2);
+assert(size(xyPlottingPoints,2)==2);
 
 % Check variable values
 % (too complex to check)
@@ -137,23 +157,31 @@ vehicleParameters(1).b          = 1.5621;  % Distance from rear axle to CG, in m
 X = 10;  % X is global position of vehicle CG in X, [m]
 Y = 5;   % Y is global position of vehicle CG in Y, [m]
 r = 40*pi/180; % Units are rad
-vehicleGlobalStates = [X; Y; r];
+vehicleGlobalStates = [X Y r];
 
 steeringAnglesInRadians = [25; 0]*pi/180; % Steering inputs, units are radians
 
 flagPlotFromRear = true;
 
 % Call the function
-h_fig = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, vehicleGlobalStates, steeringAnglesInRadians, (flagPlotFromRear), (figNum));
+[h_fig, xyPlottingPoints] = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, vehicleGlobalStates, steeringAnglesInRadians, (flagPlotFromRear), (figNum));
 
 sgtitle(titleString, 'Interpreter','none');
 
 % Check variable types
-assert(iscell(h_fig));
+assert(all(ishandle(h_fig)) | iscell(h_fig));
+assert(isnumeric(xyPlottingPoints));
 
 % Check variable sizes
-assert(size(h_fig,1)==3);
-assert(size(h_fig,2)==1);
+if ishandle(h_fig)
+	assert(size(h_fig,1)==1);
+	assert(size(h_fig,2)==1);
+else
+	assert(size(h_fig,1)==3);
+	assert(size(h_fig,2)==1);
+end
+assert(size(xyPlottingPoints,1)>=2);
+assert(size(xyPlottingPoints,2)==2);
 
 % Check variable values
 % (too complex to check)
@@ -216,30 +244,42 @@ vehicleParameters(1).b          = 1.5621;  % Distance from rear axle to CG, in m
 X = 10;  % X is global position of vehicle CG in X, [m]
 Y = 5;   % Y is global position of vehicle CG in Y, [m]
 r = 40*pi/180; % Units are rad
-vehicleGlobalStates = [X; Y; r];
+vehicleGlobalStates = [X Y r];
 
 steeringAnglesInRadians = [25; 0]*pi/180; % Steering inputs, units are radians
 
 flagPlotFromRear = [];
 
 % Call the function
-h_fig = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, vehicleGlobalStates, steeringAnglesInRadians, (flagPlotFromRear), ([]));
+[h_fig, xyPlottingPoints] = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, vehicleGlobalStates, steeringAnglesInRadians, (flagPlotFromRear), ([]));
 
 sgtitle(titleString, 'Interpreter','none');
 
 % Check variable types
-assert(iscell(h_fig));
+assert(all(ishandle(h_fig)) | iscell(h_fig));
+assert(isnumeric(xyPlottingPoints));
 
 % Check variable sizes
-assert(size(h_fig,1)==3);
-assert(size(h_fig,2)==1);
+if ishandle(h_fig)
+	assert(size(h_fig,1)==1);
+	assert(size(h_fig,2)==1);
+else
+	assert(size(h_fig,1)==3);
+	assert(size(h_fig,2)==1);
+end
+assert(size(xyPlottingPoints,1)>=2);
+assert(size(xyPlottingPoints,2)==2);
 
-% % Make sure plot opened up
-% assert(isequal(get(gcf,'Number'),figNum));
+% Check variable values
+% (too complex to check)
+
+% Make sure plot did NOT open up
+figHandles = get(groot, 'Children');
+assert(~any(figHandles==figNum));
 
 
 %% Basic fast mode - NO FIGURE, FAST MODE
-figNum = 80003;
+figNum = 80002;
 fprintf(1,'Figure: %.0f: FAST mode, figNum=-1\n',figNum);
 figure(figNum); close(figNum);
 
@@ -254,26 +294,38 @@ vehicleParameters(1).b          = 1.5621;  % Distance from rear axle to CG, in m
 X = 10;  % X is global position of vehicle CG in X, [m]
 Y = 5;   % Y is global position of vehicle CG in Y, [m]
 r = 40*pi/180; % Units are rad
-vehicleGlobalStates = [X; Y; r];
+vehicleGlobalStates = [X Y r];
 
 steeringAnglesInRadians = [25; 0]*pi/180; % Steering inputs, units are radians
 
 flagPlotFromRear = [];
 
 % Call the function
-h_fig = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, vehicleGlobalStates, steeringAnglesInRadians, (flagPlotFromRear), ([]));
+[h_fig, xyPlottingPoints] = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, vehicleGlobalStates, steeringAnglesInRadians, (flagPlotFromRear), (-1));
 
 sgtitle(titleString, 'Interpreter','none');
 
 % Check variable types
-assert(iscell(h_fig));
+assert(all(ishandle(h_fig)) | iscell(h_fig));
+assert(isnumeric(xyPlottingPoints));
 
 % Check variable sizes
-assert(size(h_fig,1)==3);
-assert(size(h_fig,2)==1);
+if ishandle(h_fig)
+	assert(size(h_fig,1)==1);
+	assert(size(h_fig,2)==1);
+else
+	assert(size(h_fig,1)==3);
+	assert(size(h_fig,2)==1);
+end
+assert(size(xyPlottingPoints,1)>=2);
+assert(size(xyPlottingPoints,2)==2);
 
-% % Make sure plot opened up
-% assert(isequal(get(gcf,'Number'),figNum));
+% Check variable values
+% (too complex to check)
+
+% Make sure plot did NOT open up
+figHandles = get(groot, 'Children');
+assert(~any(figHandles==figNum));
 
 
 %% Compare speeds of pre-calculation versus post-calculation versus a fast variant
@@ -293,7 +345,7 @@ vehicleParameters(1).b          = 1.5621;  % Distance from rear axle to CG, in m
 X = 10;  % X is global position of vehicle CG in X, [m]
 Y = 5;   % Y is global position of vehicle CG in Y, [m]
 r = 40*pi/180; % Units are rad
-vehicleGlobalStates = [X; Y; r];
+vehicleGlobalStates = [X Y r];
 
 steeringAnglesInRadians = [25; 0]*pi/180; % Steering inputs, units are radians
 
@@ -305,7 +357,7 @@ Niterations = 50;
 tic;
 for ith_test = 1:Niterations
 	% Call the function
-	h_fig = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, vehicleGlobalStates, steeringAnglesInRadians, (flagPlotFromRear), ([]));
+	[h_fig, xyPlottingPoints] = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, vehicleGlobalStates, steeringAnglesInRadians, (flagPlotFromRear), ([]));
 	clf;
 end
 slow_method = toc;
@@ -314,7 +366,7 @@ slow_method = toc;
 tic;
 for ith_test = 1:Niterations
 	% Call the function
-	h_fig = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, vehicleGlobalStates, steeringAnglesInRadians, (flagPlotFromRear), (-1));
+	[h_fig, xyPlottingPoints] = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, vehicleGlobalStates, steeringAnglesInRadians, (flagPlotFromRear), (-1));
 	clf;
 end
 fast_method = toc;

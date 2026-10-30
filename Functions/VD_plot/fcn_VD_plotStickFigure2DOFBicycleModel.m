@@ -1,11 +1,11 @@
-function h_fig = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, vehicleGlobalStates, steeringAnglesInRadians, varargin)
+function [h_fig, xyPlottingPoints] = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, vehicleGlobalStates, steeringAnglesInRadians, varargin)
 
 %% fcn_VD_plotStickFigure2DOFBicycleModel
 %   This function plots the 2DOF bicycle model as a stick figure
 %
 % FORMAT:
 %
-%      h_fig = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, vehicleGlobalStates, steeringAngles, (flagPlotFromRear), (figNum))
+%      [h_fig, xyPlottingPoints] = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, vehicleGlobalStates, steeringAnglesInRadians, (flagPlotFromRear), (figNum))
 %
 % INPUTS:
 %
@@ -19,7 +19,7 @@ function h_fig = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, vehic
 %            vehicleParameters(1).Caf        = 77500;  % Cornering stiffness of front axle, N/rad;
 %            vehicleParameters(1).Car	     = 116250; % Cornering stiffness of rear axle, N/rad;
 %
-%      vehicleGlobalStates: a 3x1 vector denoting the [X, Y, yaw]' positions
+%      vehicleGlobalStates: a 1x3 vector denoting the [X, Y, yaw] positions
 %      respectively, in units of [m m rad]
 %
 %      steeringAnglesInRadians: a 2x1 vector denoting 
@@ -38,6 +38,8 @@ function h_fig = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, vehic
 % OUTPUTS:
 %
 %      h_fig: a cell array of the figure handles for the plots
+%
+%      xyPlottingPoints: an Nx2 matrix of the [x y] points being plotted
 %
 % DEPENDENCIES:
 %
@@ -58,6 +60,10 @@ function h_fig = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, vehic
 % 2026_10_26 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_VD_plotStickFigure2DOFBicycleModel
 %   % * Used fcn_VD_slipAngles+BicycleModel as starter
+% 
+% 2026_10_30 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_plotStickFigure2DOFBicycleModel
+%   % * Added xyPlottingPoints as an output
 
 % TO-DO:
 % - 2026_10_22 by Sean Brennan, sbrennan@psu.edu
@@ -120,8 +126,8 @@ if 0==flag_max_speed
 		% Validate that the steeringAngles input has 1 column, 1 row
         fcn_DebugTools_checkInputsToFunctions(steeringAnglesInRadians, '1column_of_numbers',[2 2]);
 
-		% Validate that the vehicleGlobalStates input has 1 column, 3 rows
-        fcn_DebugTools_checkInputsToFunctions(vehicleGlobalStates, '1column_of_numbers',[3 3]);
+		% Validate that the vehicleGlobalStates input has 1 row 3 columns
+        fcn_DebugTools_checkInputsToFunctions(vehicleGlobalStates, '3column_of_numbers',[1 1]);
 
     end
 end
@@ -136,7 +142,7 @@ if 4 <= nargin
 end
 
 % Does user want to show the plots?
-flag_do_plots = 1; % Default is to NOT show plots
+flag_do_plots = 0; % Default is to NOT show plots
 figNum = [];
 if (0==flag_max_speed) && (MAX_NARGIN == nargin) 
     temp = varargin{end};
@@ -168,6 +174,31 @@ if ~isfield('L',vehicleParameters)
 	vehicleParameters.L = vehicleParameters.a + vehicleParameters.b;
 end
 
+
+X = vehicleGlobalStates(1);
+Y = vehicleGlobalStates(2);
+yawAngle = vehicleGlobalStates(3);
+
+% Calculate the vehicle position
+angleRad = yawAngle;
+rotation = [cos(angleRad) sin(angleRad); -sin(angleRad) cos(angleRad)];
+if flagPlotFromRear
+	offsetVehicle = [vehicleParameters.L 0; 0 0]*rotation + [X*ones(2,1) Y*ones(2,1)] ;
+else
+	offsetVehicle = [vehicleParameters.a 0; -vehicleParameters.b 0]*rotation + [X*ones(2,1) Y*ones(2,1)] ;
+end
+
+% Plot the tires
+L = vehicleParameters.a+vehicleParameters.b;
+tireRadius = L/10;
+tireWidth = tireRadius/2.5;
+
+% Fill in front and rear tires
+frontTirePoints = fcn_INTERNAL_calcTireBox(tireRadius, tireWidth, steeringAnglesInRadians(1,1), [offsetVehicle(1,:) yawAngle]);
+rearTirePoints = fcn_INTERNAL_calcTireBox(tireRadius, tireWidth, steeringAnglesInRadians(2,1), [offsetVehicle(2,:) yawAngle]);
+
+xyPlottingPoints = [offsetVehicle; nan nan; frontTirePoints; nan nan; rearTirePoints];
+
 %% Plot the results (for debugging)?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   _____       _
@@ -184,39 +215,8 @@ if flag_do_plots
 	figure(figNum);
 	hold on;
 
-
-	X = vehicleGlobalStates(1);
-	Y = vehicleGlobalStates(2);
-	yawAngle = vehicleGlobalStates(3);
-
-	% Calculate the vehicle position
-	angleRad = yawAngle;
-	rotation = [cos(angleRad) sin(angleRad); -sin(angleRad) cos(angleRad)];
-	if flagPlotFromRear
-		offsetVehicle = [vehicleParameters.L 0; 0 0]*rotation + [X*ones(2,1) Y*ones(2,1)] ;
-	else
-		offsetVehicle = [vehicleParameters.a 0; -vehicleParameters.b 0]*rotation + [X*ones(2,1) Y*ones(2,1)] ;
-	end
-
-	% Plot the tires
-	L = vehicleParameters.a+vehicleParameters.b;	
-	tireRadius = L/10;	
-	tireDimensions = [tireRadius 0; -tireRadius 0];	
-
-	% Plot front tire
-	angleRad = steeringAnglesInRadians(1,1)+yawAngle;
-	rotation = [cos(angleRad) sin(angleRad); -sin(angleRad) cos(angleRad)];
-	offsetTire = tireDimensions*rotation + [offsetVehicle(1,1)*ones(2,1) offsetVehicle(1,2)*ones(2,1)] ;
-	h_fig{2} = plot(offsetTire(:,1), offsetTire(:,2),'-','LineWidth',10,'HandleVisibility','off');
-
-	% Plot rear tire
-	angleRad = steeringAnglesInRadians(2,1)+yawAngle;
-	rotation = [cos(angleRad) sin(angleRad); -sin(angleRad) cos(angleRad)];
-	offsetTire = tireDimensions*rotation + [offsetVehicle(2,1)*ones(2,1) offsetVehicle(2,2)*ones(2,1)] ;
-	h_fig{3} = plot(offsetTire(:,1), offsetTire(:,2),'-','LineWidth',10,'HandleVisibility','off');
-
 	% Plot the vehicle as a stick figure
-	h_fig{1} = plot(offsetVehicle(:,1), offsetVehicle(:,2),'-','LineWidth',5,'DisplayName','2DOF Bicycle Model');
+	h_fig{1} = plot(xyPlottingPoints(:,1), xyPlottingPoints(:,2),'-','LineWidth',5,'DisplayName','2DOF Bicycle Model');
 
 	axis equal;
 	grid on;
@@ -242,3 +242,25 @@ end % Ends main function
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%§
 
 
+function tirePoints = fcn_INTERNAL_calcTireBox(tireRadius, tireWidth, tireSteeringAngle, tireXYphi)
+% Fill in the tire box
+tireBox = [...
+	tireRadius tireWidth/2; 
+	-tireRadius tireWidth/2; 
+	-tireRadius -tireWidth/2; 
+	tireRadius -tireWidth/2;
+	tireRadius tireWidth/2; 
+	];
+
+% Rotate and translate tire
+angleRad = tireSteeringAngle + tireXYphi(1,3);
+rotation = [cos(angleRad) sin(angleRad); -sin(angleRad) cos(angleRad)];
+Npoints = length(tireBox(:,1));
+tirePoints = tireBox*rotation + ones(Npoints,1)*tireXYphi(1,1:2);
+
+% For debugging
+if 1==0
+	plot(tirePoints(:,1),tirePoints(:,2),'.-');
+end
+
+end

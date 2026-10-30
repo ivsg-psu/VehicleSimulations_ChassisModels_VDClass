@@ -9,6 +9,10 @@
 % - In script_test_fcn_VD_parkingCalcEntryArcExitPaths
 %   % * First write of script
 %   % * Used script_test_fcn_VD_parking+XYPhiToTU as starter
+%
+% 2026_10_30 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_VD_parkingCalcEntryArcExitPaths
+%   % * Created test cases for negative solutions
 
 % TO-DO:
 %
@@ -48,9 +52,10 @@ dataFileName = fullfile(pwd,'Data','parkingData.mat');
 if exist(dataFileName,'file')
     load(dataFileName,'standardParkingTurnPath','tDistancesEachAngle','uDistancesEachAngle')
 else
-	error('Need to run a prior section to generate the data file');
+	error('Need to run fcn_VD_parkingFillStandardParkingTurnPath to generate the data file');
 end
 
+% Generate a true solution
 initialXYPhi = [4 6 30*pi/180];
 trueApproachPathDistance = 10;
 trueChangeInArcAngleInRadians = 40*pi/180;
@@ -68,6 +73,15 @@ end
 
 startingPointInXYphi = approachXYPsi(1,:);
 goalPointInXYphi = exitXYPsi(end,:);
+
+% Approximately a Ford Taurus
+clear vehicleParameters
+vehicleParameters(1).a          = 0.9271; % Distance from front axle to CG, in meters
+vehicleParameters(1).b          = 1.5621;  % Distance from rear axle to CG, in meters
+
+fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, startingPointInXYphi, [0; 0], true, (figNum));
+fcn_VD_parkingPlotParkingSpot(vehicleParameters, goalPointInXYphi, (true), (figNum));
+
 
 % Call the function
 [approachXYPsi, curveXYPsi, exitXYPsi,...
@@ -119,7 +133,7 @@ dataFileName = fullfile(pwd,'Data','parkingData.mat');
 if exist(dataFileName,'file')
     load(dataFileName,'standardParkingTurnPath','tDistancesEachAngle','uDistancesEachAngle')
 else
-	error('Need to run a prior section to generate the data file');
+	error('Need to run fcn_VD_parkingFillStandardParkingTurnPath to generate the data file');
 end
 
 initialXYPhi = [4 6 30*pi/180];
@@ -153,6 +167,10 @@ vehicleParameters.L = 2.700; % wheelbase in meters of a 2013 Prius, standard cla
 vehicleParameters.a =  vehicleParameters.L * 1187/3042;
 vehicleParameters.b =  vehicleParameters.L * 1855/3042;
 
+fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, startingPointInXYphi, [0; 0], true, (figNum));
+fcn_VD_parkingPlotParkingSpot(vehicleParameters, goalPointInXYphi, (true), (figNum));
+
+
 % Call the function
 [approachXYPsi, curveXYPsi, exitXYPsi,...
     approachPathDistance, changeInArcAngleInRadians, exitPathDistance] = fcn_VD_parkingCalcEntryArcExitPaths(...
@@ -160,7 +178,98 @@ vehicleParameters.b =  vehicleParameters.L * 1855/3042;
     startingPointInXYphi, goalPointInXYphi, (figNum));
 
 
-fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, startingPointInXYphi', [0; 0], true, (figNum));
+fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, startingPointInXYphi, [0; 0], true, (figNum));
+
+
+sgtitle(titleString, 'Interpreter','none');
+
+% Check variable types
+assert(isnumeric(approachXYPsi));
+assert(isnumeric(curveXYPsi));
+assert(isnumeric(exitXYPsi));
+assert(isnumeric(approachPathDistance));
+assert(isnumeric(changeInArcAngleInRadians));
+assert(isnumeric(exitPathDistance));
+
+% Check variable sizes
+assert(size(approachXYPsi,1)==2);
+assert(size(approachXYPsi,2)==3);
+assert(size(curveXYPsi,1)>=2);
+assert(size(curveXYPsi,2)==3);
+assert(size(exitXYPsi,1)==2);
+assert(size(exitXYPsi,2)==3);
+assert(size(approachPathDistance,1)==1);
+assert(size(approachPathDistance,2)==1);
+assert(size(changeInArcAngleInRadians,1)==1);
+assert(size(changeInArcAngleInRadians,2)==1);
+assert(size(exitPathDistance,1)==1);
+assert(size(exitPathDistance,2)==1);
+
+% Check variable values
+assert(isequal(round(trueApproachPathDistance,4),round(approachPathDistance,4)));
+assert(isequal(round(trueChangeInArcAngleInRadians,4),round(changeInArcAngleInRadians,4)));
+assert(isequal(round(trueExitPathDistance,4),round(exitPathDistance,4)));
+
+% Make sure plot opened up
+assert(isequal(get(gcf,'Number'),figNum));
+
+%% DEMO case: negative angle
+figNum = 10003;
+titleString = sprintf('DEMO case: negative angle');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+figure(figNum); clf;
+
+% Set up inputs
+dataFileName = fullfile(pwd,'Data','parkingData.mat');
+if exist(dataFileName,'file')
+    load(dataFileName,'standardParkingTurnPath','tDistancesEachAngle','uDistancesEachAngle')
+else
+	error('Need to run fcn_VD_parkingFillStandardParkingTurnPath to generate the data file');
+end
+
+initialXYPhi = [-4 -6 -30*pi/180];
+trueApproachPathDistance = 10;
+trueChangeInArcAngleInRadians = -40*pi/180;
+trueExitPathDistance = 7;
+anglesToPlotTangents = [0; -40*pi/180];
+
+[approachXYPsi, ~, exitXYPsi, ~] = fcn_VD_parkingPlotSolution(...
+	standardParkingTurnPath, initialXYPhi, ...
+	trueApproachPathDistance, trueChangeInArcAngleInRadians, trueExitPathDistance, ...
+	(anglesToPlotTangents), (-1));
+
+% for ith_plot = 1:3
+%     set(hPlots{ith_plot,1},'LineWidth',10,'Color',[0 0 1]);
+% end
+
+startingPointInXYphi = approachXYPsi(1,:);
+goalPointInXYphi = exitXYPsi(end,:);
+
+% Set up vehicle parameters
+clear vehicleParameters
+vehicleParameters.U = 2;  % U is forward velocity of vehicle in longitudinal direction, [m/s] (rule of thumb: 5 mph ~= 2* m/s)
+vehicleParameters.L = 2.700; % wheelbase in meters of a 2013 Prius, standard class
+% How to get the a and b values? (used for plotting)
+% Use the weight split!
+% FOR PRIUS
+% * Total Curb Weight: ~3,042 lbs (1,380 kg)
+% * Estimated Front Weight: ~1,855 lbs (61%)
+% * Estimated Rear Weight: ~1,187 lbs (39%)
+vehicleParameters.a =  vehicleParameters.L * 1187/3042;
+vehicleParameters.b =  vehicleParameters.L * 1855/3042;
+
+fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, startingPointInXYphi, [0; 0], true, (figNum));
+fcn_VD_parkingPlotParkingSpot(vehicleParameters, goalPointInXYphi, (true), (figNum));
+
+
+% Call the function
+[approachXYPsi, curveXYPsi, exitXYPsi,...
+    approachPathDistance, changeInArcAngleInRadians, exitPathDistance] = fcn_VD_parkingCalcEntryArcExitPaths(...
+    standardParkingTurnPath, tDistancesEachAngle, uDistancesEachAngle, ...
+    startingPointInXYphi, goalPointInXYphi, (figNum));
+
+
+fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, startingPointInXYphi, [0; 0], true, (figNum));
 
 
 sgtitle(titleString, 'Interpreter','none');
@@ -244,7 +353,7 @@ dataFileName = fullfile(pwd,'Data','parkingData.mat');
 if exist(dataFileName,'file')
     load(dataFileName,'standardParkingTurnPath','tDistancesEachAngle','uDistancesEachAngle')
 else
-	error('Need to run a prior section to generate the data file');
+	error('Need to run fcn_VD_parkingFillStandardParkingTurnPath to generate the data file');
 end
 
 initialXYPhi = [4 6 30*pi/180];
@@ -315,7 +424,7 @@ dataFileName = fullfile(pwd,'Data','parkingData.mat');
 if exist(dataFileName,'file')
     load(dataFileName,'standardParkingTurnPath','tDistancesEachAngle','uDistancesEachAngle')
 else
-	error('Need to run a prior section to generate the data file');
+	error('Need to run fcn_VD_parkingFillStandardParkingTurnPath to generate the data file');
 end
 
 initialXYPhi = [4 6 30*pi/180];
@@ -324,7 +433,7 @@ trueChangeInArcAngleInRadians = 40*pi/180;
 trueExitPathDistance = 7;
 anglesToPlotTangents = [0; 40*pi/180];
 
-[approachXYPsi, ~, exitXYPsi, hPlots] = fcn_VD_parkingPlotSolution(...
+[approachXYPsi, ~, exitXYPsi, ~] = fcn_VD_parkingPlotSolution(...
 	standardParkingTurnPath, initialXYPhi, ...
 	trueApproachPathDistance, trueChangeInArcAngleInRadians, trueExitPathDistance, ...
 	(anglesToPlotTangents), (-1));

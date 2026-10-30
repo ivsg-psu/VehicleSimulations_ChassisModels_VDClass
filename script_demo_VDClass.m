@@ -208,6 +208,26 @@
 %   % * Used script_test_fcn_VD_parking+XYPhiToTU as starter
 % - In fcn_VD_parkingCalcEntryArcExitPaths
 %   % * Used fcn_VD_parking+XYPhiToTU as starter
+%
+% 2026_10_30 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_VD_parkingFillStandardParkingTurnPath
+%   % * First write of script
+%   % * Used script_test_fcn_VD_parkingCalcEntryArcExitPaths as starter
+% - In fcn_VD_parkingFillStandardParkingTurnPath
+%   % * Used fcn_VD_parkingCalcEntry+ArcExitPaths as starter
+% - In script_test_fcn_VD_parkingPlotParkingSpot
+%   % * First write of script
+%   % * Used script_test_fcn_VD_plotStick+Figure2DOFBicycleModel as starter
+% - In fcn_VD_parkingPlotParkingSpot
+%   % * Used fcn_VD_plotSt+ickFigure2DOFBicycleModel as starter
+% - In script_test_fcn_VD_parkingPlotSolution
+%   % * Created test cases for negative parking angles, entry, and exits
+% - In fcn_VD_parkingPlotSolution
+%   % * Modified to allow negative input angles
+% - In fcn_VD_plotStickFigure2DOFBicycleModel
+%   % * Added xyPlottingPoints as an output
+%
+% (new release)
 
 % TO-DO:
 % 2026_09_03 by Sean Brennan, sbrennan@psu.edu

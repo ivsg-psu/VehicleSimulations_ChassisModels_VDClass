@@ -114,57 +114,34 @@ sgtitle('Highlighting the 20-degree turn', 'Interpreter','none');
 
 
 %% Step 1 - Generate a standard parking turn path
+% [standardParkingTurnPath, tDistancesEachAngle, uDistancesEachAngle] = ...
+% 	fcn_VD_parkingFillStandardParkingTurnPath((-1));
 
 
-dataFileName = fullfile(pwd,'Data','parkingData.mat');
-if 1==1 && exist(dataFileName,'file')
-	load(dataFileName,'standardParkingTurnPath','tDistancesEachAngle','uDistancesEachAngle'); 
-else
-
-
-	standard_parking_steering_amplitude_degrees = 20; % 2 degrees of steering amplitude for input sinewave
-	standard_parking_steering_amplitude_radians = standard_parking_steering_amplitude_degrees*pi/180;
-
-	% Set the simulation time/state arguments
-	initialStates = [0 0 0]; % [X Y phi] in [m],[m],[rad]
-	deltaT = 0.01; % Units are [sec]
-	startTime = 0;
-	arcLength = 170*pi/180*predictedTurnRadius;
-	endTime = arcLength/vehicleParameters.U;
-	timeInterval = [startTime endTime];  % Units are [sec]
-
-	simulationTimes = (startTime:deltaT:endTime)';
-	inputsVsTime = [simulationTimes standard_parking_steering_amplitude_radians*ones(length(simulationTimes(:,1)),1)]; % [times steering angles]
-
-    % Call a function to generate a standard parking path
-    figNum = 100;
-    figure(figNum);clf;
-	[standardParkingTurnPath, ~, ~] = ...
-		fcn_VD_kinematicBicycleModelRK4(initialStates, deltaT, ...
-		timeInterval, inputsVsTime, vehicleParameters, (figNum));
-
-	% Call a function to convert the standard path into t- and u-distances
-	[tDistancesEachAngle, uDistancesEachAngle] = fcn_VD_parkingSolveUTFromStandardTurn(...
-		standardParkingTurnPath, (-1));
-
-	save(dataFileName,'standardParkingTurnPath','tDistancesEachAngle','uDistancesEachAngle');
-
-end
 
 %% Generate an example problem, keeping true solution
 figNum = 10000;
 figure(figNum);clf;
 
+% Set up inputs
+dataFileName = fullfile(pwd,'Data','parkingData.mat');
+if exist(dataFileName,'file')
+    load(dataFileName,'standardParkingTurnPath','tDistancesEachAngle','uDistancesEachAngle')
+else
+	error('Need to run a prior section to generate the data file');
+end
+
+% Generate a true solution
 initialXYPhi = [4 6 30*pi/180];
 trueApproachPathDistance = 10;
 trueChangeInArcAngleInRadians = 40*pi/180;
 trueExitPathDistance = 7;
 anglesToPlotTangents = [0; 40*pi/180];
 
-[approachXYPsi, curveXYPsi, exitXYPsi, hPlots] = fcn_VD_parkingPlotSolution(...
+[approachXYPsi, ~, exitXYPsi, hPlots] = fcn_VD_parkingPlotSolution(...
 	standardParkingTurnPath, initialXYPhi, ...
 	trueApproachPathDistance, trueChangeInArcAngleInRadians, trueExitPathDistance, ...
-	(anglesToPlotTangents), (figNum)); %#ok<ASGLU>
+	(anglesToPlotTangents), (figNum));
 
 for ith_plot = 1:3
     set(hPlots{ith_plot,1},'LineWidth',10,'Color',[0 0 1]);
@@ -173,54 +150,49 @@ end
 startingPointInXYphi = approachXYPsi(1,:);
 goalPointInXYphi = exitXYPsi(end,:);
 
-%% Step 1: Find the x-axis intercept of the given pose
-figNum = 10001;
-figure(figNum);clf;
+% Approximately a Ford Taurus
+clear vehicleParameters
+vehicleParameters(1).a          = 0.9271; % Distance from front axle to CG, in meters
+vehicleParameters(1).b          = 1.5621;  % Distance from rear axle to CG, in meters
+
+fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, startingPointInXYphi', [0; 0], true, (figNum));
+fcn_VD_parkingPlotParkingSpot(vehicleParameters, goalPointInXYphi', (true), (figNum));
 
 
-[tDistance, uDistance] = fcn_VD_parkingXYPhiToTU(startingPointInXYphi, goalPointInXYphi, (figNum));
-changeInArcAngleInRadians = goalPointInXYphi(1,3) - startingPointInXYphi(1,3);
+% Call the function
+[approachXYPsi, curveXYPsi, exitXYPsi,...
+    approachPathDistance, changeInArcAngleInRadians, exitPathDistance] = fcn_VD_parkingCalcEntryArcExitPaths(...
+    standardParkingTurnPath, tDistancesEachAngle, uDistancesEachAngle, ...
+    startingPointInXYphi, goalPointInXYphi, (figNum));
 
+sgtitle(titleString, 'Interpreter','none');
 
-%% Step 2: Make sure this is in the feasible range
+% Check variable types
+assert(isnumeric(approachXYPsi));
+assert(isnumeric(curveXYPsi));
+assert(isnumeric(exitXYPsi));
+assert(isnumeric(approachPathDistance));
+assert(isnumeric(changeInArcAngleInRadians));
+assert(isnumeric(exitPathDistance));
 
+% Check variable sizes
+assert(size(approachXYPsi,1)==2);
+assert(size(approachXYPsi,2)==3);
+assert(size(curveXYPsi,1)>=2);
+assert(size(curveXYPsi,2)==3);
+assert(size(exitXYPsi,1)==2);
+assert(size(exitXYPsi,2)==3);
+assert(size(approachPathDistance,1)==1);
+assert(size(approachPathDistance,2)==1);
+assert(size(changeInArcAngleInRadians,1)==1);
+assert(size(changeInArcAngleInRadians,2)==1);
+assert(size(exitPathDistance,1)==1);
+assert(size(exitPathDistance,2)==1);
 
-% Look up t-value for this goalPhiInRadians value
-minimumTfeasible = interp1(standardParkingTurnPath(:,3),tDistancesEachAngle,changeInArcAngleInRadians,'linear','extrap');
-
-% Look up U-value for this goalPhiInRadians value
-maximumUfeasible = interp1(standardParkingTurnPath(:,3),uDistancesEachAngle,changeInArcAngleInRadians,'linear','extrap');
-
-if tDistance<minimumTfeasible
-	error('t-value is not feasible');
-end
-
-if uDistance>maximumUfeasible
-	error('u-value is not feasible');
-end
-
-%% Step 3: Calculate the "approach" distance, the "exit" distance, and the arc angle
-figNum = 10003;
-figure(figNum);clf;
-
-approachPathDistance = tDistance-minimumTfeasible;
-exitPathDistance = maximumUfeasible-uDistance;
-endOfArcAngleInRadians = changeInArcAngleInRadians;
-
-% Plot the results
-anglesToPlotTangents = [startingPointInXYphi(1,3); goalPointInXYphi(1,3)] - startingPointInXYphi(1,3);
-[approachXYPsi, curveXYPsi, exitXYPsi] = fcn_VD_parkingPlotSolution(...
-	standardParkingTurnPath, initialXYPhi, ...
-	approachPathDistance, endOfArcAngleInRadians, exitPathDistance, ...
-	(anglesToPlotTangents), (figNum));
-
-
-% Check the results
+% Check variable values
 assert(isequal(round(trueApproachPathDistance,4),round(approachPathDistance,4)));
 assert(isequal(round(trueChangeInArcAngleInRadians,4),round(changeInArcAngleInRadians,4)));
 assert(isequal(round(trueExitPathDistance,4),round(exitPathDistance,4)));
-
-
 
 %% Functions follow
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -234,37 +206,3 @@ assert(isequal(round(trueExitPathDistance,4),round(exitPathDistance,4)));
 % See: https://patorjk.com/software/taag/#p=display&f=Big&t=Functions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%§
 
-function fcn_INTERNAL_plotUandT(vehicleParameters, startPointXYphi, endPointXYphi, uDistance, tDistance, location, figNum)
-
-endPhiInRadians = endPointXYphi(1,3);
-unitEndVector = [cos(endPhiInRadians) sin(endPhiInRadians)];
-
-% Plot scenario
-h_start = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, startPointXYphi', [0; 0], true, (figNum));
-set(h_start{1},'DisplayName','Start');
-
-h_end = fcn_VD_plotStickFigure2DOFBicycleModel(vehicleParameters, endPointXYphi', [0; 0], true, (figNum));
-set(h_end{1},'DisplayName','Goal');
-
-% Plot orientation projection onto X
-quiver(endPointXYphi(1,1),endPointXYphi(1,2),unitEndVector(1)*uDistance, unitEndVector(2)*uDistance,0,'LineWidth',3,'ShowArrowHead','on','MaxHeadSize',0.3);
-textLocation = [endPointXYphi(1,1), endPointXYphi(1,2)] + unitEndVector*uDistance/2;
-text(textLocation(1,1), textLocation(1,2),sprintf('u = %.2f meters',uDistance),'FontSize',20,'BackgroundColor',[1 1 1],'HorizontalAlignment','center');
-
-% Plot x-axis distance
-quiver(0,0,1*tDistance, 0*tDistance,0,'LineWidth',3,'ShowArrowHead','on','MaxHeadSize',0.3);
-textLocation = [0, 0.5] + [1 0]*tDistance/2;
-text(textLocation(1,1), textLocation(1,2),sprintf('t = %.2f meters',tDistance),'FontSize',20,'BackgroundColor',[1 1 1],'HorizontalAlignment','center');
-
-% Plot hit
-plot(location(1,1), location(1,2),'.','MarkerSize',50);
-end
-
-
-%% fcn_INTERNAL_interpolateAtAngle
-function interpolatedPoint = fcn_INTERNAL_interpolateAtAngle(referenceTurnPathXYPhi,angleToInterpolate)
-	% Interpolate the last X value in arc
-	arcLastX = interp1(referenceTurnPathXYPhi(:,3),referenceTurnPathXYPhi(:,1),angleToInterpolate,'linear');
-	arcLastY = interp1(referenceTurnPathXYPhi(:,3),referenceTurnPathXYPhi(:,2),angleToInterpolate,'linear');
-	interpolatedPoint = [arcLastX arcLastY angleToInterpolate];
-end % Ends fcn_INTERNAL_interpolateAtAngle

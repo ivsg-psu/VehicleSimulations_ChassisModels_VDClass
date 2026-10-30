@@ -88,6 +88,10 @@ function [approachXYPsi, curveXYPsi, exitXYPsi, ...
 % 2026_10_29 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_VD_parkingCalcEntryArcExitPaths
 %   % * Used fcn_VD_parking+XYPhiToTU as starter
+%
+% 2026_10_30 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_parkingCalcEntryArcExitPaths
+%   % * Modified to allow negative steering inputs
 
 % TO-DO:
 % - 2026_10_29 by Sean Brennan, sbrennan@psu.edu
@@ -186,11 +190,12 @@ end
 changeInArcAngleInRadians = goalPointInXYphi(1,3) - startingPointInXYphi(1,3);
 
 %% Step 2: Make sure this is in the feasible range
+
 % Look up t-value for this goalPhiInRadians value
-minimumTfeasible = interp1(standardParkingTurnPath(:,3),tDistancesEachAngle,changeInArcAngleInRadians,'linear','extrap');
+minimumTfeasible = interp1(standardParkingTurnPath(:,3),tDistancesEachAngle,abs(changeInArcAngleInRadians),'linear','extrap');
 
 % Look up U-value for this goalPhiInRadians value
-maximumUfeasible = interp1(standardParkingTurnPath(:,3),uDistancesEachAngle,changeInArcAngleInRadians,'linear','extrap');
+maximumUfeasible = interp1(standardParkingTurnPath(:,3),uDistancesEachAngle,abs(changeInArcAngleInRadians),'linear','extrap');
 
 if tDistance<minimumTfeasible
 	error('t-value is not feasible');

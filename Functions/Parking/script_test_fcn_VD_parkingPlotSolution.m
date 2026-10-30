@@ -9,6 +9,10 @@
 % - In script_test_fcn_VD_parkingPlotSolution
 %   % * First write of script
 %   % * Used script_test_fcn_VD_plotStickFigure2DOFBicycleModel as starter
+%
+% 2026_10_30 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_VD_parkingPlotSolution
+%   % * Created test cases for negative parking angles, entry, and exits
 
 % TO-DO:
 %
@@ -154,7 +158,7 @@ else
 	error('Need to run a prior section to generate the data file');
 end
 
-initialXYPhi = [-7 11 240];
+initialXYPhi = [-7 11 240*pi/180];
 approachPathDistance = 2; % meters
 endOfArcAngleInRadians = 95*pi/180; % radians
 exitPathDistance = 5; % meters
@@ -189,7 +193,155 @@ assert(size(exitXYPsi,2)==3);
 % Make sure plot opened up
 assert(isequal(get(gcf,'Number'),figNum));
 
+%% DEMO case: basic call, nonzero ICs with tangents and negative angle
+figNum = 10004;
+titleString = sprintf('DEMO case: basic call, nonzero ICs with tangents and negative angle');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+figure(figNum); clf;
 
+% Set up inputs
+dataFileName = fullfile(pwd,'Data','parkingData.mat');
+if exist(dataFileName,'file')
+	% load(dataFileName,'standardParkingTurnPath','tDistancesEachAngle','uDistancesEachAngle')
+	load(dataFileName,'standardParkingTurnPath')
+else
+	error('Need to run a prior section to generate the data file');
+end
+
+initialXYPhi = [-7 11 40*pi/180];
+approachPathDistance = 2; % meters
+endOfArcAngleInRadians = -95*pi/180; % radians
+exitPathDistance = 5; % meters
+anglesToPlotTangents = [0; -40*pi/180; endOfArcAngleInRadians];
+
+% Call the function
+[approachXYPsi, curveXYPsi, exitXYPsi, hPlots] = fcn_VD_parkingPlotSolution(...
+	standardParkingTurnPath, initialXYPhi, ...
+	approachPathDistance, endOfArcAngleInRadians, exitPathDistance, ...
+	(anglesToPlotTangents), (figNum));
+legend('Interpreter','none');
+
+sgtitle(titleString, 'Interpreter','none');
+
+% Check variable types
+assert(isnumeric(approachXYPsi));
+assert(isnumeric(curveXYPsi));
+assert(isnumeric(exitXYPsi));
+assert(iscell(hPlots));
+
+% Check variable sizes
+assert(size(approachXYPsi,1)==2);
+assert(size(approachXYPsi,2)==3);
+assert(size(curveXYPsi,1)>=2);
+assert(size(curveXYPsi,2)==3);
+assert(size(exitXYPsi,1)==2);
+assert(size(exitXYPsi,2)==3);
+
+% Check variable values
+% (too complex to check)
+
+% Make sure plot opened up
+assert(isequal(get(gcf,'Number'),figNum));
+
+%% DEMO case: negative entry distance
+figNum = 10005;
+titleString = sprintf('DEMO case: negative entry distance');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+figure(figNum); clf;
+
+% Set up inputs
+dataFileName = fullfile(pwd,'Data','parkingData.mat');
+if exist(dataFileName,'file')
+	% load(dataFileName,'standardParkingTurnPath','tDistancesEachAngle','uDistancesEachAngle')
+	load(dataFileName,'standardParkingTurnPath')
+else
+	error('Need to run a prior section to generate the data file');
+end
+
+initialXYPhi = [0 0 0];
+approachPathDistance = -2; % meters
+endOfArcAngleInRadians = 45*pi/180; % radians
+exitPathDistance = 5; % meters
+anglesToPlotTangents = []; % Default
+
+% Call the function
+[approachXYPsi, curveXYPsi, exitXYPsi, hPlots] = fcn_VD_parkingPlotSolution(...
+	standardParkingTurnPath, initialXYPhi, ...
+	approachPathDistance, endOfArcAngleInRadians, exitPathDistance, ...
+	(anglesToPlotTangents), (figNum));
+legend('Interpreter','none');
+
+sgtitle(titleString, 'Interpreter','none');
+
+% Check variable types
+assert(isnumeric(approachXYPsi));
+assert(isnumeric(curveXYPsi));
+assert(isnumeric(exitXYPsi));
+assert(iscell(hPlots));
+
+% Check variable sizes
+assert(size(approachXYPsi,1)==2);
+assert(size(approachXYPsi,2)==3);
+assert(size(curveXYPsi,1)>=2);
+assert(size(curveXYPsi,2)==3);
+assert(size(exitXYPsi,1)==2);
+assert(size(exitXYPsi,2)==3);
+
+% Check variable values
+% (too complex to check)
+
+% Make sure plot opened up
+assert(isequal(get(gcf,'Number'),figNum));
+
+%% DEMO case: negative exit distance
+figNum = 10006;
+titleString = sprintf('DEMO case: negative exit distance');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+figure(figNum); clf;
+
+% Set up inputs
+dataFileName = fullfile(pwd,'Data','parkingData.mat');
+if exist(dataFileName,'file')
+	% load(dataFileName,'standardParkingTurnPath','tDistancesEachAngle','uDistancesEachAngle')
+	load(dataFileName,'standardParkingTurnPath')
+else
+	error('Need to run a prior section to generate the data file');
+end
+
+initialXYPhi = [0 0 0];
+approachPathDistance = 2; % meters
+endOfArcAngleInRadians = 45*pi/180; % radians
+exitPathDistance = -5; % meters
+anglesToPlotTangents = []; % Default
+
+% Call the function
+[approachXYPsi, curveXYPsi, exitXYPsi, hPlots] = fcn_VD_parkingPlotSolution(...
+	standardParkingTurnPath, initialXYPhi, ...
+	approachPathDistance, endOfArcAngleInRadians, exitPathDistance, ...
+	(anglesToPlotTangents), (figNum));
+legend('Interpreter','none');
+
+sgtitle(titleString, 'Interpreter','none');
+
+% Check variable types
+assert(isnumeric(approachXYPsi));
+assert(isnumeric(curveXYPsi));
+assert(isnumeric(exitXYPsi));
+assert(iscell(hPlots));
+
+% Check variable sizes
+assert(size(approachXYPsi,1)==2);
+assert(size(approachXYPsi,2)==3);
+assert(size(curveXYPsi,1)>=2);
+assert(size(curveXYPsi,2)==3);
+assert(size(exitXYPsi,1)==2);
+assert(size(exitXYPsi,2)==3);
+
+% Check variable values
+% (too complex to check)
+
+% Make sure plot opened up
+assert(isequal(get(gcf,'Number'),figNum));
 %% Test cases start here. These are very simple, usually trivial
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
