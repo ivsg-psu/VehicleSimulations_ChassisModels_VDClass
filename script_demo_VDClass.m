@@ -288,6 +288,10 @@ ith_repo = ith_repo+1;
 dependencyURLs{ith_repo} = 'https://github.com/ivsg-psu/FieldDataCollection_GPSRelatedCodes_GPSClass';
 dependencySubfolders{ith_repo} = {'Functions'};
 
+ith_repo = ith_repo+1;
+dependencyURLs{ith_repo} = 'https://github.com/ivsg-psu/VehicleSimulations_VehiclePlotting_PlotTire';
+dependencySubfolders{ith_repo} = {'Functions','Data'};
+
 % ith_repo = ith_repo+1;
 % dependencyURLs{ith_repo} = 'https://github.com/ivsg-psu/PathPlanning_PathTools_GetUserInputPath';
 % dependencySubfolders{ith_repo} = {''};
