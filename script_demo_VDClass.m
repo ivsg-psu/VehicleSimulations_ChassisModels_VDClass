@@ -238,7 +238,13 @@
 %   % * Used fcn_VDCore_getStudent+ID as starter
 %
 % (new release)
-
+%
+% 2026_11_04b by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_getStudentVehicle
+%   % * Added cornering coefficient values
+%   % * Added 0-60 times
+%
+% (new release)
 
 % TO-DO:
 % 2026_09_03 by Sean Brennan, sbrennan@psu.edu

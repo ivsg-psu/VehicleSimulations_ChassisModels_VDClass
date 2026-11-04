@@ -47,6 +47,13 @@ function vehicleParameters = fcn_VD_getStudentVehicle(varargin)
 % - In fcn_VD_getStudentVehicle
 %   % * First write of the function
 %   % * Used fcn_VDCore_getStudent+ID as starter
+%
+% 2026_11_04b by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_getStudentVehicle
+%   % * Added cornering coefficient values
+%   % * Added 0-60 times
+%
+% (new release)
 
 % TO-DO:
 % 
@@ -555,6 +562,18 @@ vehicleParameters.TireSidewallMarkings_PrintFormat = '%s';
 vehicleParameters.TireSidewallMarkings_AllowableRange = [];
 vehicleParameters.TireSidewallMarkings_Units = [];
 
+vehicleParameters.TireFrontCorneringCoefficient = [];
+vehicleParameters.TireFrontCorneringCoefficient_Text = 'the front tire cornering coefficient - the cornering stiffness divided by the normal force, in units of 1/rad (typical values are 10 rad^-1)';
+vehicleParameters.TireFrontCorneringCoefficient_PrintFormat = '%.3f';
+vehicleParameters.TireFrontCorneringCoefficient_AllowableRange = [0.01 90];
+vehicleParameters.TireFrontCorneringCoefficient_Units = '1/rad';
+
+vehicleParameters.TireRearCorneringCoefficient = [];
+vehicleParameters.TireRearCorneringCoefficient_Text = 'the rear tire cornering coefficient - the cornering stiffness divided by the normal force, in units of 1/rad (typical values are 14 rad^-1)';
+vehicleParameters.TireRearCorneringCoefficient_PrintFormat = '%.3f';
+vehicleParameters.TireRearCorneringCoefficient_AllowableRange = [0.01 90];
+vehicleParameters.TireRearCorneringCoefficient_Units = '1/rad';
+
 % Turn Radius
 vehicleParameters.MinimumTurnRadius = [];
 vehicleParameters.MinimumTurnRadius_Text = 'the minimum turn radius of the vehicle, in meters';
@@ -593,4 +612,9 @@ vehicleParameters.EngineTorqueAtPeakHorsepower_PrintFormat = '%.2f';
 vehicleParameters.EngineTorqueAtPeakHorsepower_AllowableRange = [1 10000];
 vehicleParameters.EngineTorqueAtPeakHorsepower_Units = 'ft-lb';
 
+vehicleParameters.AccelerationZeroToSixtyTime = [];
+vehicleParameters.AccelerationZeroToSixtyTime_Text = 'the 0 to 60 mph fastest time, in seconds';
+vehicleParameters.AccelerationZeroToSixtyTime_PrintFormat = '%.2f';
+vehicleParameters.AccelerationZeroToSixtyTime_AllowableRange = [0 1000];
+vehicleParameters.AccelerationZeroToSixtyTime_Units = 'sec';
 end % Ends fcn_INTERNAL_fillTemplate
