@@ -228,6 +228,17 @@
 %   % * Added xyPlottingPoints as an output
 %
 % (new release)
+%
+% 2026_11_04 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_VD_getStudentVehicle
+%   % * First write of the script
+%   % * Used script_test_fcn_fcn_VDCore_get+StudentID as starter
+% - In fcn_VD_getStudentVehicle
+%   % * First write of the function
+%   % * Used fcn_VDCore_getStudent+ID as starter
+%
+% (new release)
+
 
 % TO-DO:
 % 2026_09_03 by Sean Brennan, sbrennan@psu.edu
