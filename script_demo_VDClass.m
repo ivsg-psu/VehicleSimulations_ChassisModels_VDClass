@@ -381,8 +381,60 @@ end
 disp('Welcome to the demo code for the Vehicle Dynamics (VD) class library!')
 
 
+%% Vehicle Parameter Entry
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% __      __  _     _      _
+% \ \    / / | |   (_)    | |
+%  \ \  / /__| |__  _  ___| | ___
+%   \ \/ / _ \ '_ \| |/ __| |/ _ \
+%    \  /  __/ | | | | (__| |  __/
+%  ___\/ \___|_| |_|_|\___|_|\___|     _
+% |  __ \                             | |
+% | |__) |_ _ _ __ __ _ _ __ ___   ___| |_ ___ _ __
+% |  ___/ _` | '__/ _` | '_ ` _ \ / _ \ __/ _ \ '__|
+% | |  | (_| | | | (_| | | | | | |  __/ ||  __/ |
+% |_|___\__,_|_|_ \__,_|_| |_| |_|\___|\__\___|_|
+% |  ____|     | |
+% | |__   _ __ | |_ _ __ _   _
+% |  __| | '_ \| __| '__| | | |
+% | |____| | | | |_| |  | |_| |
+% |______|_| |_|\__|_|   \__, |
+%                         __/ |
+%                        |___/
+% See https://patorjk.com/software/taag/#p=display&f=Big&t=Vehicle%0AParameter+%0AEntry&x=none&v=4&h=4&w=80&we=false
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% fcn_VD_getStudentVehicle
+figNum = 10003;
+titleString = sprintf('fcn_VD_getStudentVehicle loads vehicle parameters with an optional menu system');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+figure(figNum); close(figNum);
+
+% Set input arguments
+vehicleParametersFile = fullfile(pwd,'Data','vehicleParameters_2013ToyotaPriusFour.mat');
+
+%%%%%%%%%%
+% Call the function
+% Set figNum to anything but -1 to enter menu
+figNum = 22;
+vehicleParameters = fcn_VD_getStudentVehicle((vehicleParametersFile), (figNum));
+
+% sgtitle(titleString, 'Interpreter','none');
+
+% Check variable types
+assert(isstruct(vehicleParameters));
+
+% Check variable sizes
+assert(isequal(size(vehicleParameters),[1 1]));
+
+% Check variable values
+% Too many to check
+
+% % Make sure plot opened up
+% assert(isequal(get(gcf,'Number'),figNum));
 
 
+% See also: https://github.com/ivsg-psu/VehicleSimulations_ParameterSets_AveragePassengerVehicleChassisParameters 
 
 %% Functions follow
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
