@@ -1,0 +1,291 @@
+function dXdt = fcn_VD_derivatives2DOFBicycleModelStateSpace( X, inputFrontRoadWheelAngleRadians, vehicleParameters, varargin)
+
+%% fcn_VD_derivatives2DOFBicycleModelStateSpace
+%   Fill in the pose derivatives for the bicycle 2DOF dynamic model using
+%   the state-space equations
+%
+% FORMAT:
+%
+%      dXdt = fcn_VD_derivatives2DOFBicycleModelStateSpace( X, inputFrontRoadWheelAngleRadians, vehicleParameters, (figNum))
+%
+% INPUTS:
+%
+%      X: A 3x1 vector of global pose in the form of 
+%         [X; Y; Phi], which stand for:
+% 
+%         X: Global X position in meters
+%
+%         Y: Global Y position in meters
+%
+%         phi: Global yaw angle in radians, measured positive from X axis
+%         to Y axis
+%
+%      inputFrontRoadWheelAngleRadians: the angle of the front wheel of the
+%      vehicle relative to the ground (input: rad)
+%
+%      vehicleParameters: a structure with the following subfields
+%          % Example below is approximately a Ford Taurus
+%            vehicleParameters(1).U          = 20;     % x-axis velocity, in m/s
+%            vehicleParameters(1).m          = 1031.9; % mass in kg
+%            vehicleParameters(1).Iz         = 1850;   % z-axis rotational inertia in kg-m^2
+%            vehicleParameters(1).a          = 0.9271; % distance from front axle to CG, in meters
+%            vehicleParameters(1).b          = 1.5621; % distance from rear axle to CG, in meters
+%            vehicleParameters(1).Caf        = 77500;  % Cornering stiffness of front axle, N/rad;
+%            vehicleParameters(1).Car	     = 116250; % Cornering stiffness of rear axle, N/rad;
+%
+%      (OPTIONAL INPUTS)
+%
+%      figNum: a FID number to print results. If set to -1, skips any
+%      input checking or debugging, no prints will be generated, and sets
+%      up code to maximize speed.
+%
+% OUTPUTS:
+%
+%   dXdt: A 3x1 vector of linear velocities and rotational velocities
+%
+% DEPENDENCIES:
+%
+%      fcn_DebugTools_checkInputsToFunctions
+%
+% EXAMPLES:
+%
+%     See the script: script_test_fcn_VD_derivatives2DOFBicycleModelStateSpace
+%     for a full test suite.
+%
+% This function was written on 2026_11_07 
+% by Sean Brennan. Questions or comments? sbrennan@psu.edu
+
+% REVISION HISTORY:
+%
+% As: fcn_VD_kinematicBicycleModel
+%
+% 2026_11_07 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_derivatives2DOFBicycleModelStateSpace
+%   % * First write of function, 
+%   % * Using fcn_VD_derivatives2DOFBicycleModel as starter
+
+
+% TO-DO:
+% - 2026_11_07 by Sean Brennan, sbrennan@psu.edu
+%   % (add items here)
+
+%% Debugging and Input checks
+
+% Check if flag_max_speed set. This occurs if the figNum variable input
+% argument (varargin) is given a number of -1, which is not a valid figure
+% number.
+MAX_NARGIN = 4; % The largest Number of argument inputs to the function
+flag_max_speed = 0; % The default. This runs code with all error checking
+if (nargin==MAX_NARGIN && isequal(varargin{end},-1))
+    flag_do_debug = 0; % Flag to plot the results for debugging
+    flag_check_inputs = 0; % Flag to perform input checking
+    flag_max_speed = 1;
+else
+    % Check to see if we are externally setting debug mode to be "on"
+    flag_do_debug = 0; % Flag to plot the results for debugging
+    flag_check_inputs = 1; % Flag to perform input checking
+    MATLABFLAG_VD_FLAG_CHECK_INPUTS = getenv("MATLABFLAG_VD_FLAG_CHECK_INPUTS");
+    MATLABFLAG_VD_FLAG_DO_DEBUG = getenv("MATLABFLAG_VD_FLAG_DO_DEBUG");
+    if ~isempty(MATLABFLAG_VD_FLAG_CHECK_INPUTS) && ~isempty(MATLABFLAG_VD_FLAG_DO_DEBUG)
+        flag_do_debug = str2double(MATLABFLAG_VD_FLAG_DO_DEBUG);
+        flag_check_inputs  = str2double(MATLABFLAG_VD_FLAG_CHECK_INPUTS);
+    end
+end
+
+% flag_do_debug = 1;
+
+if flag_do_debug % If debugging is on, print on entry/exit to the function
+    st = dbstack; %#ok<*UNRCH>
+    fprintf(1,'STARTING function: %s, in file: %s\n',st(1).name,st(1).file);
+    debug_figNum = 999978; %#ok<NASGU>
+else
+    debug_figNum = []; %#ok<NASGU>
+end
+
+%% check input arguments?
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   _____                   _
+%  |_   _|                 | |
+%    | |  _ __  _ __  _   _| |_ ___
+%    | | | '_ \| '_ \| | | | __/ __|
+%   _| |_| | | | |_) | |_| | |_\__ \
+%  |_____|_| |_| .__/ \__,_|\__|___/
+%              | |
+%              |_|
+% See: http://patorjk.com/software/taag/#p=display&f=Big&t=Inputs
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if 0==flag_max_speed
+    if flag_check_inputs
+        % Are there the right number of inputs?
+        narginchk(MAX_NARGIN-1,MAX_NARGIN);
+
+        % Check the y input to be sure it has 1 column, 3 rows
+        fcn_DebugTools_checkInputsToFunctions(X, '1column_of_numbers',[3 3]);
+
+        % Check the inputFrontRoadWheelAngleRadians input to be sure it has 1 column and 1 row
+        fcn_DebugTools_checkInputsToFunctions(inputFrontRoadWheelAngleRadians, '1column_of_numbers',[1 1]);
+
+		% Check the vehicleParameters input is a structure
+        assert(isstruct(vehicleParameters));
+    end
+end
+
+
+% 
+%   Set the start values
+% [flag_start_is_a_point_type, start_zone_definition] = fcn_Laps_checkZoneType(start_zone_definition, 'start_definition', -1);
+% 
+% 
+%   The following area checks for variable argument inputs (varargin)
+% 
+%   Does the user want to specify the end_definition?
+%   Set defaults first:
+% end_zone_definition = start_zone_definition; % Default case
+% flag_end_is_a_point_type = flag_start_is_a_point_type; % Inheret the start case
+%   Check for user input
+% if 3 <= nargin
+%     temp = varargin{1};
+%     if ~isempty(temp)
+%         % Set the end values
+%         [flag_end_is_a_point_type, end_zone_definition] = fcn_Laps_checkZoneType(temp, 'end_definition', -1);
+%     end
+% end
+% 
+%   Does the user want to specify excursion_definition?
+% flag_use_excursion_definition = 0; % Default case
+% flag_excursion_is_a_point_type = 1; % Default case
+% if 4 <= nargin
+%     temp = varargin{2};
+%     if ~isempty(temp)
+%         % Set the excursion values
+%         [flag_excursion_is_a_point_type, excursion_definition] = fcn_Laps_checkZoneType(temp, 'excursion_definition',-1);
+%         flag_use_excursion_definition = 1;
+%     end
+% end
+
+% Does user want to show the plots?
+flag_do_plots = 0; % Default is to NOT show plots
+if (0==flag_max_speed) && (MAX_NARGIN == nargin) 
+    temp = varargin{end};
+    if ~isempty(temp) % Did the user NOT give an empty figure number?
+        figNum = temp; 
+        flag_do_plots = 1;
+    end
+end
+
+
+%% Implements Bicycle Model
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   __  __       _       
+%  |  \/  |     (_)      
+%  | \  / | __ _ _ _ __  
+%  | |\/| |/ _` | | '_ \ 
+%  | |  | | (_| | | | | |
+%  |_|  |_|\__,_|_|_| |_|
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Pull out the states
+V = X(1); % lateral velocity [m/s]
+r = X(2); % yaw rate [rad/s]
+pose = X(3:5); % pose of the vehicle
+
+%% Pull out the parameters
+m = vehicleParameters.mass;
+
+%% Inputs
+steeringAnglesRadians = [inputFrontRoadWheelAngleRadians; 0];
+
+% Fill in the SS Model without actuator dynamics
+A =[0            1                          0                   0;
+   0    -(Caf+Car)/(m*U)               (Caf+Car)/m     -(Caf*a-Car*b)/(m*U);
+   0             0                          0                   1;
+   0    -(a*Caf-b*Car)/(Iz*U)       (a*Caf-b*Car)/Iz    -(a^2*Caf+b^2*Car)/(Iz*U)];
+
+B =[0            0             0;
+   Caf/m       Car/m           0;
+   0             0             0;
+   a*Caf/Iz   -b*Car/Iz    d/(r*Iz)];
+
+
+%% Newtonian Dynamics
+DvelDt = fcn_VD_stLateralDynamics(t, [V; r], U, lateralForces, vehicleParameters);
+
+%% Body2Global Coordinates
+DposeDt = fcn_VD_Body2GlobalCoordinates(t, pose, U, V, r);
+
+%% Output
+dXdt = [DvelDt; DposeDt];
+
+
+%% Plot the results (for debugging)?
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   _____       _
+%  |  __ \     | |
+%  | |  | | ___| |__  _   _  __ _
+%  | |  | |/ _ \ '_ \| | | |/ _` |
+%  | |__| |  __/ |_) | |_| | (_| |
+%  |_____/ \___|_.__/ \__,_|\__, |
+%                            __/ |
+%                           |___/
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if flag_do_plots
+    
+    % plot the derivative outputs as a vector
+    figure(figNum);
+	hold on;
+	axis equal;
+
+	% Plot the car as a simple stick figure
+	rearLocationXY = [X Y];
+	frontLocationXY = rearLocationXY + L*[cos(yaw) sin(yaw)];
+	axisLine = [rearLocationXY; frontLocationXY];
+	plot(axisLine(:,1),axisLine(:,2),'-','LineWidth',5);
+
+	wheelRadius = 0.35;
+	fcn_INTERNAL_plotWheel(rearLocationXY, wheelRadius, yaw);
+	fcn_INTERNAL_plotWheel(frontLocationXY, wheelRadius, yaw+inputFrontRoadWheelAngleRadians);
+
+	quiver(X,Y,DvelDt(1), DvelDt(2), 0);
+	hold on;
+	axis equal;
+	axis padded;
+
+	% Plot the rotation. this is done by putting a small, grey vector at
+	% the end that points in the direction and magnitude of the rotation.
+	rotationAngle = DyawDt;
+	changeVector = [DvelDt(1) DvelDt(2)];
+	newChange = changeVector*[cos(rotationAngle) sin(rotationAngle); -sin(rotationAngle) cos(rotationAngle)];
+	rotationStartPoint = [X Y]+changeVector;
+	rotationEndPoint = [X Y]+newChange;
+	differenceVector = rotationEndPoint - rotationStartPoint;
+	quiver(rotationStartPoint(1),rotationStartPoint(2), differenceVector(1), differenceVector(2),0,'Color',0.8*[1 1 1]);
+
+
+end
+
+if flag_do_debug
+    fprintf(1, 'ENDING function: %s, in file: %s\n\n', st(1).name, st(1).file);
+end
+
+end % Ends main function
+
+%% Functions follow
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   ______                _   _
+%  |  ____|              | | (_)
+%  | |__ _   _ _ __   ___| |_ _  ___  _ __  ___
+%  |  __| | | | '_ \ / __| __| |/ _ \| '_ \/ __|
+%  | |  | |_| | | | | (__| |_| | (_) | | | \__ \
+%  |_|   \__,_|_| |_|\___|\__|_|\___/|_| |_|___/
+%
+% See: https://patorjk.com/software/taag/#p=display&f=Big&t=Functions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%§
+
+function h_wheel = fcn_INTERNAL_plotWheel(wheelCenterXY, wheelRadius, wheelYaw)
+wheelLine = [...
+	wheelCenterXY - wheelRadius*[cos(wheelYaw) sin(wheelYaw)];
+	wheelCenterXY + wheelRadius*[cos(wheelYaw) sin(wheelYaw)];
+	];
+h_wheel = plot(wheelLine(:,1), wheelLine(:,2),'-','LineWidth',10,'Color',0.2*[1 1 1]);
+end

@@ -1,10 +1,10 @@
 function vehicleParameters = fcn_VD_getStudentVehicle(varargin)
 %% fcn_VD_getStudentVehicle
-% Opens up a submenu system to query student to get their student ID.
+% Opens up a submenu system to query student to enter vehicle parameters.
 %
 % FORMAT:
 %
-%      vehicleParameters = fcn_VD_getStudentVehicle((figNum))
+%      vehicleParameters = fcn_VD_getStudentVehicle((vehicleParametersFile),  (figNum))
 %
 % INPUTS:
 %

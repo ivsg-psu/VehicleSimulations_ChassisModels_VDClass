@@ -245,6 +245,31 @@
 %   % * Added 0-60 times
 %
 % (new release)
+%
+% 2026_11_07 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_VD_fill2DOFBicycleModelStateSpace
+%   % * Wrote the code originally, 
+%   % * Used script_test_fcn_VD_derivativesKinematicBicycleModel as starter
+% - In fcn_VD_fill2DOFBicycleModelStateSpace
+%   % * First write of function, 
+%   % * Using fcn_VD_derivatives2DOFBicycleModel as starter
+% - In script_test_fcn_VD_derivatives2DOFBicycleModelStateSpace
+%   % * Wrote the code originally, 
+%   % * Used script_test_fcn_VD_derivativesKinematicBicycleModel as starter
+% - In fcn_VD_derivatives2DOFBicycleModelStateSpace
+%   % * First write of function, 
+%   % * Using fcn_VD_derivatives2DOFBicycleModel as starter
+%   % * NOT complete yet
+% - In script_test_fcn_VD_processParameters
+%   % * First write of the script
+%   % * Used script_test_fcn_VD_getStudentVehicle as starter
+%   % * NOT complete yet
+% - In fcn_VD_processParameters
+%   % * First write of the function
+%   % * Used fcn_VD_getStudentVehicle as starter
+%
+% (new release)
+
 
 % TO-DO:
 % 2026_09_03 by Sean Brennan, sbrennan@psu.edu
