@@ -275,6 +275,7 @@
 %   % * First write of script
 %   % * Used script_test_fcn_VD_parking+CalcEntryArcExitPaths as starter
 % - In fcn_VD_parkingGenerateRandomParkingSpot
+%   % * First write of function
 %   % * Used fcn_VD_parkingCalcEntryArcExitPaths as starter
 %
 % (new release)

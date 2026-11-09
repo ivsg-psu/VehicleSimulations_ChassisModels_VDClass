@@ -102,6 +102,7 @@ function [goalParkingPointInXYphi, approachXYPsi, curveXYPsi, exitXYPsi , approa
 % 
 % 2026_11_08 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_VD_parkingGenerateRandomParkingSpot
+%   % * First write of function
 %   % * Used fcn_VD_parkingCalcEntryArcExitPaths as starter
 
 % TO-DO:
