@@ -1,16 +1,22 @@
-% script_test_fcn_VD_derivatives2DOFBicycleModel.m
-% tests fcn_VD_derivatives2DOFBicycleModel.m
+% script_test_fcn_VD_st2dofTireForcesLinear.m
+% tests fcn_VD_st2dofTireForcesLinear.m
 
 % REVISION HISTORY:
 %
-% 2026_10_21 by Sean Brennan, sbrennan@psu.edu
-% - In script_test_fcn_VD_derivatives2DOFBicycleModel
-%   % * Wrote the code originally, 
-%   % * Used script_test_fcn_VD_derivativesKinematicBicycleModel as starter
+% As: script_test_fcn_VD_st2dofTireForcesLinear
+%
+% 2026_11_10 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_VD_st2dofTireForcesLinear
+%   % * First write of script
+%   % * Used script_test_fcn_VD_slipAnglesBicycleModel as starter
+%
+% 2026_11_11 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_VD_st2dofTireForcesLinear
+%   % * Added test case to sweep through tire slips
 
 % TO-DO:
 %
-% 2026_10_21 by Sean Brennan, sbrennan@psu.edu
+% 2026_11_10 by Sean Brennan, sbrennan@psu.edu
 % - (fill in items here)
 
 
@@ -41,30 +47,73 @@ titleString = sprintf('DEMO case: basic call');
 fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
 figure(figNum); clf;
 
-% Set the input arguments
-y = [1; 1; pi/4]; % meters, meters, radians
-inputFrontRoadWheelAngleRadians = 10*pi/180; % radians
-U = 20; % meters per second
-L = 2.5; % meters
+% Set up inputs
+slipAnglesInRadians = [5 3]*pi/180;
+vehicleParametersFile = fullfile(pwd,'Data','vehicleParameters_2013ToyotaPriusFour.mat');
+vehicleParameters = fcn_VD_getStudentVehicle((vehicleParametersFile), (-1));
 
 % Call the function
-dydt = fcn_VD_derivatives2DOFBicycleModel( y, inputFrontRoadWheelAngleRadians, U, L, (figNum));
+lateralForces = fcn_VD_st2dofTireForcesLinear(slipAnglesInRadians, vehicleParameters, (figNum));
 
 sgtitle(titleString, 'Interpreter','none');
 
 % Check variable types
-assert(isnumeric(dydt));
+assert(isnumeric(lateralForces));
 
 % Check variable sizes
-assert(size(dydt,1)==3); 
-assert(size(dydt,2)==1); 
+assert(size(lateralForces,1)==1);
+assert(size(lateralForces,2)==2);
 
 % Check variable values
-assert(isequal(dydt, [U*cos(y(3)); U*sin(y(3)); (U/L)*tan(inputFrontRoadWheelAngleRadians)]));  
+% (too complex to check)
 
 % Make sure plot opened up
 assert(isequal(get(gcf,'Number'),figNum));
 
+
+%% DEMO case: sweep through slip angles
+figNum = 10002;
+titleString = sprintf('DEMO case: sweep through slip angles');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+figure(figNum); clf;
+
+% Set up inputs
+anglesToSweep = (-90:90)';
+Nangles = length(anglesToSweep(:,1));
+vehicleParametersFile = fullfile(pwd,'Data','vehicleParameters_2013ToyotaPriusFour.mat');
+vehicleParameters = fcn_VD_getStudentVehicle((vehicleParametersFile), (-1));
+
+% Call the function
+allLateralForces = zeros(Nangles,2);
+for ith_angle = 1:Nangles
+	thisAngle = anglesToSweep(ith_angle);
+	slipAnglesInRadians = [thisAngle thisAngle]*pi/180;
+	lateralForces = fcn_VD_st2dofTireForcesLinear(slipAnglesInRadians, vehicleParameters, (-1));
+	allLateralForces(ith_angle,:) = lateralForces;
+end
+
+sgtitle(titleString, 'Interpreter','none');
+
+% Check variable types
+assert(isnumeric(lateralForces));
+
+% Check variable sizes
+assert(size(lateralForces,1)==1);
+assert(size(lateralForces,2)==2);
+
+% Check variable values
+% (too complex to check)
+
+% Make sure plot opened up
+assert(isequal(get(gcf,'Number'),figNum));
+
+figure(figNum); clf;
+hold on;
+plot(anglesToSweep,allLateralForces(:,1),'-','DisplayName','Front');
+plot(anglesToSweep,allLateralForces(:,2),'-','DisplayName','Rear');
+xlabel('Slip angles [deg]','Interpreter','none');
+ylabel('Forces [N]','Interpreter','none');
+legend;
 
 %% Test cases start here. These are very simple, usually trivial
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -109,24 +158,25 @@ figNum = 80001;
 fprintf(1,'Figure: %.0f: FAST mode, empty figNum\n',figNum);
 figure(figNum); close(figNum);
 
-% Set the input arguments
-y = [1; 1; pi/4]; % meters, meters, radians
-inputFrontRoadWheelAngleRadians = 10*pi/180; % radians
-U = 20; % meters per second
-L = 2.5; % meters
+% Set up inputs
+slipAnglesInRadians = [5 3]*pi/180;
+vehicleParametersFile = fullfile(pwd,'Data','vehicleParameters_2013ToyotaPriusFour.mat');
+vehicleParameters = fcn_VD_getStudentVehicle((vehicleParametersFile), (-1));
 
 % Call the function
-dydt = fcn_VD_derivatives2DOFBicycleModel( y, inputFrontRoadWheelAngleRadians, U, L, ([]));
+lateralForces = fcn_VD_st2dofTireForcesLinear(slipAnglesInRadians, vehicleParameters, ([]));
+
+sgtitle(titleString, 'Interpreter','none');
 
 % Check variable types
-assert(isnumeric(dydt));
+assert(isnumeric(lateralForces));
 
 % Check variable sizes
-assert(size(dydt,1)==3); 
-assert(size(dydt,2)==1); 
+assert(size(lateralForces,1)==1);
+assert(size(lateralForces,2)==2);
 
 % Check variable values
-assert(isequal(dydt, [U*cos(y(3)); U*sin(y(3)); (U/L)*tan(inputFrontRoadWheelAngleRadians)]));  
+% (too complex to check)
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
@@ -138,24 +188,25 @@ figNum = 80002;
 fprintf(1,'Figure: %.0f: FAST mode, figNum=-1\n',figNum);
 figure(figNum); close(figNum);
 
-% Set the input arguments
-y = [1; 1; pi/4]; % meters, meters, radians
-inputFrontRoadWheelAngleRadians = 10*pi/180; % radians
-U = 20; % meters per second
-L = 2.5; % meters
+% Set up inputs
+slipAnglesInRadians = [5 3]*pi/180;
+vehicleParametersFile = fullfile(pwd,'Data','vehicleParameters_2013ToyotaPriusFour.mat');
+vehicleParameters = fcn_VD_getStudentVehicle((vehicleParametersFile), (-1));
 
 % Call the function
-dydt = fcn_VD_derivatives2DOFBicycleModel( y, inputFrontRoadWheelAngleRadians, U, L, (-1));
+lateralForces = fcn_VD_st2dofTireForcesLinear(slipAnglesInRadians, vehicleParameters, (-1));
+
+sgtitle(titleString, 'Interpreter','none');
 
 % Check variable types
-assert(isnumeric(dydt));
+assert(isnumeric(lateralForces));
 
 % Check variable sizes
-assert(size(dydt,1)==3); 
-assert(size(dydt,2)==1); 
+assert(size(lateralForces,1)==1);
+assert(size(lateralForces,2)==2);
 
 % Check variable values
-assert(isequal(dydt, [U*cos(y(3)); U*sin(y(3)); (U/L)*tan(inputFrontRoadWheelAngleRadians)]));  
+% (too complex to check)
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
@@ -168,27 +219,29 @@ fprintf(1,'Figure: %.0f: FAST mode comparisons\n',figNum);
 figure(figNum);
 close(figNum);
 
-% Set the input arguments
-y = [1; 1; pi/4]; % meters, meters, radians
-inputFrontRoadWheelAngleRadians = 10*pi/180; % radians
-U = 20; % meters per second
-L = 2.5; % meters
+% Set up inputs
+slipAnglesInRadians = [5 3]*pi/180;
+vehicleParametersFile = fullfile(pwd,'Data','vehicleParameters_2013ToyotaPriusFour.mat');
+vehicleParameters = fcn_VD_getStudentVehicle((vehicleParametersFile), (-1));
 
-Niterations = 500;
+
+Niterations = 50;
 
 % Do calculation without pre-calculation
 tic;
 for ith_test = 1:Niterations
+
 	% Call the function
-	dydt = fcn_VD_derivatives2DOFBicycleModel( y, inputFrontRoadWheelAngleRadians, U, L, ([]));
+	lateralForces = fcn_VD_st2dofTireForcesLinear(slipAnglesInRadians, vehicleParameters, ([]));
 end
 slow_method = toc;
 
 % Do calculation with pre-calculation, FAST_MODE on
 tic;
 for ith_test = 1:Niterations
+
 	% Call the function
-	dydt = fcn_VD_derivatives2DOFBicycleModel( y, inputFrontRoadWheelAngleRadians, U, L, (-1));
+	lateralForces = fcn_VD_st2dofTireForcesLinear(slipAnglesInRadians, vehicleParameters, (-1));
 end
 fast_method = toc;
 
@@ -229,11 +282,11 @@ assert(~any(figHandles==figNum));
 
 % close all;
 
-%% BUG 
+%% BUG
 
 %% Fail conditions
 if 1==0
-    
+
 end
 
 

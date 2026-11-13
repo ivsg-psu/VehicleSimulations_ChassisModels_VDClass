@@ -1,5 +1,5 @@
-% script_test_fcn_VD_wheelVelocitiesBicycleModel.m
-% tests fcn_VD_wheelVelocitiesBicycleModel.m
+% script_test_fcn_VD_st2dofWheelVelocities.m
+% tests fcn_VD_st2dofWheelVelocities.m
 
 % REVISION HISTORY:
 %
@@ -9,6 +9,13 @@
 % - In script_test_fcn_VD_wheelVelocitiesBicycleModel
 %   % * First write of script
 %   % * Used script_test_fcn_VD_2DOFBicycleModelRK4 as starter
+%
+% As: script_test_fcn_VD_st2dofWheelVelocities
+%
+% 2026_11_10 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_st2dofWheelVelocities
+%   % * Renamed script for consistency
+%   % * Copied material over from script_test_fcn_VD_wheelVelocitiesBicycleModel
 
 % TO-DO:
 %
@@ -44,19 +51,15 @@ fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
 figure(figNum); clf;
 
 % Set up inputs
-clear vehicleParameters
-
-% Approximately a Ford Taurus
-clear vehicleParameters
-vehicleParameters(1).a          = 0.9271; % Distance from front axle to CG, in meters
-vehicleParameters(1).b          = 1.5621;  % Distance from rear axle to CG, in meters
-
 U = 10;  % U is forward velocity of vehicle CG in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
 V = 0; % V is the side velocity of CG, in lateral direction
 r = 300*pi/180; % Units are rad/sec
 
+vehicleParametersFile = fullfile(pwd,'Data','vehicleParameters_2013ToyotaPriusFour.mat');
+vehicleParameters = fcn_VD_getStudentVehicle((vehicleParametersFile), (-1));
+
 % Call the function
-wheelVelocities = fcn_VD_wheelVelocitiesBicycleModel(U, V, r, vehicleParameters(1), (figNum));
+wheelVelocities = fcn_VD_st2dofWheelVelocities(U, V, r, vehicleParameters, (figNum));
 sgtitle(titleString, 'Interpreter','none');
 
 % Check variable types
@@ -121,15 +124,15 @@ clear vehicleParameters
 
 % Approximately a Ford Taurus
 clear vehicleParameters
-vehicleParameters(1).a          = 0.9271; % Distance from front axle to CG, in meters
-vehicleParameters(1).b          = 1.5621;  % Distance from rear axle to CG, in meters
+vehicleParameters.a          = 0.9271; % Distance from front axle to CG, in meters
+vehicleParameters.b          = 1.5621;  % Distance from rear axle to CG, in meters
 
 U = 10;  % U is forward velocity of vehicle CG in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
 V = 0; % V is the side velocity of CG, in lateral direction
 r = 300*pi/180; % Units are rad/sec
 
 % Call the function
-wheelVelocities = fcn_VD_wheelVelocitiesBicycleModel(U, V, r, vehicleParameters(1), ([]));
+wheelVelocities = fcn_VD_st2dofWheelVelocities(U, V, r, vehicleParameters, ([]));
 sgtitle(titleString, 'Interpreter','none');
 
 % Check variable types
@@ -157,15 +160,15 @@ clear vehicleParameters
 
 % Approximately a Ford Taurus
 clear vehicleParameters
-vehicleParameters(1).a          = 0.9271; % Distance from front axle to CG, in meters
-vehicleParameters(1).b          = 1.5621;  % Distance from rear axle to CG, in meters
+vehicleParameters.a          = 0.9271; % Distance from front axle to CG, in meters
+vehicleParameters.b          = 1.5621;  % Distance from rear axle to CG, in meters
 
 U = 10;  % U is forward velocity of vehicle CG in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
 V = 0; % V is the side velocity of CG, in lateral direction
 r = 300*pi/180; % Units are rad/sec
 
 % Call the function
-wheelVelocities = fcn_VD_wheelVelocitiesBicycleModel(U, V, r, vehicleParameters(1), (-1));
+wheelVelocities = fcn_VD_st2dofWheelVelocities(U, V, r, vehicleParameters, (-1));
 sgtitle(titleString, 'Interpreter','none');
 
 % Check variable types
@@ -194,8 +197,8 @@ clear vehicleParameters
 
 % Approximately a Ford Taurus
 clear vehicleParameters
-vehicleParameters(1).a          = 0.9271; % Distance from front axle to CG, in meters
-vehicleParameters(1).b          = 1.5621;  % Distance from rear axle to CG, in meters
+vehicleParameters.a          = 0.9271; % Distance from front axle to CG, in meters
+vehicleParameters.b          = 1.5621;  % Distance from rear axle to CG, in meters
 
 U = 10;  % U is forward velocity of vehicle CG in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
 V = 0; % V is the side velocity of CG, in lateral direction
@@ -209,7 +212,7 @@ Niterations = 50;
 tic;
 for ith_test = 1:Niterations
 	% Call the function
-	wheelVelocities = fcn_VD_wheelVelocitiesBicycleModel(U, V, r, vehicleParameters(1), ([]));
+	wheelVelocities = fcn_VD_st2dofWheelVelocities(U, V, r, vehicleParameters, ([]));
 end
 slow_method = toc;
 
@@ -217,7 +220,7 @@ slow_method = toc;
 tic;
 for ith_test = 1:Niterations
 	% Call the function
-	wheelVelocities = fcn_VD_wheelVelocitiesBicycleModel(U, V, r, vehicleParameters(1), (-1));
+	wheelVelocities = fcn_VD_st2dofWheelVelocities(U, V, r, vehicleParameters, (-1));
 end
 fast_method = toc;
 

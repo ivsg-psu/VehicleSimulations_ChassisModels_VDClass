@@ -79,6 +79,13 @@ function [stateTrajectory, t, steeringUsed] = fcn_VD_2DOFBicycleModelRK4(initial
 % - In fcn_VD_2DOFBicycleModelRK4
 %   % * Used fcn_VD_kinematicBicycleModelRK4 as starter
 %   % * Copied material over from fcn_VD_bicycle2dofModel
+%
+% As: script_test_fcn_VD_st2dofRK4
+%
+% 2026_11_12 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_VD_st2dofRK4
+%   % * Renamed function to be consistent with single-track (bicycle) naming
+%   % * Used to be called fcn_VD_2DOFBicycleModelRK4
 
 % TO-DO:
 % - 2026_10_20 by Sean Brennan, sbrennan@psu.edu
@@ -200,8 +207,11 @@ end
 % Loop through all the vehicles, simulating the trajectory of each within
 % the for loop
 for ith_vehicle = 1:N_vehicles
-    % Print to the console which vehicle we are working on
-    fprintf(1,'Working on vehicle: %d\n', ith_vehicle);
+
+	if N_vehicles>1
+		% Print to the console which vehicle we are working on
+		fprintf(1,'Simulating vehicle %.0d of %.0d \n', ith_vehicle, N_vehicles);
+	end
 
 	% Initialize variables
 	thisVehicleParameters = parameters(ith_vehicle);

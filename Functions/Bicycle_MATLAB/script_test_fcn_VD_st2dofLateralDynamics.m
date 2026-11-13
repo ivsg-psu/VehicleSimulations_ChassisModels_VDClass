@@ -1,18 +1,18 @@
-% script_test_fcn_VD_slipAnglesBicycleModel.m
-% tests fcn_VD_slipAnglesBicycleModel.m
+% script_test_fcn_VD_st2dofLateralDynamics.m
+% tests fcn_VD_st2dofLateralDynamics.m
 
 % REVISION HISTORY:
 %
-% As: script_test_fcn_VD_slipAnglesBicycleModel
+% As: script_test_fcn_VD_st2dofTireForcesLinear
 %
-% 2026_10_22 by Sean Brennan, sbrennan@psu.edu
-% - In script_test_fcn_VD_slipAnglesBicycleModel
+% 2026_11_10 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_VD_st2dofTireForcesLinear
 %   % * First write of script
-%   % * Used script_test_fcn_VD_wheelVelocitie+sBicycleModel as starter
+%   % * Used script_test_fcn_VD_slipAnglesBicycleModel as starter
 
 % TO-DO:
 %
-% 2026_10_22 by Sean Brennan, sbrennan@psu.edu
+% 2026_11_10 by Sean Brennan, sbrennan@psu.edu
 % - (fill in items here)
 
 
@@ -44,29 +44,26 @@ fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
 figure(figNum); clf;
 
 % Set up inputs
-clear vehicleParameters
+X = [1, 0*pi/180]; % [V, r] in m/s, rad/s
 
-% Approximately a Ford Taurus
-clear vehicleParameters
-vehicleParameters(1).a          = 0.9271; % Distance from front axle to CG, in meters
-vehicleParameters(1).b          = 1.5621;  % Distance from rear axle to CG, in meters
+U = 20; % Forward velocity, in m/s
 
-U = 10;  % U is forward velocity of vehicle CG in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
-V = 0; % V is the side velocity of CG, in lateral direction
-r = 300*pi/180; % Units are rad/sec
-steeringAngles = [10; 0]*pi/180; % Steering inputs, units are radians
+lateralForces = [1000 2000];
+
+vehicleParametersFile = fullfile(pwd,'Data','vehicleParameters_2013ToyotaPriusFour.mat');
+vehicleParameters = fcn_VD_getStudentVehicle((vehicleParametersFile), (-1));
 
 % Call the function
-slipAnglesInRadians = fcn_VD_slipAnglesBicycleModel(U, V, r, steeringAngles, vehicleParameters, (figNum));
+dXdt = fcn_VD_st2dofLateralDynamics(X, U, lateralForces, vehicleParameters, (figNum));
 
 sgtitle(titleString, 'Interpreter','none');
 
 % Check variable types
-assert(isnumeric(slipAnglesInRadians));
+assert(isnumeric(dXdt));
 
 % Check variable sizes
-assert(size(slipAnglesInRadians,1)==2);
-assert(size(slipAnglesInRadians,2)==1);
+assert(size(dXdt,1)==1);
+assert(size(dXdt,2)==2);
 
 % Check variable values
 % (too complex to check)
@@ -119,29 +116,26 @@ fprintf(1,'Figure: %.0f: FAST mode, empty figNum\n',figNum);
 figure(figNum); close(figNum);
 
 % Set up inputs
-clear vehicleParameters
+X = [1, 0*pi/180]; % [V, r] in m/s, rad/s
 
-% Approximately a Ford Taurus
-clear vehicleParameters
-vehicleParameters(1).a          = 0.9271; % Distance from front axle to CG, in meters
-vehicleParameters(1).b          = 1.5621;  % Distance from rear axle to CG, in meters
+U = 20; % Forward velocity, in m/s
 
-U = 10;  % U is forward velocity of vehicle CG in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
-V = 0; % V is the side velocity of CG, in lateral direction
-r = 300*pi/180; % Units are rad/sec
-steeringAngles = [10; 0]*pi/180; % Steering inputs, units are radians
+lateralForces = [1000 2000];
+
+vehicleParametersFile = fullfile(pwd,'Data','vehicleParameters_2013ToyotaPriusFour.mat');
+vehicleParameters = fcn_VD_getStudentVehicle((vehicleParametersFile), (-1));
 
 % Call the function
-slipAnglesInRadians = fcn_VD_slipAnglesBicycleModel(U, V, r, steeringAngles, vehicleParameters, ([]));
+dXdt = fcn_VD_st2dofLateralDynamics(X, U, lateralForces, vehicleParameters, ([]));
 
 sgtitle(titleString, 'Interpreter','none');
 
 % Check variable types
-assert(isnumeric(slipAnglesInRadians));
+assert(isnumeric(dXdt));
 
 % Check variable sizes
-assert(size(slipAnglesInRadians,1)==2);
-assert(size(slipAnglesInRadians,2)==1);
+assert(size(dXdt,1)==1);
+assert(size(dXdt,2)==2);
 
 % Check variable values
 % (too complex to check)
@@ -157,29 +151,26 @@ fprintf(1,'Figure: %.0f: FAST mode, figNum=-1\n',figNum);
 figure(figNum); close(figNum);
 
 % Set up inputs
-clear vehicleParameters
+X = [1, 0*pi/180]; % [V, r] in m/s, rad/s
 
-% Approximately a Ford Taurus
-clear vehicleParameters
-vehicleParameters(1).a          = 0.9271; % Distance from front axle to CG, in meters
-vehicleParameters(1).b          = 1.5621;  % Distance from rear axle to CG, in meters
+U = 20; % Forward velocity, in m/s
 
-U = 10;  % U is forward velocity of vehicle CG in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
-V = 0; % V is the side velocity of CG, in lateral direction
-r = 300*pi/180; % Units are rad/sec
-steeringAngles = [10; 0]*pi/180; % Steering inputs, units are radians
+lateralForces = [1000 2000];
+
+vehicleParametersFile = fullfile(pwd,'Data','vehicleParameters_2013ToyotaPriusFour.mat');
+vehicleParameters = fcn_VD_getStudentVehicle((vehicleParametersFile), (-1));
 
 % Call the function
-slipAnglesInRadians = fcn_VD_slipAnglesBicycleModel(U, V, r, steeringAngles, vehicleParameters, (-1));
+dXdt = fcn_VD_st2dofLateralDynamics(X, U, lateralForces, vehicleParameters, (-1));
 
 sgtitle(titleString, 'Interpreter','none');
 
 % Check variable types
-assert(isnumeric(slipAnglesInRadians));
+assert(isnumeric(dXdt));
 
 % Check variable sizes
-assert(size(slipAnglesInRadians,1)==2);
-assert(size(slipAnglesInRadians,2)==1);
+assert(size(dXdt,1)==1);
+assert(size(dXdt,2)==2);
 
 % Check variable values
 % (too complex to check)
@@ -196,19 +187,14 @@ figure(figNum);
 close(figNum);
 
 % Set up inputs
-clear vehicleParameters
+X = [1, 0*pi/180]; % [V, r] in m/s, rad/s
 
-% Approximately a Ford Taurus
-clear vehicleParameters
-vehicleParameters(1).a          = 0.9271; % Distance from front axle to CG, in meters
-vehicleParameters(1).b          = 1.5621;  % Distance from rear axle to CG, in meters
+U = 20; % Forward velocity, in m/s
 
-U = 10;  % U is forward velocity of vehicle CG in longitudinal direction, [m/s] (rule of thumb: 1 mph ~= 2* m/s)
-V = 0; % V is the side velocity of CG, in lateral direction
-r = 300*pi/180; % Units are rad/sec
-steeringAngles = [10; 0]*pi/180; % Steering inputs, units are radians
+lateralForces = [1000 2000];
 
-
+vehicleParametersFile = fullfile(pwd,'Data','vehicleParameters_2013ToyotaPriusFour.mat');
+vehicleParameters = fcn_VD_getStudentVehicle((vehicleParametersFile), (-1));
 
 
 
@@ -218,7 +204,7 @@ Niterations = 50;
 tic;
 for ith_test = 1:Niterations
 	% Call the function
-	slipAnglesInRadians = fcn_VD_slipAnglesBicycleModel(U, V, r, steeringAngles, vehicleParameters, ([]));
+	dXdt = fcn_VD_st2dofLateralDynamics(X, U, lateralForces, vehicleParameters, ([]));
 end
 slow_method = toc;
 
@@ -226,7 +212,7 @@ slow_method = toc;
 tic;
 for ith_test = 1:Niterations
 	% Call the function
-	slipAnglesInRadians = fcn_VD_slipAnglesBicycleModel(U, V, r, steeringAngles, vehicleParameters, (-1));
+	dXdt = fcn_VD_st2dofLateralDynamics(X, U, lateralForces, vehicleParameters, (-1));
 end
 fast_method = toc;
 

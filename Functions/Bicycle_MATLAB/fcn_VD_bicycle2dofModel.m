@@ -1,4 +1,23 @@
 function dydt = fcn_VD_bicycle2dofModel(t,y,steering_amplitude,Period,U,vehicle)
+
+MATLABFLAG_VD_WARN_BICYCLE2DOFMODEL = getenv("MATLABFLAG_VD_WARN_BICYCLE2DOFMODEL");
+flagShowWarning = 0;
+if isempty(MATLABFLAG_VD_WARN_BICYCLE2DOFMODEL) 
+   flagShowWarning = 1;
+else
+    if strcmp('1',MATLABFLAG_VD_WARN_BICYCLE2DOFMODEL)
+        flagShowWarning = 1;
+    end
+end
+
+if 1==flagShowWarning
+    warning('on','backtrace');
+    warning(['fcn_VD_bicycle2dofModel is being deprecated. ' ...
+        'Use fcn_VD_st2dofRK4 instead.']);
+    setenv('MATLABFLAG_VD_WARN_BICYCLE2DOFMODEL','0');
+end
+
+
 %% fcn_VD_bicycle2dofModel
 %   This function uses Bicycle model with Linear Tire model
 %

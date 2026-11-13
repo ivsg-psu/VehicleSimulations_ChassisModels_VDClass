@@ -1,0 +1,354 @@
+function dXdt = fcn_VD_st2dofDerivatives( X, inputFrontRoadWheelAngleRadians, vehicleParameters, U, varargin)
+
+%% fcn_VD_st2dofDerivatives
+%   Fill in the pose derivatives for the single-track "bicycle" 2DOF
+%   dynamic model
+%
+% FORMAT:
+%
+%      dXdt = fcn_VD_st2dofDerivatives( X, inputFrontRoadWheelAngleRadians, vehicleParameters, U, (figNum))
+%
+% INPUTS:
+%
+%      X: A 1x5 vector of global pose in the form of
+%         [V, r, X; Y; Phi], which stand for:
+%
+%         V: body-fixed lateral velocity, in m/s
+%
+%         r: body-fixed yaw rate, in rad/sec
+%
+%         X: Global X position in meters
+%
+%         Y: Global Y position in meters
+%
+%         phi: Global yaw angle in radians, measured positive from X axis
+%         to Y axis
+%
+%      inputFrontRoadWheelAngleRadians: the angle of the front wheel of the
+%      vehicle relative to the ground (input: rad)
+%
+%      vehicleParameters: a structure with the following subfields
+%          vehicleParameters.DistancesWheelbase
+%          vehicleParameters.DistancesCGFromRearAxle
+%          vehicleParameters.Mass
+%          vehicleParameters.Izz
+%          vehicleParameters.TireFrontCorneringCoefficient
+%          vehicleParameters.TireRearCorneringCoefficient
+%
+%      U: the vehicle's longitudinal velocity, in m/s
+%
+%      (OPTIONAL INPUTS)
+%
+%      figNum: a FID number to print results. If set to -1, skips any
+%      input checking or debugging, no prints will be generated, and sets
+%      up code to maximize speed.
+%
+% OUTPUTS:
+%
+%   dXdt: A 1x5 vector of linear velocities and rotational velocities in
+%   the following order: d/dt[V, r, X; Y; Phi] with units consistent with
+%   the input vector.
+%
+% DEPENDENCIES:
+%
+%      fcn_DebugTools_checkInputsToFunctions
+%      fcn_VD_st2dofSlipAngles
+%      fcn_VD_st2dofWheelVelocities
+%      fcn_VD_st2dofTireForcesLinear
+%      fcn_VD_st2dofLateralDynamics
+%      fcn_VD_st2dofStateSpace
+%      fcn_VD_Body2GlobalCoordinates
+%
+% EXAMPLES:
+%
+%     See the script: script_test_fcn_VD_derivatives2DOFBicycleModel
+%     for a full test suite.
+%
+% This function was written on 2026_10_21
+% by Sean Brennan. Questions or comments? sbrennan@psu.edu
+
+% REVISION HISTORY:
+%
+% As: fcn_VD_derivatives2DOFBicycleModel
+%
+% 2026_10_21 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_derivatives2DOFBicycleModel
+%   % * First write of function,
+%   % * Using fcn_VD_kinematicBicycleModel as starter
+%
+% As: fcn_VD_st2dofDerivatives
+%
+% 2026_11_10 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_st2dofDerivatives
+%   % * Renamed function
+%   % * Used to be called fcn_VD_derivatives2DOFBicycleModel
+%
+% 2026_11_11 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_st2dofDerivatives
+%   % * Added a section to test all the intermediate step outcomes
+%   % * Added comparison of results to state space options
+%   % * Fixed body coordinate conversions:
+%   %   % - Changed from fcn_VD_Body2GlobalCoordinates (deprecated)
+%   %   % - Changed to fcn_VD_body2GlobalCoordinatesDerivatives
+%
+% 2026_11_12 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_st2dofDerivatives
+%   % * Updated plotting outputs
+
+% TO-DO:
+% - 2026_10_21 by Sean Brennan, sbrennan@psu.edu
+%   % (add items here)
+
+%% Debugging and Input checks
+
+% Check if flag_max_speed set. This occurs if the figNum variable input
+% argument (varargin) is given a number of -1, which is not a valid figure
+% number.
+MAX_NARGIN = 5; % The largest Number of argument inputs to the function
+flag_max_speed = 0; % The default. This runs code with all error checking
+if (nargin==MAX_NARGIN && isequal(varargin{end},-1))
+	flag_do_debug = 0; % Flag to plot the results for debugging
+	flag_check_inputs = 0; % Flag to perform input checking
+	flag_max_speed = 1;
+else
+	% Check to see if we are externally setting debug mode to be "on"
+	flag_do_debug = 0; % Flag to plot the results for debugging
+	flag_check_inputs = 1; % Flag to perform input checking
+	MATLABFLAG_VD_FLAG_CHECK_INPUTS = getenv("MATLABFLAG_VD_FLAG_CHECK_INPUTS");
+	MATLABFLAG_VD_FLAG_DO_DEBUG = getenv("MATLABFLAG_VD_FLAG_DO_DEBUG");
+	if ~isempty(MATLABFLAG_VD_FLAG_CHECK_INPUTS) && ~isempty(MATLABFLAG_VD_FLAG_DO_DEBUG)
+		flag_do_debug = str2double(MATLABFLAG_VD_FLAG_DO_DEBUG);
+		flag_check_inputs  = str2double(MATLABFLAG_VD_FLAG_CHECK_INPUTS);
+	end
+end
+
+% flag_do_debug = 1;
+
+if flag_do_debug % If debugging is on, print on entry/exit to the function
+	st = dbstack; %#ok<*UNRCH>
+	fprintf(1,'STARTING function: %s, in file: %s\n',st(1).name,st(1).file);
+	debug_figNum = 999978; %#ok<NASGU>
+else
+	debug_figNum = []; %#ok<NASGU>
+end
+
+%% check input arguments?
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   _____                   _
+%  |_   _|                 | |
+%    | |  _ __  _ __  _   _| |_ ___
+%    | | | '_ \| '_ \| | | | __/ __|
+%   _| |_| | | | |_) | |_| | |_\__ \
+%  |_____|_| |_| .__/ \__,_|\__|___/
+%              | |
+%              |_|
+% See: http://patorjk.com/software/taag/#p=display&f=Big&t=Inputs
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if 0==flag_max_speed
+	if flag_check_inputs
+		% Are there the right number of inputs?
+		narginchk(MAX_NARGIN-1,MAX_NARGIN);
+
+		% Check the X input to be sure it has 1 column, 3 rows
+		fcn_DebugTools_checkInputsToFunctions(X, '5column_of_numbers',[1 1]);
+
+		% Check the inputFrontRoadWheelAngleRadians input to be sure it has 1 column and 1 row
+		fcn_DebugTools_checkInputsToFunctions(inputFrontRoadWheelAngleRadians, '1column_of_numbers',[1 1]);
+
+		% Check the vehicleParameters input is a structure
+		assert(isstruct(vehicleParameters));
+
+		% Check the U input to be sure it has 1 column and 1 row, positive
+		fcn_DebugTools_checkInputsToFunctions(U, 'positive_1column_of_numbers',[1 1]);
+	end
+end
+
+
+%
+%   Set the start values
+% [flag_start_is_a_point_type, start_zone_definition] = fcn_Laps_checkZoneType(start_zone_definition, 'start_definition', -1);
+%
+%
+%   The following area checks for variable argument inputs (varargin)
+%
+%   Does the user want to specify the end_definition?
+%   Set defaults first:
+% end_zone_definition = start_zone_definition; % Default case
+% flag_end_is_a_point_type = flag_start_is_a_point_type; % Inheret the start case
+%   Check for user input
+% if 3 <= nargin
+%     temp = varargin{1};
+%     if ~isempty(temp)
+%         % Set the end values
+%         [flag_end_is_a_point_type, end_zone_definition] = fcn_Laps_checkZoneType(temp, 'end_definition', -1);
+%     end
+% end
+%
+%   Does the user want to specify excursion_definition?
+% flag_use_excursion_definition = 0; % Default case
+% flag_excursion_is_a_point_type = 1; % Default case
+% if 4 <= nargin
+%     temp = varargin{2};
+%     if ~isempty(temp)
+%         % Set the excursion values
+%         [flag_excursion_is_a_point_type, excursion_definition] = fcn_Laps_checkZoneType(temp, 'excursion_definition',-1);
+%         flag_use_excursion_definition = 1;
+%     end
+% end
+
+% Does user want to show the plots?
+flag_do_plots = 0; % Default is to NOT show plots
+if (0==flag_max_speed) && (MAX_NARGIN == nargin)
+	temp = varargin{end};
+	if ~isempty(temp) % Did the user NOT give an empty figure number?
+		figNum = temp;
+		flag_do_plots = 1;
+	end
+end
+
+
+%% Implements Bicycle Model
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   __  __       _
+%  |  \/  |     (_)
+%  | \  / | __ _ _ _ __
+%  | |\/| |/ _` | | '_ \
+%  | |  | | (_| | | | | |
+%  |_|  |_|\__,_|_|_| |_|
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Pull out the states
+V = X(1); % lateral velocity [m/s]
+r = X(2); % yaw rate [rad/s]
+pose = X(3:5); % pose of the vehicle in global coordinates
+
+
+%% Inputs
+steeringAnglesRadians = [inputFrontRoadWheelAngleRadians 0];
+
+%% Slips
+flagUseLinear = 1;
+slipAnglesInRadians = fcn_VD_st2dofSlipAngles(U, V, r, steeringAnglesRadians, vehicleParameters, (flagUseLinear), (-1));
+
+%% Tire Forces
+lateralForces = fcn_VD_st2dofTireForcesLinear(slipAnglesInRadians, vehicleParameters, (-1));
+
+%% Newtonian Dynamics
+DvelDt = fcn_VD_st2dofLateralDynamics(X(1,1:2), U, lateralForces, vehicleParameters, (-1));
+
+% Fill in intermediate matrices?
+if 1==0
+	% Pull out the parameters
+	L = vehicleParameters.DistancesWheelbase;
+	b = vehicleParameters.DistancesCGFromRearAxle;
+	a = L - b;
+	m = vehicleParameters.Mass; % mass in kg
+	Izz = vehicleParameters.Izz; % z-axis moment of inertia
+	downForce = m*9.81; % Newtons
+	frontDownForce = (b/L)*downForce;
+	rearDownForce = (a/L)*downForce;
+
+	Caf = vehicleParameters.TireFrontCorneringCoefficient * frontDownForce; % Cornering stiffness of front axle, N/rad;
+	Car = vehicleParameters.TireRearCorneringCoefficient * rearDownForce; % Cornering stiffness of rear axle, N/rad;
+
+	alphas = [1/U a/U; 1/U -b/U]*[V; r] - steeringAnglesRadians';
+	assert(isequal(round(slipAnglesInRadians,6),round(alphas',6)));
+
+	forces = -1*[Caf Car].*alphas';
+	assert(isequal(round(lateralForces,6),round(forces,6)));
+
+	derivatives = [1/m 1/m; a/Izz -b/Izz]*forces' - [U*r; 0];
+	assert(isequal(round(DvelDt,6),round(derivatives',6)));
+
+	% FIX % Call the function
+	[A, B] = fcn_VD_st2dofStateSpace(vehicleParameters, U, (figNum));
+	predictedDvelDt = A*[V;r]+B*steeringAnglesRadians';
+
+	assert(isequal(round(DvelDt,6),round(predictedDvelDt',6)));
+end
+
+
+%% Body2Global Coordinates
+% OLD: DposeDt = fcn_VD_Body2GlobalCoordinates(t, pose, U, V, r);
+DposeDt = fcn_VD_body2GlobalCoordinatesDerivatives( pose', [U V r]', (-1));
+
+%% Output
+dXdt = [DvelDt DposeDt'];
+
+
+%% Plot the results (for debugging)?
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   _____       _
+%  |  __ \     | |
+%  | |  | | ___| |__  _   _  __ _
+%  | |  | |/ _ \ '_ \| | | |/ _` |
+%  | |__| |  __/ |_) | |_| | (_| |
+%  |_____/ \___|_.__/ \__,_|\__, |
+%                            __/ |
+%                           |___/
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if flag_do_plots
+
+	% plot the derivative outputs as a vector
+	figure(figNum);
+	hold on;
+	axis equal;
+
+	% Plot the car as a simple stick figure
+
+	rearLocationXY = [pose(1) pose(2)];
+	yaw = pose(3);
+	L = vehicleParameters.DistancesWheelbase;
+
+	frontLocationXY = rearLocationXY + L*[cos(yaw) sin(yaw)];
+	axisLine = [rearLocationXY; frontLocationXY];
+	plot(axisLine(:,1),axisLine(:,2),'-','LineWidth',5);
+
+	wheelRadius = 0.35;
+	fcn_INTERNAL_plotWheel(rearLocationXY, wheelRadius, yaw);
+	fcn_INTERNAL_plotWheel(frontLocationXY, wheelRadius, yaw+inputFrontRoadWheelAngleRadians);
+
+	quiver(pose(1), pose(2),dXdt(3), dXdt(4), 0);
+	hold on;
+	axis equal;
+	axis padded;
+
+	% Plot the rotation. this is done by putting a small, grey vector at
+	% the end that points in the direction and magnitude of the rotation.
+	rotationAngle = dXdt(5);
+	changeVector = [dXdt(3) dXdt(4)];
+	newChange = changeVector*[cos(rotationAngle) sin(rotationAngle); -sin(rotationAngle) cos(rotationAngle)];
+	rotationStartPoint = [pose(1) pose(2)]+changeVector;
+	rotationEndPoint = [pose(1) pose(2)]+newChange;
+	differenceVector = rotationEndPoint - rotationStartPoint;
+	quiver(rotationStartPoint(1),rotationStartPoint(2), differenceVector(1), differenceVector(2),0,'Color',0.8*[1 1 1]);
+
+
+end
+
+if flag_do_debug
+	fprintf(1, 'ENDING function: %s, in file: %s\n\n', st(1).name, st(1).file);
+end
+
+end % Ends main function
+
+%% Functions follow
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   ______                _   _
+%  |  ____|              | | (_)
+%  | |__ _   _ _ __   ___| |_ _  ___  _ __  ___
+%  |  __| | | | '_ \ / __| __| |/ _ \| '_ \/ __|
+%  | |  | |_| | | | | (__| |_| | (_) | | | \__ \
+%  |_|   \__,_|_| |_|\___|\__|_|\___/|_| |_|___/
+%
+% See: https://patorjk.com/software/taag/#p=display&f=Big&t=Functions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%§
+
+function h_wheel = fcn_INTERNAL_plotWheel(wheelCenterXY, wheelRadius, wheelYaw)
+wheelLine = [...
+	wheelCenterXY - wheelRadius*[cos(wheelYaw) sin(wheelYaw)];
+	wheelCenterXY + wheelRadius*[cos(wheelYaw) sin(wheelYaw)];
+	];
+h_wheel = plot(wheelLine(:,1), wheelLine(:,2),'-','LineWidth',10,'Color',0.2*[1 1 1]);
+end

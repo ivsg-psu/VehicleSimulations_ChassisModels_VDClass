@@ -1,11 +1,11 @@
-function fcn_VD_plotTimeLateralTireForce(time, latTireForces, varargin)
+function hPlots = fcn_VD_plotTimeLateralTireForce(time, latTireForces, varargin)
 %% fcn_VD_plotTimeLateralTireForce
 %   fcn_VD_plotTimeLateralTireForce plots the longitudinal tire
 %   force(s) versus time where the columns are long forces of each tire.
 %
 % FORMAT:
 %
-%       fcn_VD_plotTimeLateralTireForce(time, latTireForces, (figNum))
+%       hPlots = fcn_VD_plotTimeLateralTireForce(time, latTireForces, (figNum))
 %
 % INPUTS:
 %
@@ -21,7 +21,7 @@ function fcn_VD_plotTimeLateralTireForce(time, latTireForces, varargin)
 %
 % OUTPUTS:
 %
-%     (none)
+%     hPlots: a cell array of the handles to the resulting plots
 %
 % DEPENDENCIES:
 %
@@ -38,11 +38,19 @@ function fcn_VD_plotTimeLateralTireForce(time, latTireForces, varargin)
 % REVISION HISTORY:
 %
 % 2021_07_03 by Satya Prasad, szm888@psu.edu
-% - Wrote the code originally
+% - In fcn_VD_plotTimeLateralTireForce
+%   % * Wrote the code originally
 % 
 % 2026_01_07 by Sean Brennan, sbrennan@psu.edu
-% - Fixed header formatting to standard form
-% - Renamed "slip_+angle" variable to be latTireForces
+% - In fcn_VD_plotTimeLateralTireForce
+%   % * Fixed header formatting to standard form
+%   % * Renamed "slip_+angle" variable to be latTireForces
+% 
+% 2026_11_11 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_plotTimeLateralTireForce
+%   % * Added plot handles as output
+%   % * Removed plot clearing
+%   % * Updated figure naming
 
 % TO-DO:
 %
@@ -100,7 +108,7 @@ if 0==flag_max_speed
         narginchk(2,MAX_NARGIN);
 
         % Check the time input to be sure it has 1 column and 1 row, positive
-        fcn_DebugTools_checkInputsToFunctions(time, 'positive_1column_of_numbers',[1 2]);
+        fcn_DebugTools_checkInputsToFunctions(time, '1column_of_numbers',[1 2]);
         Ndata = size(time,1);
 
         % Check the latTireForces input to be sure it has 1 column and 1 row, positive
@@ -172,6 +180,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Ntires = size(latTireForces,2);
+hPlots = cell(Ntires,1);
 
 %% Plot the results (for debugging)?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -197,7 +206,6 @@ if flag_do_plots
     set(h_fig, 'Name', 'fcn_VD_plotTimeLateralTireForce');
     % width = 600; height = 400; right = 100; bottom = 400;
     % set(gcf, 'position', [right, bottom, width, height])
-    clf
     hold on
 
     if 4==Ntires
@@ -213,7 +221,7 @@ if flag_do_plots
     end
 
     for ith_tire = 1:Ntires
-        plot(time,latTireForces(:,ith_tire),colorStrings{ith_tire},'Linewidth',lineWidths(ith_tire), 'DisplayName', labelStrings{ith_tire});
+        hPlots{ith_tire} = plot(time,latTireForces(:,ith_tire),colorStrings{ith_tire},'Linewidth',lineWidths(ith_tire), 'DisplayName', labelStrings{ith_tire});
     end
 
     grid on

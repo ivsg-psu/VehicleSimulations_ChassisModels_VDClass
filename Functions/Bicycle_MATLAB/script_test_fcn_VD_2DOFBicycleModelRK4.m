@@ -9,6 +9,15 @@
 % - In script_test_fcn_VD_2DOFBicycleModelRK4
 %   % * Used script_test_fcn_VD_kinematicBicycleModelRK4 as starter
 %   % * Copied material over from script_test_fcn_VD_bicycle2dofModel
+%
+% As: script_test_fcn_VD_st2dofRK4
+%
+% 2026_11_12 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_VD_st2dofRK4
+%   % * Renamed function
+%   % * Used to be called script_test_fcn_VD_2DOFBicycleModelRK4
+%
+
 
 % TO-DO:
 %

@@ -44,7 +44,7 @@ function dXdt = fcn_VD_body2GlobalCoordinatesDerivatives(X, xdot, varargin)
 %
 % EXAMPLES:
 %
-%     See the script: script_test_fcn_VD_derivativesKinematicPointMassModel
+%     See the script: script_test_fcn_VD_body2GlobalCoordinatesDerivatives
 %     for a full test suite.
 %
 % This function was written on 2026_01_26 
@@ -58,14 +58,17 @@ function dXdt = fcn_VD_body2GlobalCoordinatesDerivatives(X, xdot, varargin)
 % - In fcn_VD_Body2GlobalCoordinates
 %   % * First write of function
 %
-% As: fcn_VD_Body2GlobalCoordinates
+% As: fcn_VD_body2GlobalCoordinatesDerivatives
 %
 % 2026_09_10 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_VD_body2GlobalCoordinatesDerivatives
 %   % * Renamed function to more "standard" form
 %   % * Created function from fcn_VD_Body2GlobalCoordinates in "old" folder
 %   % * Changed number of input arguments
-
+%
+% 2026_11_12 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_body2GlobalCoordinatesDerivatives
+%   % * Fixed bugs in header comments
 
 % TO-DO:
 % - 2026_01_26 by Sean Brennan, sbrennan@psu.edu

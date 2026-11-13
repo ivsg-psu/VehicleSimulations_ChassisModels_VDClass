@@ -1,12 +1,21 @@
-% script_test_fcn_VD_fill2DOFBicycleModelStateSpace.m
-% tests fcn_VD_fill2DOFBicycleModelStateSpace.m
+% script_test_fcn_VD_st2dofStateSpace.m
+% tests fcn_VD_st2dofStateSpace.m
 
 % REVISION HISTORY:
 %
+% As script_test_fcn_VD_fill2DOFBicycleModelStateSpace
+% 
 % 2026_11_07 by Sean Brennan, sbrennan@psu.edu
 % - In script_test_fcn_VD_fill2DOFBicycleModelStateSpace
 %   % * Wrote the code originally, 
 %   % * Used script_test_fcn_VD_derivativesKinematicBicycleModel as starter
+%
+% As script_test_fcn_VD_st2dofStateSpace
+% 
+% 2026_11_10 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_VD_st2dofStateSpace
+%   % * Renamed the function
+%   % * Used to be script_test_fcn_VD_fill2DOFBicycleModelStateSpace
 
 % TO-DO:
 %
@@ -47,7 +56,7 @@ vehicleParameters = fcn_VD_getStudentVehicle((vehicleParametersFile), (-1));
 U = 20; % Forward velocity, in m/s
 
 % Call the function
-[A, B] = fcn_VD_fill2DOFBicycleModelStateSpace(vehicleParameters, U, (figNum));
+[A, B] = fcn_VD_st2dofStateSpace(vehicleParameters, U, (figNum));
 
 sgtitle(titleString, 'Interpreter','none');
 
@@ -117,7 +126,7 @@ vehicleParameters = fcn_VD_getStudentVehicle((vehicleParametersFile), (-1));
 U = 20; % Forward velocity, in m/s
 
 % Call the function
-[A, B] = fcn_VD_fill2DOFBicycleModelStateSpace(vehicleParameters, U, ([]));
+[A, B] = fcn_VD_st2dofStateSpace(vehicleParameters, U, ([]));
 
 sgtitle(titleString, 'Interpreter','none');
 
@@ -150,7 +159,7 @@ vehicleParameters = fcn_VD_getStudentVehicle((vehicleParametersFile), (-1));
 U = 20; % Forward velocity, in m/s
 
 % Call the function
-[A, B] = fcn_VD_fill2DOFBicycleModelStateSpace(vehicleParameters, U, (-1));
+[A, B] = fcn_VD_st2dofStateSpace(vehicleParameters, U, (-1));
 
 sgtitle(titleString, 'Interpreter','none');
 
@@ -191,7 +200,7 @@ Niterations = 500;
 tic;
 for ith_test = 1:Niterations
 	% Call the function
-	[A, B] = fcn_VD_fill2DOFBicycleModelStateSpace(vehicleParameters, U, ([]));
+	[A, B] = fcn_VD_st2dofStateSpace(vehicleParameters, U, ([]));
 end
 slow_method = toc;
 
@@ -199,7 +208,7 @@ slow_method = toc;
 tic;
 for ith_test = 1:Niterations
 	% Call the function
-	[A, B] = fcn_VD_fill2DOFBicycleModelStateSpace(vehicleParameters, U, (-1));
+	[A, B] = fcn_VD_st2dofStateSpace(vehicleParameters, U, (-1));
 end
 fast_method = toc;
 

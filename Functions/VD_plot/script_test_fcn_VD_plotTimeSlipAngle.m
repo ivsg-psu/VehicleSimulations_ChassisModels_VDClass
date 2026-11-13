@@ -4,7 +4,13 @@
 % REVISION HISTORY:
 %
 % 2026_01_07 by Sean Brennan, sbrennan@psu.edu
-% - wrote the code originally, using script_test_fcn_Laps_breakDataIntoLapIndices as starter
+% - In script_test_fcn_VD_plotTimeSlipAngle
+%   % * Wrote the code originally
+%   % * Used script_test_fcn_Laps_breakDataIntoLapIndices as starter
+% 
+% 2026_11_11 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_VD_plotTimeSlipAngle
+%   % * Added test cases to check plot handles
 
 % TO-DO:
 %
@@ -43,31 +49,18 @@ figure(figNum); clf;
 [time, slipAngles] = fcn_INTERNAL_loadExampleData;
 
 % Call the function
-fcn_VD_plotTimeSlipAngle(time, slipAngles, (figNum))
+hPlots = fcn_VD_plotTimeSlipAngle(time, slipAngles, (figNum));
 
 sgtitle(titleString, 'Interpreter','none');
 
-% % Check variable types
-% assert(iscell(cell_array_of_lap_indices));
-% assert(iscell(cell_array_of_entry_indices));
-% assert(iscell(cell_array_of_exit_indices));
-% 
-% % Check variable sizes
-% Nlaps = 3;
-% assert(isequal(Nlaps,length(cell_array_of_lap_indices)));
-% assert(isequal(Nlaps,length(cell_array_of_entry_indices)));
-% assert(isequal(Nlaps,length(cell_array_of_exit_indices)));
-% 
-% % Check variable values
-% % Are the laps starting at expected points?
-% assert(isequal(2,min(cell_array_of_lap_indices{1})));
-% assert(isequal(102,min(cell_array_of_lap_indices{2})));
-% assert(isequal(215,min(cell_array_of_lap_indices{3})));
-% 
-% % Are the laps ending at expected points?
-% assert(isequal(88,max(cell_array_of_lap_indices{1})));
-% assert(isequal(199,max(cell_array_of_lap_indices{2})));
-% assert(isequal(293,max(cell_array_of_lap_indices{3})));
+% Check variable types
+assert(iscell(hPlots));
+
+% Check variable sizes
+assert(isequal(size(hPlots),[2 1]));
+
+% Check variable values
+% Too many to test
 
 % Make sure plot opened up
 assert(isequal(get(gcf,'Number'),figNum));
@@ -126,7 +119,16 @@ figure(figNum); close(figNum);
 [time, slipAngles] = fcn_INTERNAL_loadExampleData;
 
 % Call the function
-fcn_VD_plotTimeSlipAngle(time, slipAngles, ([]))
+hPlots = fcn_VD_plotTimeSlipAngle(time, slipAngles, ([]));
+
+% Check variable types
+assert(iscell(hPlots));
+
+% Check variable sizes
+assert(isequal(size(hPlots),[2 1]));
+
+% Check variable values
+% Too many to test
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
@@ -142,7 +144,16 @@ figure(figNum); close(figNum);
 [time, slipAngles] = fcn_INTERNAL_loadExampleData;
 
 % Call the function
-fcn_VD_plotTimeSlipAngle(time, slipAngles, (-1))
+hPlots = fcn_VD_plotTimeSlipAngle(time, slipAngles, (-1));
+
+% Check variable types
+assert(iscell(hPlots));
+
+% Check variable sizes
+assert(isequal(size(hPlots),[2 1]));
+
+% Check variable values
+% Too many to test
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
@@ -164,7 +175,7 @@ assert(~any(figHandles==figNum));
 % tic;
 % for ith_test = 1:Niterations
 %     % Call the function
-%     fcn_VD_plotTimeSlipAngle(time, slipAngles, ([]))
+%     hPlots = fcn_VD_plotTimeSlipAngle(time, slipAngles, ([]));
 % end
 % slow_method = toc;
 % 
@@ -172,7 +183,7 @@ assert(~any(figHandles==figNum));
 % tic;
 % for ith_test = 1:Niterations
 %     % Call the function
-%     fcn_VD_plotTimeSlipAngle(time, slipAngles, (-1))
+%     hPlots = fcn_VD_plotTimeSlipAngle(time, slipAngles, (-1));
 % end
 % fast_method = toc;
 % 

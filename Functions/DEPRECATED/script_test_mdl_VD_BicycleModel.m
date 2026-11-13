@@ -1,4 +1,22 @@
 %% script_test_mdl_VD_BicycleModel.m
+
+MATLABFLAG_VD_WARN_MDL_VD_BICYCLEMODEL = getenv("MATLABFLAG_VD_WARN_MDL_VD_BICYCLEMODEL");
+flagShowWarning = 0;
+if isempty(MATLABFLAG_VD_WARN_MDL_VD_BICYCLEMODEL) 
+   flagShowWarning = 1;
+else
+    if strcmp('1',MATLABFLAG_VD_WARN_MDL_VD_BICYCLEMODEL)
+        flagShowWarning = 1;
+    end
+end
+
+if 1 == flagShowWarning
+    warning('on','backtrace');
+    warning(['script_test_mdl_VD_BicycleModel is being deprecated. ' ...
+        'Use script_test_fcn_VD_st2dofSimulink instead.']);
+    setenv('MATLABFLAG_VD_WARN_MDL_VD_BICYCLEMODEL','0');
+end
+
 % Plots the results of a outputs of a simulink model: the all-integrator
 % form.
 

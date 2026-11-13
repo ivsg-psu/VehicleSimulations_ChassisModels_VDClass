@@ -1,16 +1,18 @@
-function dXdt = fcn_VD_derivatives2DOFBicycleModel( X, inputFrontRoadWheelAngleRadians, vehicleParameters, varargin)
+function [stateTrajectory, t, steeringUsed] = fcn_VD_st2dofRK4(initialStates, deltaT, timeInterval, inputsVsTime, vehicleParameters, U, varargin)
 
-%% fcn_VD_derivatives2DOFBicycleModel
-%   Fill in the pose derivatives for the bicycle 2DOF dynamic model
+%% fcn_VD_st2dofRK4
+%   Simulates the bicycle kinematic model using Runga Kutta 4th-order
 %
 % FORMAT:
 %
-%      dXdt = fcn_VD_derivatives2DOFBicycleModel( X, inputFrontRoadWheelAngleRadians, vehicleParameters, (figNum))
+%      [stateTrajectory, t, steeringUsed] =
+%      fcn_VD_st2dofRK4(initialStates, deltaT,
+%      timeInterval, inputsVsTime, vehicleParameters, U, (figNum))
 %
 % INPUTS:
 %
-%      X: A 3x1 vector of global pose in the form of 
-%         [X; Y; Phi], which stand for:
+%      initialStates: A 1x3 vector of inital global pose in form of
+%         [X Y Phi], which stand for:
 % 
 %         X: Global X position in meters
 %
@@ -19,8 +21,16 @@ function dXdt = fcn_VD_derivatives2DOFBicycleModel( X, inputFrontRoadWheelAngleR
 %         phi: Global yaw angle in radians, measured positive from X axis
 %         to Y axis
 %
-%      inputFrontRoadWheelAngleRadians: the angle of the front wheel of the
-%      vehicle relative to the ground (input: rad)
+%      deltaT: a 1x1 positive number denoting the time step to use, in
+%      seconds
+%
+%      timeInterval: a 1x2 vector denoting [startTime endTime] in seconds
+%
+%      inputsVsTime: a Mx2 vector denoting 
+%      [steeringTime steeringValues] 
+%      in units of [sec rad] respectively. This is interpolated using
+%      linear interpolation at the sampling times. For times outside the
+%      given interval, zero values are used.
 %
 %      vehicleParameters: a structure with the following subfields
 %          % Example below is approximately a Ford Taurus
@@ -32,6 +42,8 @@ function dXdt = fcn_VD_derivatives2DOFBicycleModel( X, inputFrontRoadWheelAngleR
 %            vehicleParameters(1).Caf        = 77500;  % Cornering stiffness of front axle, N/rad;
 %            vehicleParameters(1).Car	     = 116250; % Cornering stiffness of rear axle, N/rad;
 %
+%      U: the vehicle's longitudinal velocity, in m/s
+%
 %      (OPTIONAL INPUTS)
 %
 %      figNum: a FID number to print results. If set to -1, skips any
@@ -40,32 +52,47 @@ function dXdt = fcn_VD_derivatives2DOFBicycleModel( X, inputFrontRoadWheelAngleR
 %
 % OUTPUTS:
 %
-%   dXdt: A 3x1 vector of linear velocities and rotational velocities
+%      stateTrajectory: An Nx3 vector of the state trajectory, with the
+%      columns as [X Y Phi] in units of [m],[m],[rad]
+%
+%      t: An Nx1 vector of the simulation times, in seconds
+%
+%      steeringUsed: An Nx1 vector of the steering values used in the sim,
+%      in units of [rad]
 %
 % DEPENDENCIES:
 %
 %      fcn_DebugTools_checkInputsToFunctions
+%      fcn_VD_derivatives2DOFBicycleModel
 %
 % EXAMPLES:
 %
-%     See the script: script_test_fcn_VD_derivatives2DOFBicycleModel
+%     See the script: script_test_fcn_VD_st2dofRK4
 %     for a full test suite.
 %
-% This function was written on 2026_10_21 
+% This function was written on 2026_10_20 
 % by Sean Brennan. Questions or comments? sbrennan@psu.edu
 
 % REVISION HISTORY:
+% 
+% As: fcn_VD_2DOFBicycleModelRK4
 %
-% As: fcn_VD_kinematicBicycleModel
+% 2026_10_20 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_2DOFBicycleModelRK4
+%   % * Used fcn_VD_kinematicBicycleModelRK4 as starter
+%   % * Copied material over from fcn_VD_bicycle2dofModel
 %
-% 2026_10_21 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_VD_derivatives2DOFBicycleModel
-%   % * First write of function, 
-%   % * Using fcn_VD_kinematicBicycleModel as starter
-
+% As: fcn_VD_st2dofRK4
+%
+% 2026_11_12 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_st2dofRK4
+%   % * Renamed function to be consistent with single-track (bicycle) naming
+%   % * Used to be called fcn_VD_2DOFBicycleModelRK4
+%   % * Added longitudinal speed as an input parameter, as it is not a vehicle
+%   %   % parameter
 
 % TO-DO:
-% - 2026_10_21 by Sean Brennan, sbrennan@psu.edu
+% - 2026_10_20 by Sean Brennan, sbrennan@psu.edu
 %   % (add items here)
 
 %% Debugging and Input checks
@@ -73,7 +100,7 @@ function dXdt = fcn_VD_derivatives2DOFBicycleModel( X, inputFrontRoadWheelAngleR
 % Check if flag_max_speed set. This occurs if the figNum variable input
 % argument (varargin) is given a number of -1, which is not a valid figure
 % number.
-MAX_NARGIN = 4; % The largest Number of argument inputs to the function
+MAX_NARGIN = 7; % The largest Number of argument inputs to the function
 flag_max_speed = 0; % The default. This runs code with all error checking
 if (nargin==MAX_NARGIN && isequal(varargin{end},-1))
     flag_do_debug = 0; % Flag to plot the results for debugging
@@ -118,49 +145,27 @@ if 0==flag_max_speed
         % Are there the right number of inputs?
         narginchk(MAX_NARGIN-1,MAX_NARGIN);
 
-        % Check the y input to be sure it has 1 column, 3 rows
-        fcn_DebugTools_checkInputsToFunctions(X, '1column_of_numbers',[3 3]);
+        % Validate that the initialStates input has 3 column, 1 row
+        fcn_DebugTools_checkInputsToFunctions(initialStates, '5column_of_numbers',[1 1]);
 
-        % Check the inputFrontRoadWheelAngleRadians input to be sure it has 1 column and 1 row
-        fcn_DebugTools_checkInputsToFunctions(inputFrontRoadWheelAngleRadians, '1column_of_numbers',[1 1]);
+        % Validate that the deltaT input has 1 column, 1 row
+        fcn_DebugTools_checkInputsToFunctions(deltaT, '1column_of_numbers',[1 1]);
+
+        % Validate that the timeInterval input has 2 columns, 1 row
+        fcn_DebugTools_checkInputsToFunctions(timeInterval, '2column_of_numbers',[1 1]);
+
+        % Validate that the inputsVsTime input has 2 columns, 2+
+		% rows
+        fcn_DebugTools_checkInputsToFunctions(inputsVsTime, '2column_of_numbers',[2 3]);
 
 		% Check the vehicleParameters input is a structure
         assert(isstruct(vehicleParameters));
+
+        % Validate that the U input has 1 columns, 1 row
+        fcn_DebugTools_checkInputsToFunctions(U, '1column_of_numbers',[1 1]);
+
     end
 end
-
-
-% 
-%   Set the start values
-% [flag_start_is_a_point_type, start_zone_definition] = fcn_Laps_checkZoneType(start_zone_definition, 'start_definition', -1);
-% 
-% 
-%   The following area checks for variable argument inputs (varargin)
-% 
-%   Does the user want to specify the end_definition?
-%   Set defaults first:
-% end_zone_definition = start_zone_definition; % Default case
-% flag_end_is_a_point_type = flag_start_is_a_point_type; % Inheret the start case
-%   Check for user input
-% if 3 <= nargin
-%     temp = varargin{1};
-%     if ~isempty(temp)
-%         % Set the end values
-%         [flag_end_is_a_point_type, end_zone_definition] = fcn_Laps_checkZoneType(temp, 'end_definition', -1);
-%     end
-% end
-% 
-%   Does the user want to specify excursion_definition?
-% flag_use_excursion_definition = 0; % Default case
-% flag_excursion_is_a_point_type = 1; % Default case
-% if 4 <= nargin
-%     temp = varargin{2};
-%     if ~isempty(temp)
-%         % Set the excursion values
-%         [flag_excursion_is_a_point_type, excursion_definition] = fcn_Laps_checkZoneType(temp, 'excursion_definition',-1);
-%         flag_use_excursion_definition = 1;
-%     end
-% end
 
 % Does user want to show the plots?
 flag_do_plots = 0; % Default is to NOT show plots
@@ -183,32 +188,41 @@ end
 %  |_|  |_|\__,_|_|_| |_|
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% RK4 in MATLAB Script
+startTime = timeInterval(1);
+endTime = timeInterval(2);
+simulationTimes = (startTime:deltaT:endTime)';
+N_timeSteps = length(simulationTimes); % This is the number of time steps we should have
+Nstates = size(initialStates,2);
 
-%% Pull out the states
-V = X(1); % lateral velocity [m/s]
-r = X(2); % yaw rate [rad/s]
-pose = X(3:5); % pose of the vehicle
+% Initialize variables
+stateTrajectory = nan(N_timeSteps,Nstates);
+t = nan(N_timeSteps,1);
+steeringUsed = interp1(inputsVsTime(:,1), inputsVsTime(:,2), simulationTimes,'linear',0);
 
 
-%% Inputs
-steeringAnglesRadians = [inputFrontRoadWheelAngleRadians; 0];
+% Set initial conditions
+currentStates = initialStates;
 
-%% Slips
-slipAnglesInRadians = fcn_VD_slipAnglesBicycleModel(U, V, r, steeringAnglesRadians, vehicleParameters, (-1));
 
-%% Tire Forces
-URHERE
-lateralForces = fcn_VD_stTireForceLinear(slipAnglesInRadians, vehicleParameters);
+for ith_time = 1:N_timeSteps
+	thisTime       = simulationTimes(ith_time);
 
-%% Newtonian Dynamics
-DvelDt = fcn_VD_stLateralDynamics(t, [V; r], U, lateralForces, vehicleParameters);
+	% Fill in the results to save
+	t(ith_time,1)  = thisTime; % Update time
+	stateTrajectory(ith_time,:)   = currentStates;
 
-%% Body2Global Coordinates
-DposeDt = fcn_VD_Body2GlobalCoordinates(t, pose, U, V, r);
 
-%% Output
-dXdt = [DvelDt; DposeDt];
+	% Use Runga-Kutta to predict next position
+	y = currentStates; %#ok<NASGU>
+	inputFrontRoadWheelAngleRadians = steeringUsed(ith_time,1);
 
+	[~, y] = fcn_VD_RungeKutta(...
+		@(t,y) fcn_VD_st2dofDerivatives(y, inputFrontRoadWheelAngleRadians, vehicleParameters, U, (-1)), ...
+		currentStates, thisTime, deltaT, -1);
+
+	currentStates = y;
+end
 
 %% Plot the results (for debugging)?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -223,37 +237,9 @@ dXdt = [DvelDt; DposeDt];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if flag_do_plots
     
-    % plot the derivative outputs as a vector
-    figure(figNum);
-	hold on;
-	axis equal;
-
-	% Plot the car as a simple stick figure
-	rearLocationXY = [X Y];
-	frontLocationXY = rearLocationXY + L*[cos(yaw) sin(yaw)];
-	axisLine = [rearLocationXY; frontLocationXY];
-	plot(axisLine(:,1),axisLine(:,2),'-','LineWidth',5);
-
-	wheelRadius = 0.35;
-	fcn_INTERNAL_plotWheel(rearLocationXY, wheelRadius, yaw);
-	fcn_INTERNAL_plotWheel(frontLocationXY, wheelRadius, yaw+inputFrontRoadWheelAngleRadians);
-
-	quiver(X,Y,DvelDt(1), DvelDt(2), 0);
-	hold on;
-	axis equal;
-	axis padded;
-
-	% Plot the rotation. this is done by putting a small, grey vector at
-	% the end that points in the direction and magnitude of the rotation.
-	rotationAngle = DyawDt;
-	changeVector = [DvelDt(1) DvelDt(2)];
-	newChange = changeVector*[cos(rotationAngle) sin(rotationAngle); -sin(rotationAngle) cos(rotationAngle)];
-	rotationStartPoint = [X Y]+changeVector;
-	rotationEndPoint = [X Y]+newChange;
-	differenceVector = rotationEndPoint - rotationStartPoint;
-	quiver(rotationStartPoint(1),rotationStartPoint(2), differenceVector(1), differenceVector(2),0,'Color',0.8*[1 1 1]);
-
-
+    % plot the outputs
+    h_plot = fcn_VD_plotTrajectory(stateTrajectory(:,3:4),(figNum));
+	set(h_plot,'DisplayName','XY Trajectory st2dof (MATLAB RK4)')
 end
 
 if flag_do_debug
@@ -274,10 +260,3 @@ end % Ends main function
 % See: https://patorjk.com/software/taag/#p=display&f=Big&t=Functions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%§
 
-function h_wheel = fcn_INTERNAL_plotWheel(wheelCenterXY, wheelRadius, wheelYaw)
-wheelLine = [...
-	wheelCenterXY - wheelRadius*[cos(wheelYaw) sin(wheelYaw)];
-	wheelCenterXY + wheelRadius*[cos(wheelYaw) sin(wheelYaw)];
-	];
-h_wheel = plot(wheelLine(:,1), wheelLine(:,2),'-','LineWidth',10,'Color',0.2*[1 1 1]);
-end

@@ -279,12 +279,140 @@
 %   % * Used fcn_VD_parkingCalcEntryArcExitPaths as starter
 %
 % (new release)
+%
+% 2026_11_10 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_VD_st2dofStateSpace
+%   % * Renamed the function
+%   % * Used to be script_test_fcn_VD_fill2DOFBicycleModelStateSpace
+% - In fcn_VD_st2dofStateSpace
+%   % * Renamed function
+%   % * Used to be fcn_VD_fill2DOFBicycleModelStateSpace
+% - In script_test_fcn_VD_st2dofDerivatives
+%   % * Renamed function
+%   % * Used to be called script_test_fcn_VD_derivatives2DOFBicycleModel
+% - In fcn_VD_st2dofDerivatives
+%   % * Renamed function
+%   % * Used to be called fcn_VD_derivatives2DOFBicycleModel
+% - In script_test_fcn_VD_st2dofDerivatives
+%   % * Renamed function
+%   % * Used to be called script_test_fcn_VD_slipAnglesBicycleModel
+% - In fcn_VD_st2dofSlipAngles
+%   % * Renamed function
+%   % * Used to be called fcn_VD_slipAnglesBicycleModel
+% - In script_test_fcn_VD_st2dofTireForcesLinear
+%   % * First write of script
+%   % * Used script_test_fcn_VD_slipAnglesBicycleModel as starter
+% - In fcn_VD_st2dofTireForcesLinear
+%   % * Renamed function
+%   % * Used to be called fcn_VD_stTireForceLinear
+%   % * Changed inputs and outputs to be column vectors, not row vectors
+% - In script_test_fcn_VD_st2dofTireForcesLinear
+%   % * First write of script
+%   % * Used script_test_fcn_VD_slipAnglesBicycleModel as starter
+% - In fcn_VD_st2dofLateralDynamics
+%   % * Renamed function
+%   % * Used to be called fcn_VD_stLateralDynamics
+%   % * Changed inputs and outputs to be column vectors, not row vectors
+% - In fcn_VD_st2dofWheelVelocities
+%   % * Renamed script for consistency
+%   % * Copied material over from script_test_fcn_VD_wheelVelocitiesBicycleModel
+% - In fcn_VD_st2dofWheelVelocities
+%   % * Renamed function for consistency
+%   % * Copied material over from fcn_VD_wheelVelocitiesBicycleModel
+%
+% 2026_11_11 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_st2dofSlipAngles
+%   % * Updated header to match correct vehicleParameters structure
+%   % * Changed inputs and outputs to 1x2 format, not 2x1
+%   % * Added intermediate variable for debugging, velocityAnglesInRadians
+%   % * Added flagUseLinear optional input to allow linear or nonlinear calculations
+% - In script_test_fcn_VD_st2dofDerivatives
+%   % * Updated test cases to match change in formatting for inputs/outputs
+%   % * Updated test cases to check new flag input
+% - In fcn_VD_plotTimeSlipAngle
+%   % * Added plot handles as output
+%   % * Removed plot clearing
+%   % * Updated figure naming
+% - In script_test_fcn_VD_plotTimeSlipAngle
+%   % * Added test cases to check plot handles
+% - In script_compare_dtSlipAngles_MATvsSIM
+%   % * Renamed script to be consistent with 2DOF testing
+%   % * Updated fcn_VD_dtSlipAngle to new name, fcn_VD_st2dofSlipAngles
+%   % * Updated vehicle variable name to vehicleParameters, for consistency
+% - In script_test_fcn_VD_st2dofTireForcesLinear
+%   % * Added test case to sweep through tire slips
+% - In fcn_VD_st2dofStateSpace
+%   % * Updated header to reflect parameter dependency
+%   % * Fixed -1 error on cornering stiffnesses in matrix
+% - In script_test_fcn_VD_plotTimeLateralTireForce
+%   % * Renamed script
+%   % * Previously named script_test_fcn_VD_plotLateralTireForce
+% - In fcn_VD_plotTimeLateralTireForce
+%   % * Added plot handles as output
+%   % * Removed plot clearing
+%   % * Updated figure naming
+% - In script_test_fcn_VD_plotTimeLateralTireForce
+%   % * Renamed script
+%   % * Previously named script_test_fcn_VD_plotLateralTireForce
+%   % * Added tests for handle outputs
+% - In fcn_VD_st2dofTireForcesLinear
+%   % * Fixed -1 sign error in cornering stiffness 
+%   % * Negative because direction of rotation is negative from tire
+%   %   to slip velocity vector)
+% - In script_compare_dtTireForcesLinear_MATvsSIM
+%   % * First write of script
+%   % * Used script_compare_st2dofSlipAngles_MATvsSIM as starter
+%
+% 2026_11_12 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_body2GlobalCoordinatesDerivatives
+%   % * Fixed bugs in header comment
+% - In script_test_fcn_VD_st2dofDerivatives
+%   % * Updated test cases to finish testing
+% - In fcn_VD_st2dofDerivatives
+%   % * Updated plotting outputs
+% - In script_test_fcn_VD_steeringFillTestCase
+%   % * Wrote the code originally, 
+%   % * Used script_test_fcn_VD_st2dofDerivatives as starter
+% - In fcn_VD_steeringFillTestCase
+%   % * First write of function,
+%   % * Using fcn_VD_derivatives2DOFBicycleModel as starter
+% - In script_test_fcn_VD_steeringApplyRateLimit
+%   % * Wrote the code originally,
+%   % * Used script_test_fcn_VD_st2dofDerivatives as starter
+% - In fcn_VD_steeringApplyRateLimit
+%   % * First write of function,
+%   % * Using fcn_VD_derivatives2DOFBicycleModel as starter
+% - In script_test_fcn_VD_st2dofSimulink
+%   % * First write of function
+%   % * Used script_test_fcn_VD_kinematicBicycleModelSimulink as starter
+% - In fcn_VD_st2dofSimulink
+%   % * First write of function
+%   % * Used fcn_VD_kinematicBicycleModelSimulink as starter
+% - In script_compare_dt2dof_MATvsSIM
+%   % * First write of function
+%   % * Used script_compare_st2dofSlipAngles_MATvsSIM.m as template
+% - In script_test_fcn_VD_steeringFillTestCase
+%   % * Wrote the code originally, 
+%   % * Used script_test_fcn_VD_st2dofDerivatives as starter
+% - In fcn_VD_steeringFillTestCase
+%   % * First write of function,
+%   % * Using fcn_VD_derivatives2DOFBicycleModel as starter
+%
+% 2026_11_13 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_signalAddNoise
+%   % * First write of function,
+%   % * Using fcn_VD_derivatives2DOFBicycleModel as starter
+% - In script_test_fcn_VD_signalAddNoise
+%   % * Wrote the code originally, 
+%   % * Used script_test_fcn_VD_st2dofDerivatives as starter
 
 
 % TO-DO:
-% 2026_09_03 by Sean Brennan, sbrennan@psu.edu
-% - Add items here
-%
+% 2026_11_12 by Sean Brennan, sbrennan@psu.edu
+% - Need to update the vector inputs/outputs in
+%   % fcn_VD_body2GlobalCoordinatesDerivatives to match column-wise, not
+%   % row-wise format used in all other functions
+% - Need to move / use plotting tools for plotVehicle
 
 
 %% Make sure we are running out of root directory

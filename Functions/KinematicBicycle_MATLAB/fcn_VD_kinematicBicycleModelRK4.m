@@ -240,7 +240,7 @@ if flag_do_plots
     
     % plot the outputs
     h_plot = fcn_VD_plotTrajectory(stateTrajectory(:,1:2),(figNum));
-	set(h_plot,'DisplayName','XY Trajectory (MATLAB RK4)')
+	set(h_plot,'DisplayName','XY Trajectory stKinematic (MATLAB RK4)')
 end
 
 if flag_do_debug

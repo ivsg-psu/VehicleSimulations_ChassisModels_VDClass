@@ -1,8 +1,10 @@
-%% script_compare_dtSlipAngle_MATvsSIM.m
-% This script compares MATLAB function 'fcn_VD_dtSlipAngle' with Simulink
-% model 'mdl_VD_dtSlipAngle.slx'
+%% script_compare_dt2dofSlipAngle_MATvsSIM.m.m
+% This script compares MATLAB function 'fcn_VD_st2dofSlipAngles' with Simulink
+% model 'mdl_VD_dt2dofSlipAngles_R2025b_SLX.slx'
 
 % REVISION HISTORY:
+%
+% As: script_compare_dtSlipAngle_MATvsSIM
 %
 % 2021_07_06 by Satya Prasad, szm888@psu.edu
 % - First write of function
@@ -10,7 +12,13 @@
 % 2025_12_29 by Sean Brennan, sbrennan@psu.edu
 % - Updated header formatting and comments
 % - Updated tab stops
-
+%
+% As: script_compare_dt2dofSlipAngle_MATvsSIM
+%
+% 2026_11_11 by Sean Brennan, sbrennan@psu.edu
+% - Renamed file to be consistent with 2DOF testing
+% - Updated fcn_VD_dtSlipAngle to new name, fcn_VD_st2dofSlipAngles
+% - Updated vehicle variable name to vehicleParameters, for consistency
 
 % TO-DO:
 % - 2025_12_29 by Sean Brennan, sbrennan@psu.edu
@@ -33,18 +41,23 @@ close all; % close all the plots
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Define vehicle properties
 % Define a MATLAB structure that specifies the physical values for a vehicle.
-% For convenience, we ask that you call this stucture 'vehicle'.
-vehicle.m   = 1600; % mass (kg)
-vehicle.Izz = 2500; % mass moment of inertia (kg m^2)
-vehicle.Iw  = 1.2; % mass moment of inertia of a wheel (kg m^2)
-vehicle.Re  = 0.32; % effective radius of a wheel (m)
-vehicle.a   = 1.3; % length from front axle to CG (m)
-vehicle.L   = 2.6; % wheelbase (m)
-vehicle.b   = 1.3; % length from rear axle to CG (m)
-vehicle.d   = 1.5; % track width (m)
-vehicle.h_cg = 0.42; % height of the cg (m)
-vehicle.Ca  = [95000; 95000; 110000; 110000]; % wheel cornering stiffnesses
-vehicle.Cx  = [65000; 65000; 65000; 65000]; % longitudinal stiffnesses
+% For convenience, we ask that you call this stucture 'vehicleParameters'.
+%
+%      vehicleParameters: a structure with the following subfields
+%          vehicleParameters.DistancesWheelbase
+%          vehicleParameters.DistancesCGFromRearAxle
+
+% vehicleParameters.m   = 1600; % mass (kg)
+% vehicleParameters.Izz = 2500; % mass moment of inertia (kg m^2)
+% vehicleParameters.Iw  = 1.2; % mass moment of inertia of a wheel (kg m^2)
+% vehicleParameters.Re  = 0.32; % effective radius of a wheel (m)
+% vehicleParameters.a   = 1.3; % length from front axle to CG (m)
+vehicleParameters.DistancesWheelbase   = 2.6; % wheelbase (m)
+vehicleParameters.DistancesCGFromRearAxle   = 1.3; % length from rear axle to CG (m)
+% vehicleParameters.d   = 1.5; % track width (m)
+% vehicleParameters.h_cg = 0.42; % height of the cg (m)
+% vehicleParameters.Ca  = [95000; 95000; 110000; 110000]; % wheel cornering stiffnesses
+% vehicleParameters.Cx  = [65000; 65000; 65000; 65000]; % longitudinal stiffnesses
 
 %% Define inputs to the vehicle model
 U = 24.59; % longitudinal velocity [m/s]
@@ -69,7 +82,7 @@ N_timeSteps = floor(TotalTime/deltaT)+1; % This is the number of time steps we s
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Run the simulation in SIMULINK
-sim('mdl_VD_dtSlipAngle.slx', TotalTime);
+sim('mdl_VD_dt2dofSlipAngles_R2025b_SLX.slx', TotalTime);
 
 %% Run the simulation in MATLAB
 % variables to store outputs of Matlab simulation
@@ -90,7 +103,7 @@ for t = 0:deltaT:TotalTime
 
     %% Slips
     % Slip Angle/Lateral Slip
-    slip_angle = fcn_VD_dtSlipAngle(Vx,Vy,yaw_rate,steering_angle,vehicle);
+    slip_angle = fcn_VD_st2dofSlipAngles(Vx,Vy,yaw_rate,steering_angle,vehicleParameters);
     matlab_alpha(counter,:) = slip_angle';
 
     counter = counter+1;

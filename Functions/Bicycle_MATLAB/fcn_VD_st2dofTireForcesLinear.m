@@ -1,26 +1,26 @@
-function [A, B] = fcn_VD_fill2DOFBicycleModelStateSpace(vehicleParameters, U, varargin)
+function lateralForces = fcn_VD_st2dofTireForcesLinear(slipAnglesInRadians, vehicleParameters, varargin)
 
-%% fcn_VD_fill2DOFBicycleModelStateSpace
-%   Fills the A and B matrices of the 2DOF bicycle model
+%% fcn_VD_st2dofTireForcesLinear
+%   This function computes lateral-forces at front and rear wheels for the
+%   2DOF single-track "bicycle" model. It uses a linear tire model.
 %
 % FORMAT:
 %
-%      [A, B] = fcn_VD_fill2DOFBicycleModelStateSpace(vehicleParameters, U, (figNum))
+%       lateralForces = fcn_VD_st2dofTireForcesLinear(slipAnglesInRadians,
+%       vehicleParameters, (figNum))
 %
 % INPUTS:
 %
-%      vehicleParameters: a structure with the following subfields
-%          % Example below is approximately a Ford Taurus
-%            vehicleParameters.U          = 20;     % x-axis velocity, in m/s
-%            vehicleParameters.m          = 1031.9; % mass in kg
-%            vehicleParameters.Iz         = 1850;   % z-axis rotational inertia in kg-m^2
-%            vehicleParameters.a          = 0.9271; % distance from front axle to CG, in meters
-%            vehicleParameters.b          = 1.5621; % distance from rear axle to CG, in meters
-%            vehicleParameters.Caf        = 77500;  % Cornering stiffness of front axle, N/rad;
-%            vehicleParameters.Car	     = 116250; % Cornering stiffness of rear axle, N/rad;
+%      slipAnglesInRadians: A 1x2 vector containing slip-angles of front
+%      and rear wheels [rad]
 %
-%      U: x-axis velocity, in m/s
-% 
+%      vehicleParameters: a structure with the following subfields
+%          vehicleParameters.DistancesWheelbase
+%          vehicleParameters.DistancesCGFromRearAxle
+%          vehicleParameters.Mass
+%          vehicleParameters.TireFrontCorneringCoefficient
+%          vehicleParameters.TireRearCorneringCoefficient
+%
 %      (OPTIONAL INPUTS)
 %
 %      figNum: a FID number to print results. If set to -1, skips any
@@ -29,34 +29,46 @@ function [A, B] = fcn_VD_fill2DOFBicycleModelStateSpace(vehicleParameters, U, va
 %
 % OUTPUTS:
 %
-%   A: the A-matrix of the state-space
-%
-%   B: the B-matrix of the state-space
+%      lateralForces: A 1x2 vector containing lateral-forces at front and
+%      rear wheels [Newtons]
 %
 % DEPENDENCIES:
 %
 %      fcn_DebugTools_checkInputsToFunctions
+%      fcn_VD_wheelVelocitiesBicycleModel
 %
 % EXAMPLES:
 %
-%     See the script: script_test_fcn_VD_fill2DOFBicycleModelStateSpace
+%     See the script: script_test_fcn_VD_st2dofTireForcesLinear
 %     for a full test suite.
 %
-% This function was written on 2026_11_07 
-% by Sean Brennan. Questions or comments? sbrennan@psu.edu
+% This function was written on 2021/05/16 by Satya Prasad
+% Updates by Sean Brennan. Questions or comments? sbrennan@psu.edu
 
 % REVISION HISTORY:
+% 
+% As: fcn_VD_stTireForceLinear
 %
-% As: fcn_VD_kinematicBicycleModel
+% 2021_05_16 by Satya Prasad, szm888@psu.edu
+% - In fcn_VD_stTireForceLinear
+%   % * First write of the function
 %
-% 2026_11_07 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_VD_fill2DOFBicycleModelStateSpace
-%   % * First write of function, 
-%   % * Using fcn_VD_derivatives2DOFBicycleModel as starter
-
+% As: fcn_VD_st2dofTireForcesLinear
+%
+% 2026_11_10 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_st2dofTireForcesLinear
+%   % * Renamed function
+%   % * Used to be called fcn_VD_stTireForceLinear
+%   % * Changed inputs and outputs to be column vectors, not row vectors
+%
+% 2026_11_11 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_st2dofTireForcesLinear
+%   % * Fixed -1 sign error in cornering stiffness 
+%   % * Negative because direction of rotation is negative from tire
+%   %   to slip velocity vector)
 
 % TO-DO:
-% - 2026_11_07 by Sean Brennan, sbrennan@psu.edu
+% - 2026_11_10 by Sean Brennan, sbrennan@psu.edu
 %   % (add items here)
 
 %% Debugging and Input checks
@@ -106,59 +118,30 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if 0==flag_max_speed
     if flag_check_inputs
-        % Are there the right number of inputs?
+
+		% Are there the right number of inputs?
         narginchk(MAX_NARGIN-1,MAX_NARGIN);
+
+        % Validate that the slipAnglesInRadians input has 2 column, 1 row
+        fcn_DebugTools_checkInputsToFunctions(slipAnglesInRadians, '2column_of_numbers',[1 1]);
 
 		% Check the vehicleParameters input is a structure
         assert(isstruct(vehicleParameters));
+
     end
 end
-
-
-% 
-%   Set the start values
-% [flag_start_is_a_point_type, start_zone_definition] = fcn_Laps_checkZoneType(start_zone_definition, 'start_definition', -1);
-% 
-% 
-%   The following area checks for variable argument inputs (varargin)
-% 
-%   Does the user want to specify the end_definition?
-%   Set defaults first:
-% end_zone_definition = start_zone_definition; % Default case
-% flag_end_is_a_point_type = flag_start_is_a_point_type; % Inheret the start case
-%   Check for user input
-% if 3 <= nargin
-%     temp = varargin{1};
-%     if ~isempty(temp)
-%         % Set the end values
-%         [flag_end_is_a_point_type, end_zone_definition] = fcn_Laps_checkZoneType(temp, 'end_definition', -1);
-%     end
-% end
-% 
-%   Does the user want to specify excursion_definition?
-% flag_use_excursion_definition = 0; % Default case
-% flag_excursion_is_a_point_type = 1; % Default case
-% if 4 <= nargin
-%     temp = varargin{2};
-%     if ~isempty(temp)
-%         % Set the excursion values
-%         [flag_excursion_is_a_point_type, excursion_definition] = fcn_Laps_checkZoneType(temp, 'excursion_definition',-1);
-%         flag_use_excursion_definition = 1;
-%     end
-% end
 
 % Does user want to show the plots?
 flag_do_plots = 0; % Default is to NOT show plots
 if (0==flag_max_speed) && (MAX_NARGIN == nargin) 
     temp = varargin{end};
     if ~isempty(temp) % Did the user NOT give an empty figure number?
-        figNum = temp; %#ok<NASGU>
+        figNum = temp; 
         flag_do_plots = 1;
     end
 end
 
-
-%% Implements Bicycle Model
+%% Calculate lateral forces
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   __  __       _       
 %  |  \/  |     (_)      
@@ -174,22 +157,16 @@ L = vehicleParameters.DistancesWheelbase;
 b = vehicleParameters.DistancesCGFromRearAxle;
 a = L - b;
 m = vehicleParameters.Mass; % mass in kg
-Iz = vehicleParameters.Izz; % Inertia in kg-m^2
 downForce = m*9.81; % Newtons
 frontDownForce = (b/L)*downForce;
 rearDownForce = (a/L)*downForce;
 
+Caf = vehicleParameters.TireFrontCorneringCoefficient * frontDownForce; % Cornering stiffness of front axle, N/rad;
+Car = vehicleParameters.TireRearCorneringCoefficient * rearDownForce; % Cornering stiffness of rear axle, N/rad;
 
-Caf = -1*vehicleParameters.TireFrontCorneringCoefficient * frontDownForce; % Cornering stiffness of front axle, N/rad;
-Car = -1*vehicleParameters.TireRearCorneringCoefficient * rearDownForce; % Cornering stiffness of rear axle, N/rad;
-
-% Fill in the SS Model without actuator dynamics
-A =[(Caf+Car)/(m*U)  ((a*Caf-b*Car)/(m*U))-U;
-	(a*Caf-b*Car)/(Iz*U) (a^2*Caf+b^2*Car)/(Iz*U)];
-
-B =[-Caf/m -Car/m;
-	-(a*Caf)/Iz  (b*Car)/Iz];
-
+Fyf = -1*Caf*slipAnglesInRadians(1);
+Fyr = -1*Car*slipAnglesInRadians(2);
+lateralForces = [Fyf Fyr];
 
 %% Plot the results (for debugging)?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -203,9 +180,52 @@ B =[-Caf/m -Car/m;
 %                           |___/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if flag_do_plots
-    
-	% Nothing to plot
+	% Plot results
+	figure(figNum);
+	hold on;
+	axis equal;
+	grid on;
 
+
+	% Plot the tires
+	tireRadius = L/10;
+	
+	tireDimensions = [tireRadius 0; -tireRadius 0];	
+
+	% Plot front tire
+	angleRad = 0; %slipAnglesInRadians(1,1);
+	rotation = [cos(angleRad) sin(angleRad); -sin(angleRad) cos(angleRad)];
+	offsetTire = a*[ones(2,1) zeros(2,1)] + tireDimensions*rotation;
+	plot(offsetTire(:,1), offsetTire(:,2),'-','LineWidth',20);
+
+	% Plot rear tire
+	angleRad = 0; % slipAnglesInRadians(1,2);
+	rotation = [cos(angleRad) sin(angleRad); -sin(angleRad) cos(angleRad)];
+	offsetTire = -b*[ones(2,1) zeros(2,1)] + tireDimensions*rotation;
+	plot(offsetTire(:,1), offsetTire(:,2),'-','LineWidth',20);
+
+	% Plot the vehicle as a stick figure
+	plot([a -b],[0 0],'-','LineWidth',5);
+	
+	tireForceDirectionsInRadians = [90 90]*pi/180;
+	
+	% Plot the normalizedTireForces
+	normalizedTireForces = lateralForces./[frontDownForce rearDownForce];
+
+	slipVectors = [normalizedTireForces(1,1) 0; 0 0];	
+	angleRad = tireForceDirectionsInRadians(1,1);
+	rotation = [cos(angleRad) sin(angleRad); -sin(angleRad) cos(angleRad)];
+	offsetTire = a*[ones(2,1) zeros(2,1)] + slipVectors*rotation;
+	plot(offsetTire(:,1), offsetTire(:,2),'-','LineWidth',1);
+
+	slipVectors = [normalizedTireForces(1,2) 0; 0 0];	
+	angleRad = tireForceDirectionsInRadians(1,2);
+	rotation = [cos(angleRad) sin(angleRad); -sin(angleRad) cos(angleRad)];
+	offsetTire = -b*[ones(2,1) zeros(2,1)] + slipVectors*rotation;
+	plot(offsetTire(:,1), offsetTire(:,2),'-','LineWidth',1);
+
+	% quiver(a, 0,wheelVelocities(1,1),wheelVelocities(1,2),0);
+	% quiver(-b, 0,wheelVelocities(2,1),wheelVelocities(2,2),0);
 end
 
 if flag_do_debug
@@ -225,3 +245,5 @@ end % Ends main function
 %
 % See: https://patorjk.com/software/taag/#p=display&f=Big&t=Functions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%§
+
+

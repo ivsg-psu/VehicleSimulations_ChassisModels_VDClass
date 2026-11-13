@@ -1,12 +1,12 @@
-function wheelVelocities = fcn_VD_wheelVelocitiesBicycleModel(U,V,r,vehicleParameters, varargin)
+function wheelVelocities = fcn_VD_st2dofWheelVelocities(U,V,r,vehicleParameters, varargin)
 
-%% fcn_VD_wheelVelocitiesBicycleModel
+%% fcn_VD_st2dofWheelVelocities
 %   This function computes velocities for front and rear wheels.
 %   It uses single-track/bicycle vehicle model in ISO coordinates.
 %
 % FORMAT:
 %
-%      wheelVelocities = fcn_VD_wheelVelocitiesBicycleModel(U,V,r,vehicle, (figNum))
+%      wheelVelocities = fcn_VD_st2dofWheelVelocities(U,V,r,vehicle, (figNum))
 %
 % INPUTS:
 %
@@ -17,9 +17,8 @@ function wheelVelocities = fcn_VD_wheelVelocitiesBicycleModel(U,V,r,vehicleParam
 %      r: Yaw rate [rad/s]
 %
 %      vehicleParameters: a structure with the following subfields
-%          % Example below is approximately a Ford Taurus
-%            vehicleParameters(1).a          = 0.9271; % distance from front axle to CG, in meters
-%            vehicleParameters(1).b          = 1.5621; % distance from rear axle to CG, in meters
+%          vehicleParameters.DistancesWheelbase
+%          vehicleParameters.DistancesCGFromRearAxle
 %            
 %      (OPTIONAL INPUTS)
 %
@@ -40,7 +39,7 @@ function wheelVelocities = fcn_VD_wheelVelocitiesBicycleModel(U,V,r,vehicleParam
 %
 % EXAMPLES:
 %
-%     See the script: script_test_fcn_VD_wheelVelocitiesBicycleModel
+%     See the script: script_test_fcn_VD_st2dofWheelVelocities
 %     for a full test suite.
 %
 % This function was written on 2026_10_22 
@@ -54,12 +53,19 @@ function wheelVelocities = fcn_VD_wheelVelocitiesBicycleModel(U,V,r,vehicleParam
 % - In fcn_VD_stWheelVelocity
 %   % * First write of function
 %
-% As: fcn_VD_2DOFBicycleModelRK4
+% As: fcn_VD_wheelVelocitiesBicycleModel
 %
 % 2026_10_22 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_VD_2DOFBicycleModelRK4
+% - In fcn_VD_wheelVelocitiesBicycleModel
 %   % * Used script_test_fcn_VD_2DOFBicycleModelRK4 as starter
 %   % * Copied material over from fcn_VD_stWheelVelocity
+%
+% As: fcn_VD_st2dofWheelVelocities
+%
+% 2026_11_10 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_st2dofWheelVelocities
+%   % * Renamed function for consistency
+%   % * Copied material over from fcn_VD_wheelVelocitiesBicycleModel
 
 % TO-DO:
 % - 2026_10_22 by Sean Brennan, sbrennan@psu.edu
@@ -155,6 +161,12 @@ end
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Get the key parameters
+L = vehicleParameters.DistancesWheelbase;
+b = vehicleParameters.DistancesCGFromRearAxle;
+a = L - b;
+
+
 % Initialize output variable
 wheelVelocities      = nan(2,2);
 
@@ -162,7 +174,7 @@ wheelVelocities      = nan(2,2);
 wheelVelocities(:,1) = U;
 
 % Velocity of wheel perpendicular to vehicle body (Y-Direction)
-wheelVelocities(:,2) = [V+vehicleParameters.a*r; V-vehicleParameters.b*r]; % Front and rear tires
+wheelVelocities(:,2) = [V + a*r; V - b*r]; % Front and rear tires
 
 
 
@@ -186,12 +198,12 @@ if flag_do_plots
 	grid on;
 
 	% Plot the vehicle as a stick figure
-	plot([vehicleParameters.a -vehicleParameters.b],[0 0],'-','LineWidth',5);
+	plot([a -b],[0 0],'-','LineWidth',5);
 
 	% Plot the velocities
 	quiver(0,0,U,V,0);
-	quiver(vehicleParameters.a, 0,wheelVelocities(1,1),wheelVelocities(1,2),0);
-	quiver(-vehicleParameters.b, 0,wheelVelocities(2,1),wheelVelocities(2,2),0);
+	quiver(a, 0,wheelVelocities(1,1),wheelVelocities(1,2),0);
+	quiver(-b, 0,wheelVelocities(2,1),wheelVelocities(2,2),0);
 
 end
 

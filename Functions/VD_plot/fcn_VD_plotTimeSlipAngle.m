@@ -1,11 +1,11 @@
-function fcn_VD_plotTimeSlipAngle(time, slipAngles, varargin)
+function hPlots = fcn_VD_plotTimeSlipAngle(time, slipAngles, varargin)
 %% fcn_VD_plotTimeSlipAngle
 %   fcn_VD_plotTimeSlipAngle plots the slip angle(s) versus time where the
 %   columns are slip angles of each tire. 
 %
 % FORMAT:
 %
-%       fcn_VD_plotTimeSlipAngle(time, slipAngles, (figNum))
+%       hPlots = fcn_VD_plotTimeSlipAngle(time, slipAngles, (figNum))
 %
 % INPUTS:
 %
@@ -21,7 +21,7 @@ function fcn_VD_plotTimeSlipAngle(time, slipAngles, varargin)
 %
 % OUTPUTS:
 %
-%     (none)
+%     hPlots: a cell array of the handles to the resulting plots
 %
 % DEPENDENCIES:
 %
@@ -38,11 +38,20 @@ function fcn_VD_plotTimeSlipAngle(time, slipAngles, varargin)
 % REVISION HISTORY:
 %
 % 2021_07_03 by Satya Prasad, szm888@psu.edu
-% - Wrote the code originally
+% - In fcn_VD_plotTimeSlipAngle
+%   % * Wrote the code originally
 % 
 % 2026_01_07 by Sean Brennan, sbrennan@psu.edu
-% - Fixed header formatting to standard form
-% - Renamed "slip_+angle" variable to be slipAngles
+% - In fcn_VD_plotTimeSlipAngle
+%   % * Fixed header formatting to standard form
+%   % * Renamed "slip_+angle" variable to be slipAngles
+% 
+% 2026_11_11 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_VD_plotTimeSlipAngle
+%   % * Added plot handles as output
+%   % * Removed plot clearing
+%   % * Updated figure naming
+
 
 % TO-DO:
 %
@@ -172,6 +181,8 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Ntires = size(slipAngles,2);
+hPlots = cell(Ntires,1);
+
 
 %% Plot the results (for debugging)?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -197,7 +208,7 @@ if flag_do_plots
     set(h_fig, 'Name', 'fcn_VD_plotTimeSlipAngle');
     % width = 600; height = 400; right = 100; bottom = 400;
     % set(gcf, 'position', [right, bottom, width, height])
-    clf
+    % clf
     hold on
 
     if 4==Ntires
@@ -213,7 +224,7 @@ if flag_do_plots
     end
 
     for ith_tire = 1:Ntires
-        plot(time,slipAngles(:,ith_tire),colorStrings{ith_tire},'Linewidth',lineWidths(ith_tire), 'DisplayName', labelStrings{ith_tire});
+        hPlots{ith_tire} = plot(time,slipAngles(:,ith_tire),colorStrings{ith_tire},'Linewidth',lineWidths(ith_tire), 'DisplayName', labelStrings{ith_tire});
     end
 
     grid on
