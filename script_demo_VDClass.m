@@ -429,7 +429,16 @@
 % - In script_test_fcn_VD_plotTimeYaw
 %   % * Wrote the code originally, 
 %   % * Used script_test_fcn_VD_plotTimeLateralTireForce as starter
-
+%
+% (new release)
+%
+% 2026_11_13 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_VD_plotTimeSteeringInputs
+%   % * Wrote the code originally, 
+%   % * Used script_test_fcn_VD_plotTimeLateralTireForce as starter
+% - In fcn_VD_plotTimeSteeringInputs
+%   % * Wrote the code originally
+%   % * Used fcn_VD_plotTimeLateralVelocity as template
 
 % TO-DO:
 % 2026_11_12 by Sean Brennan, sbrennan@psu.edu
