@@ -1,5 +1,23 @@
 function dXdt = fcn_VD_derivatives2DOFBicycleModelStateSpace( X, inputFrontRoadWheelAngleRadians, vehicleParameters, varargin)
 
+MATLABFLAG_VD_WARN_DERIVATIVES2DOFBICYCLEMODELSTATESPACE = getenv("MATLABFLAG_VD_WARN_DERIVATIVES2DOFBICYCLEMODELSTATESPACE");
+flagShowWarning = 0;
+if isempty(MATLABFLAG_VD_WARN_DERIVATIVES2DOFBICYCLEMODELSTATESPACE) 
+   flagShowWarning = 1;
+else
+    if strcmp('1',MATLABFLAG_VD_WARN_DERIVATIVES2DOFBICYCLEMODELSTATESPACE)
+        flagShowWarning = 1;
+    end
+end
+
+if 1==flagShowWarning
+    warning('on','backtrace');
+    warning(['fcn_VD_bicycle2dofModel is being deprecated. ' ...
+        'Use fcn_VD_st2dofStateSpace instead.']);
+    setenv('MATLABFLAG_VD_WARN_DERIVATIVES2DOFBICYCLEMODELSTATESPACE','0');
+end
+
+
 %% fcn_VD_derivatives2DOFBicycleModelStateSpace
 %   Fill in the pose derivatives for the bicycle 2DOF dynamic model using
 %   the state-space equations

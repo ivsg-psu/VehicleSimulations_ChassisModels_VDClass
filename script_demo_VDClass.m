@@ -405,10 +405,36 @@
 % - In script_test_fcn_VD_signalAddNoise
 %   % * Wrote the code originally, 
 %   % * Used script_test_fcn_VD_st2dofDerivatives as starter
+%
+% (new release)
+%
+% 2026_11_13 by Sean Brennan, sbrennan@psu.edu
+% - In script_demo_VDClass
+%   % * Did major directory reorganization and renaming
+%   % * Goal is to clearly separate and isolate the different dof models
+% - In fcn_VD_plotTimeLateralVelocity
+%   % * Updated the format to repo standards
+% - In script_test_fcn_VD_plotTimeLateralVelocity
+%   % * Wrote the code originally, 
+%   % * Used script_test_fcn_VD_plotTimeLateralTireForce as starter
+% - In fcn_VD_plotTimeYawRate
+%   % * Updated the format to repo standards
+%   % * Used fcn_VD_plotTimeLateralVelocity as a template
+% - In script_test_fcn_VD_plotTimeYawRate
+%   % * Wrote the code originally, 
+%   % * Used script_test_fcn_VD_plotTimeLateralVelocity as starter
+% - In fcn_VD_plotTimeYaw
+%   % * Updated the format to repo standards
+%   % * Used fcn_VD_plotTimeLateralVelocity as a template
+% - In script_test_fcn_VD_plotTimeYaw
+%   % * Wrote the code originally, 
+%   % * Used script_test_fcn_VD_plotTimeLateralTireForce as starter
 
 
 % TO-DO:
 % 2026_11_12 by Sean Brennan, sbrennan@psu.edu
+% - Need to rename the kinematic bicycle functions and folder 
+%   % * Should be st2kinematic, not KinematicBicycle
 % - Need to update the vector inputs/outputs in
 %   % fcn_VD_body2GlobalCoordinatesDerivatives to match column-wise, not
 %   % row-wise format used in all other functions

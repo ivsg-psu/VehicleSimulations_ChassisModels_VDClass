@@ -1,5 +1,22 @@
 function [stateTrajectory, t, steeringUsed] = fcn_VD_2DOFBicycleModelRK4(initialStates, deltaT, timeInterval, inputsVsTime, vehicleParameters, varargin)
 
+MATLABFLAG_VD_WARN_2DOFBICYCLEMODELRK4 = getenv("MATLABFLAG_VD_WARN_2DOFBICYCLEMODELRK4");
+flagShowWarning = 0;
+if isempty(MATLABFLAG_VD_WARN_2DOFBICYCLEMODELRK4) 
+   flagShowWarning = 1;
+else
+    if strcmp('1',MATLABFLAG_VD_WARN_2DOFBICYCLEMODELRK4)
+        flagShowWarning = 1;
+    end
+end
+
+if 1==flagShowWarning
+    warning('on','backtrace');
+    warning(['fcn_VD_bicycle2dofModel is being deprecated. ' ...
+        'Use fcn_VD_st2dofRK4 instead.']);
+    setenv('MATLABFLAG_VD_WARN_2DOFBICYCLEMODELRK4','0');
+end
+
 %% fcn_VD_2DOFBicycleModelRK4
 %   Simulates the bicycle kinematic model using Runga Kutta 4th-order
 %

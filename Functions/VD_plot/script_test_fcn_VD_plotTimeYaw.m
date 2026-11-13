@@ -1,14 +1,18 @@
-% script_test_fcn_VD_derivativesKinematicBicycleModel.m
-% tests fcn_VD_derivativesKinematicBicycleModel.m
+% script_test_fcn_VD_plotTimeYaw.m
+% tests fcn_VD_plotTimeYaw.m
 
 % REVISION HISTORY:
 %
-% 2026_01_31 by Sean Brennan, sbrennan@psu.edu
-% - wrote the code originally, using breakDataIntoLaps as starter
+% As: script_test_fcn_VD_plotTimeYaw
+%
+% 2026_11_13 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_VD_plotTimeYaw
+%   % * Wrote the code originally, 
+%   % * Used script_test_fcn_VD_plotTimeLateralTireForce as starter
 
 % TO-DO:
 %
-% 2026_01_31 by Sean Brennan, sbrennan@psu.edu
+% 2026_11_13 by Sean Brennan, sbrennan@psu.edu
 % - (fill in items here)
 
 
@@ -33,36 +37,31 @@ close all
 close all;
 fprintf(1,'Figure: 1XXXXXX: DEMO cases\n');
 
-%% DEMO case: basic call
+%% DEMO case: basic call 
 figNum = 10001;
 titleString = sprintf('DEMO case: basic call');
 fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
 figure(figNum); clf;
 
-% Set the input arguments
-y = [1; 1; pi/4]; % meters, meters, radians
-inputFrontRoadWheelAngleRadians = 10*pi/180; % radians
-U = 20; % meters per second
-L = 2.5; % meters
+% Load some test data
+[time, yaw] = fcn_INTERNAL_loadExampleData;
 
 % Call the function
-dydt = fcn_VD_derivativesKinematicBicycleModel( y, inputFrontRoadWheelAngleRadians, U, L, (figNum));
+hPlots = fcn_VD_plotTimeYaw(time, yaw, (figNum));
 
 sgtitle(titleString, 'Interpreter','none');
 
 % Check variable types
-assert(isnumeric(dydt));
+assert(ishandle(hPlots));
 
 % Check variable sizes
-assert(size(dydt,1)==3); 
-assert(size(dydt,2)==1); 
+assert(isequal(size(hPlots),[1 1]));
 
 % Check variable values
-assert(isequal(dydt, [U*cos(y(3)); U*sin(y(3)); (U/L)*tan(inputFrontRoadWheelAngleRadians)]));  
+% Too many to test
 
 % Make sure plot opened up
 assert(isequal(get(gcf,'Number'),figNum));
-
 
 %% Test cases start here. These are very simple, usually trivial
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -82,6 +81,13 @@ assert(isequal(get(gcf,'Number'),figNum));
 
 close all;
 fprintf(1,'Figure: 2XXXXXX: TEST mode cases\n');
+
+% %% TEST case: This one returns nothing since there is no portion of the path in criteria
+% figNum = 20001;
+% titleString = sprintf('TEST case: This one returns nothing since there is no portion of the path in criteria');
+% fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+% figure(figNum); clf;
+
 
 
 %% Fast Mode Tests
@@ -107,24 +113,20 @@ figNum = 80001;
 fprintf(1,'Figure: %.0f: FAST mode, empty figNum\n',figNum);
 figure(figNum); close(figNum);
 
-% Set the input arguments
-y = [1; 1; pi/4]; % meters, meters, radians
-inputFrontRoadWheelAngleRadians = 10*pi/180; % radians
-U = 20; % meters per second
-L = 2.5; % meters
+% Load some test data
+[time, yaw] = fcn_INTERNAL_loadExampleData;
 
 % Call the function
-dydt = fcn_VD_derivativesKinematicBicycleModel( y, inputFrontRoadWheelAngleRadians, U, L, ([]));
+hPlots = fcn_VD_plotTimeYaw(time, yaw, ([]));
 
 % Check variable types
-assert(isnumeric(dydt));
+assert(ishandle(hPlots));
 
 % Check variable sizes
-assert(size(dydt,1)==3); 
-assert(size(dydt,2)==1); 
+assert(isequal(size(hPlots),[1 1]));
 
 % Check variable values
-assert(isequal(dydt, [U*cos(y(3)); U*sin(y(3)); (U/L)*tan(inputFrontRoadWheelAngleRadians)]));  
+% Too many to test
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
@@ -136,24 +138,20 @@ figNum = 80002;
 fprintf(1,'Figure: %.0f: FAST mode, figNum=-1\n',figNum);
 figure(figNum); close(figNum);
 
-% Set the input arguments
-y = [1; 1; pi/4]; % meters, meters, radians
-inputFrontRoadWheelAngleRadians = 10*pi/180; % radians
-U = 20; % meters per second
-L = 2.5; % meters
+% Load some test data
+[time, yaw] = fcn_INTERNAL_loadExampleData;
 
 % Call the function
-dydt = fcn_VD_derivativesKinematicBicycleModel( y, inputFrontRoadWheelAngleRadians, U, L, (-1));
+hPlots = fcn_VD_plotTimeYaw(time, yaw, (-1));
 
 % Check variable types
-assert(isnumeric(dydt));
+assert(ishandle(hPlots));
 
 % Check variable sizes
-assert(size(dydt,1)==3); 
-assert(size(dydt,2)==1); 
+assert(isequal(size(hPlots),[1 1]));
 
 % Check variable values
-assert(isequal(dydt, [U*cos(y(3)); U*sin(y(3)); (U/L)*tan(inputFrontRoadWheelAngleRadians)]));  
+% Too many to test
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
@@ -166,27 +164,24 @@ fprintf(1,'Figure: %.0f: FAST mode comparisons\n',figNum);
 figure(figNum);
 close(figNum);
 
-% Set the input arguments
-y = [1; 1; pi/4]; % meters, meters, radians
-inputFrontRoadWheelAngleRadians = 10*pi/180; % radians
-U = 20; % meters per second
-L = 2.5; % meters
+% Load some test data
+[time, yaw] = fcn_INTERNAL_loadExampleData;
 
-Niterations = 500;
+Niterations = 1;
 
 % Do calculation without pre-calculation
 tic;
 for ith_test = 1:Niterations
-	% Call the function
-	dydt = fcn_VD_derivativesKinematicBicycleModel( y, inputFrontRoadWheelAngleRadians, U, L, ([]));
+    % Call the function
+    hPlots = fcn_VD_plotTimeYaw(time, yaw, ([]));
 end
 slow_method = toc;
 
 % Do calculation with pre-calculation, FAST_MODE on
 tic;
 for ith_test = 1:Niterations
-	% Call the function
-	dydt = fcn_VD_derivativesKinematicBicycleModel( y, inputFrontRoadWheelAngleRadians, U, L, (-1));
+    % Call the function
+    hPlots = fcn_VD_plotTimeYaw(time, yaw, (-1));
 end
 fast_method = toc;
 
@@ -227,11 +222,11 @@ assert(~any(figHandles==figNum));
 
 % close all;
 
-%% BUG 
+%% BUG
 
 %% Fail conditions
 if 1==0
-    
+
 end
 
 
@@ -246,3 +241,36 @@ end
 %
 % See: https://patorjk.com/software/taag/#p=display&f=Big&t=Functions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%§
+
+
+%% fcn_INTERNAL_loadExampleData
+function [time, yaw] = fcn_INTERNAL_loadExampleData
+    
+% Set the simulation time/state arguments
+initialStates = [0 0 0 0 0]; % [V r X Y phi] in [m/s], [rad/sec], [m],[m],[rad]
+deltaT = 0.01; % Units are [sec]
+startTime = 0;
+endTime = 4.5;
+timeInterval = [startTime endTime];  % Units are [sec]
+
+% Set the input arguments
+rng(0);
+testCaseID = 0;
+testCaseOptions = [];
+simulationTimes = [];
+steeringInputsVsTime = fcn_VD_steeringFillTestCase( (testCaseID), (testCaseOptions), (simulationTimes), (-1));
+rateLimitInDegPerSec = [];
+inputsVsTime = fcn_VD_steeringApplyRateLimit(steeringInputsVsTime, (rateLimitInDegPerSec), (-1));
+
+% Set up parameters
+vehicleParametersFile = fullfile(pwd,'Data','vehicleParameters_2013ToyotaPriusFour.mat');
+vehicleParameters = fcn_VD_getStudentVehicle((vehicleParametersFile), (-1));
+U = 20; % Forward velocity, in m/s
+
+% Call the function
+[stateTrajectory, t, steeringUsed] = ...
+	fcn_VD_st2dofRK4(initialStates, deltaT, timeInterval, inputsVsTime, vehicleParameters, U, (-1)); %#ok<ASGLU>
+
+time = t;
+yaw = stateTrajectory(:,5);
+end % Ends fcn_INTERNAL_loadExampleData
